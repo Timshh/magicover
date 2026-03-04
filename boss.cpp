@@ -1,20 +1,31 @@
-#include "boss.h"
+﻿#include "boss.h"
 
-float Boss::Clamp(float num, float min, float max) {
-  if (num > max) {
-    return max;
-  }
-  if (num < min) {
-    return min;
-  }
-  return num;
-}
-
-Boss::Boss(int ID = 0) {
-  Type = ID;
+Boss::Boss(Loader* loader, int id, std::vector<Creature*>* team,
+           int* maxEnemies, std::vector<Creature*>* enemies,
+           int* maxStage, int* currentStage, int* coordX,
+           int* coordY, int* normalAdd, int* normalRand,
+           int* eliteAdd, int* eliteRand,
+           std::vector<int>* getableRings,
+           std::vector<Ring>* inventory,
+           std::vector<std::vector<std::string>>* map)
+    : Enemy(loader, id, team) {
+  MaxEnemies = maxEnemies;
+  MaxStage = maxStage;
+  CurrentStage = currentStage;
+  CoordX = coordX;
+  CoordY = coordY;
+  NormalAdd = normalAdd;
+  NormalRand = normalRand;
+  EliteAdd = eliteAdd;
+  EliteRand = eliteRand;
+  Enemies = enemies;
+  GetableRings = getableRings;
+  Inventory = inventory;
+  Map = map;
+  EnemyLoader = loader;
   IsBoss = 1;
-  switch (Type) {
-    case 0:
+  switch (ID) {
+    case 1000:
       SetColor(8);
       std::cout
           << "Two guardians of castle stand before Last Mage. One raise his "
@@ -22,11 +33,6 @@ Boss::Boss(int ID = 0) {
              "battle axe. Fight is only "
              "option\n";
       SetColor(7);
-      HP = HPMax = 100;
-      Damage = 5;
-      Resist = 0.6;
-      DamageRand = 10;
-      Name = "Shield guardian";
       AtkText1 = "Shield guardian attack with shield";
       AtkText2 = "Shield guardian do a shield bash";
       AtkText3 = "Shield guardian slash with knife";
@@ -38,16 +44,7 @@ Boss::Boss(int ID = 0) {
       DeathText = "Shield guardian fell on knees breathless";
       Hint = "Shield guardian have resist to direct damage, but no more";
       break;
-    case 1:
-      HP = HPMax = 100;
-      Damage = 10;
-      DamageRand = 5;
-      SpecAttackChance = 20;
-      PsychoResist = 0.9;
-      FlameResist = 0.9;
-      FrostResist = 0.9;
-      DarkResist = 0.9;
-      Name = "Axe guardian";
+    case 1001:
       AtkText1 = "Axe guardian do a heavy slash";
       AtkText2 = "Axe guardian do two fast slashes";
       AtkText3 = "Axe guardian do a spin slash";
@@ -60,7 +57,7 @@ Boss::Boss(int ID = 0) {
           "Axe guardian have small resists to all elements. Looks like this is "
           "effect of his ring";
       break;
-    case 2:
+    case 1002:
       SetColor(8);
       std::cout
           << "The palace smell dry. In center of it stands mummified witch "
@@ -72,14 +69,6 @@ Boss::Boss(int ID = 0) {
       SetColor(8);
       std::cout << " - supreme ripper\n";
       SetColor(7);
-      HP = HPMax = 300;
-      Damage = 1;
-      DamageRand = 39;
-      PsychoResist = 1.4;
-      FlameResist = 1.2;
-      FrostResist = 0.8;
-      DarkResist = 0.8;
-      Name = "InfArmY";
       AtkText1 = "InfArmY attack with all her arms";
       AtkText2 = "Dead Witch deal multiple blows with her arms";
       AtkText3 = "Living corpse stand on arms and do fast kicks";
@@ -94,7 +83,7 @@ Boss::Boss(int ID = 0) {
           "Mad Witch have frost and dark resists, but flame works good against "
           "her mummyfied body. Madness make psycho effective against her";
       break;
-    case 3:
+    case 1003:
       SetColor(8);
       std::cout
           << "As Last Mage enter the palace, smoke fill it. As steam cleared, "
@@ -106,16 +95,6 @@ Boss::Boss(int ID = 0) {
       SetColor(12);
       std::cout << "- Powerful treat detected. Starting battle\n ";
       SetColor(7);
-      HP = HPMax = 400;
-      Damage = 20;
-      DamageRand = 20;
-      SpecAttackChance = 40;
-      Resist = 0.5;
-      PsychoResist = 0.4;
-      FlameResist = 0.8;
-      FrostResist = 1.2;
-      DarkResist = 1.2;
-      Name = "GO-13M";
       AtkText1 = "GO-13M do a powerful kick";
       AtkText2 = "Machine rush towards Mage";
       AtkText3 = "Clockwork mechanism strike with high pressure steam";
@@ -129,17 +108,8 @@ Boss::Boss(int ID = 0) {
           "direct attack damage. Good flame resist. Frost and dark are "
           "effective";
       break;
-    case 4:
-      HP = HPMax = 150;
-      Damage = 5;
-      DamageRand = 10;
+    case 1004:
       SpecAttackChance = 60;
-      Resist = 0.9;
-      PsychoResist = 1.2;
-      FlameResist = 1.2;
-      FrostResist = 1.2;
-      DarkResist = 1.2;
-      Name = "Wings";
       AtkText1 = "Wings strike with sharp feather";
       AtkText2 = "Wings do a spinnig attack";
       AtkText3 = "Wings strike with sharp feather";
@@ -152,7 +122,7 @@ Boss::Boss(int ID = 0) {
           "Wings have small resist to direct damage. Elements are effective "
           "against it";
       break;
-    case 5:
+    case 1005:
       SetColor(8);
       std::cout
           << "Gorgeous creature were watching in mosaic window as Last Mage "
@@ -167,16 +137,6 @@ Boss::Boss(int ID = 0) {
       SetColor(8);
       std::cout << " - the order creator and the first slayer\n";
       SetColor(7);
-      HP = HPMax = 300;
-      Damage = 10;
-      DamageRand = 20;
-      SpecAttackChance = 30;
-      Resist = 0.8;
-      PsychoResist = 0.8;
-      FlameResist = 0.8;
-      FrostResist = 0.8;
-      DarkResist = 0.8;
-      Name = "Tyrant";
       AtkText1 = "Tyrant tail do a powerful stab";
       AtkText2 = "Creature fly towards mage and kick on full speeed";
       AtkText3 = "Thin arms strike with surprising power";
@@ -189,17 +149,8 @@ Boss::Boss(int ID = 0) {
           "Body fall on ground";
       Hint = "Tyrant have low resist to all elements and direct damage";
       break;
-    case 6:
-      HP = HPMax = 100;
-      Damage = 2;
-      DamageRand = 2;
+    case 1006:
       SpecAttackChance = 80;
-      Resist = 1.2;
-      PsychoResist = 0;
-      FlameResist = 1.2;
-      FrostResist = 1.2;
-      DarkResist = 0;
-      Name = "Halo";
       AtkText1 = "Halo strike with light";
       AtkText2 = "Halo attack with lightning";
       AtkText3 = "Halo strike with light";
@@ -215,111 +166,90 @@ Boss::Boss(int ID = 0) {
   }
 }
 
-void Boss::SpecialAttack(float* Defence,
-                         int* NormalAdd,
-                         int* MainHP, int* MaxEnemies, int* MaxStage,
-    int* CurrentStage, int* CoordX, int* NormalRand,
-    int* EliteAdd, int* EliteRand, int* CoordY, std::vector<int>* GetableRings,
-    std::vector<Boss>* StageBosses, std::vector<Enemy>* Enemies, 
-    std::vector<Ring>* Inventory, std::vector<std::vector<std::string>>* Map) {
-  switch (Type) {
-    case 0:
+void Boss::SpecialAttack(Creature* target) {
+  switch (ID) {
+    case 1000:
       std::cout << "Shield guardian used heal potion - restored 20 health\n";
-      HP = Clamp(HP + 20, 0, HPMax);
+      Params.HP = min(Params.HP + 20, Params.HPMax);
       break;
-    case 1:
+    case 1001:
       std::cout
           << "Axe guardian looked at ring on his arm. His elemental statuses "
               "decreased slightly\n";
-      Flame = Clamp(Flame - 3, 0, 100);
-      Frost = Clamp(Frost - 3, 0, 100);
-      Dark = Clamp(Dark - 3, 0, 100);
-      Psycho = Clamp(Psycho - 3, 0, 100);
+      Params.Flame = max(Params.Flame - 3, 0);
+      Params.Frost = max(Params.Frost - 3, 0);
+      Params.Dark = max(Params.Dark - 3, 0);
+      Params.Psycho = max(Params.Psycho - 3, 0);
       break;
-    case 2:
+    case 1002:
       if (Enemies->size() < *MaxEnemies) {
         std::cout << "Witch created cluster of arms\n";
-        Enemies->push_back(Enemy(0));
+        Enemies->push_back(new Enemy(EnemyLoader, 999, Enemies));
       } else {
         std::cout
             << "Witch tried to create more arms but overloaded herself - 20 "
                 "damage\n";
-        HP -= 20;
-        CheckHP(MaxStage, CurrentStage, CoordX, NormalAdd, NormalRand, EliteAdd,
-                EliteRand, CoordY, GetableRings, StageBosses, Enemies,
-                Inventory, Map);
+        Params.HP -= 20;
+        CheckHP();
       }
       break;
-    case 3:
+    case 1003:
       std::cout << "Golem releases steam\n";
       SetColor(12);
       std::cout << "- Overheat. Processing...\n";
       SetColor(7);
       break;
-    case 4:
+    case 1004:
       std::cout
           << "Wings throw feathers around. Feathers decrease enemy statuses\n";
-      for (Boss& boss : *StageBosses) {
-        boss.Flame = Clamp(boss.Flame - 3, 0, 100);
-        boss.Frost = Clamp(boss.Frost - 3, 0, 100);
-        boss.Dark = Clamp(boss.Dark - 3, 0, 100);
-        boss.Psycho = Clamp(boss.Psycho - 3, 0, 100);
+      for (Creature* boss : *Team) {
+        boss->Params.Flame = max(boss->Params.Flame - 3, 0);
+        boss->Params.Frost = max(boss->Params.Frost - 3, 0);
+        boss->Params.Dark = max(boss->Params.Dark - 3, 0);
+        boss->Params.Psycho = max(boss->Params.Psycho - 3, 0);
       }
       break;
-    case 5:
+    case 1005:
       if (SpecFlag) {
         std::cout << "Tyrant emits a mighty roar and strike with all limbs. ";
-        float AtkDamage = (40 + rand() % (11)) * (1 - Frost / 100) * *Defence;
+        float AtkDamage = (40 + rand() % (11)) * (1 - Params.Frost / 100) *
+                          target->Params.Defence;
         std::cout << "That inflict " << AtkDamage << " damage to Last Mage\n";
-        *MainHP -= AtkDamage;
+        target->Params.HP -= AtkDamage;
         SpecFlag = false;
       } else {
         std::cout << "Tyrant prepares something, her core glow bright\n";
         SpecFlag = true;
       }
       break;
-    case 6:
+    case 1006:
       std::cout << "Halo shine with purple light. Light heal all enemies by 20 "
               "health\n";
-      for (Boss& boss : *StageBosses) {
-        boss.HP = Clamp(boss.HP + 20, 0, boss.HPMax);
+      for (Creature* boss : *Team) {
+        boss->Params.HP = min(boss->Params.HP + 20, boss->Params.HPMax);
       }
       break;
   }
 }
 
-void Boss::Act(float* Defence, int* NormalAdd, int* MainHP, int* MaxEnemies,
-               std::vector<Boss>* StageBosses, std::vector<Enemy>* Enemies,
-               int* MaxStage, int* CurrentStage, int* CoordX,
-               int* NormalRand, int* EliteAdd, int* EliteRand, int* CoordY,
-               std::vector<int>* GetableRings,
-               std::vector<Ring>* Inventory,
-               std::vector<std::vector<std::string>>* Map) {
-  HP -= Flame;
-  CheckHP(MaxStage, CurrentStage, CoordX, NormalAdd, NormalRand, EliteAdd,
-          EliteRand, CoordY, GetableRings, StageBosses, Enemies, Inventory,
-          Map);
+void Boss::Act(Creature* target) {
+  Params.HP -= Params.Flame;
+  CheckHP();
   if (rand() % 100 >= SpecAttackChance) {
-    Attack(MainHP, Defence);
+    Attack(target);
   } else {
-    SpecialAttack(Defence, NormalAdd, MainHP, MaxEnemies, MaxStage,
-                  CurrentStage, CoordX, NormalRand, EliteAdd, EliteRand, CoordY,
-                  GetableRings, StageBosses, Enemies, Inventory, Map);
+    SpecialAttack(target);
   }
 }
 
-void Boss::CheckHP(int* MaxStage, int* CurrentStage, int* CoordX, int* NormalAdd, int* NormalRand,
-                   int* EliteAdd, int* EliteRand,
-                   int* CoordY,  
-                   std::vector<int>* GetableRings,
-                   std::vector<Boss>* StageBosses, std::vector<Enemy>* Enemies,
-                   std::vector<Ring>* Inventory,
-                   std::vector < std::vector<std::string>>* Map) {
-  if (HP <= 0) {
+void Boss::CheckHP() {
+  if (Params.HP <= 0) {
     std::cout << DeathText << "\n\n";
     Alive = false;
-    std::erase_if(*StageBosses, [](const Boss& b) { return !b.Alive; });
-    if (StageBosses->empty()) {
+    std::erase_if(*Team, [](const Creature* b) { return !b->Alive; });
+
+    // TEMP
+    if (Team->empty()) {
       if (!Enemies->empty()) {
         Enemies->clear();
       }
@@ -413,8 +343,8 @@ void Boss::CheckHP(int* MaxStage, int* CurrentStage, int* CoordX, int* NormalAdd
           SetColor(7);
           exit(0);
       }
-      *MaxStage++;
-      *CurrentStage++;
+      *MaxStage += 1;
+      *CurrentStage += 1;
     }
   }
 }

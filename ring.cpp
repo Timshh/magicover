@@ -1,4 +1,4 @@
-#include "ring.h"
+﻿#include "ring.h"
 
 float Ring::Clamp(float num, float min, float max) {
   if (num > max) {
@@ -10,9 +10,10 @@ float Ring::Clamp(float num, float min, float max) {
   return num;
 }
 
-Ring::Ring(int ID) {
-  Type = ID;
-  switch (Type) {
+Ring::Ring(int id, Creature* owner) {
+  ID = id;
+  Owner = owner;
+  switch (ID) {
     case 1:
       Name = "Blue Blood ring";
       Description =
@@ -174,58 +175,61 @@ Ring::Ring(int ID) {
   }
 }
 
-void Ring::RingAct(int* MainHP, int* MainHPMax, int* Mana,
-                   int* ManaMax) {
+void Ring::RingAct() {
   for (int i = 0; i < AEffects.size(); i++) {
     switch (AEffects[i]) {
       case 1:
-        *MainHP = Clamp(*MainHP + 5, 0, *MainHPMax);
+        Owner->Params.HP = Clamp(Owner->Params.HP + 5, 0, Owner->Params.HPMax);
         break;
       case 2:
-        *Mana = Clamp(*Mana + 5, 0, *ManaMax);
+        Owner->Params.Mana =
+            Clamp(Owner->Params.Mana + 5, 0, Owner->Params.ManaMax);
         break;
       case 3:
-        *MainHP = Clamp(*MainHP + (rand() % int(AStats[i]) * 2) - AStats[i] + 1,
-                       0, *MainHPMax);
+        Owner->Params.HP = Clamp(
+            Owner->Params.HP + (rand() % int(AStats[i]) * 2) - AStats[i] + 1,
+                        0, Owner->Params.HPMax);
         break;
       case 4:
-        *Mana = Clamp(*Mana + rand() % (int(AStats[i]) * 2) - AStats[i] + 1, 0,
-                     *ManaMax);
+        Owner->Params.Mana = Clamp(
+            Owner->Params.Mana + rand() % (int(AStats[i]) * 2) - AStats[i] + 1,
+            0,
+                  Owner->Params.ManaMax);
         break;
     }
   }
 }
 
-void Ring::AddRingEffect(int Mult, int* MainHP, int* MainHPMax, int* Mana,
-                         int* ManaMax, int* SecondAtkChance,
-                         float* DefaultDefence,
-                         float* DefaultStatusMult,
-                         int* SecondChance,
-                         float* DefaultDamageMult) {
+void Ring::AddRingEffect(bool isRemoving) {
+  int Mult = 1;
+  if (isRemoving) {
+    Mult = -1;
+  }
   for (int i = 0; i < PEffects.size(); i++) {
     switch (PEffects[i]) {
       case 1:
-        *DefaultDefence += PStats[i] * Mult;
+        Owner->Params.DefaultDefence += PStats[i] * Mult;
         break;
       case 2:
-        *MainHPMax += PStats[i] * Mult;
-        *MainHP = Clamp(*MainHP, 0, *MainHPMax);
+        Owner->Params.HPMax += PStats[i] * Mult;
+        Owner->Params.HP = Clamp(Owner->Params.HP, 0, Owner->Params.HPMax);
         break;
       case 3:
-        *ManaMax += PStats[i] * Mult;
-        *Mana = Clamp(*Mana, 0, *ManaMax);
+        Owner->Params.ManaMax += PStats[i] * Mult;
+        Owner->Params.Mana =
+            Clamp(Owner->Params.Mana, 0, Owner->Params.ManaMax);
         break;
       case 4:
-        *SecondChance += PStats[i] * Mult;
+        Owner->Params.SecondChance += PStats[i] * Mult;
         break;
       case 5:
-        *SecondAtkChance += PStats[i] * Mult;
+        Owner->Params.SecondAtkChance += PStats[i] * Mult;
         break;
       case 6:
-        *DefaultStatusMult += PStats[i] * Mult;
+        Owner->Params.DefaultStatusMult += PStats[i] * Mult;
         break;
       case 7:
-        *DefaultDamageMult += PStats[i] * Mult;
+        Owner->Params.DefaultDamageMult += PStats[i] * Mult;
         break;
     }
   }
