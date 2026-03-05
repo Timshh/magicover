@@ -5,7 +5,7 @@
 #include "res_manager.h"
 #include "enemy.h"
 #include "boss.h"
-#include "creature.h"
+#include "mage.h"
 
 // Data for game mode
 int MaxStage, CurrStage, MaxEnemies = 2, CoordX = 0, CoordY = 3, NormalRand,
@@ -15,7 +15,7 @@ bool OSStudents = true, OSFreeRing = true, OSEmpty = true, ORDemon = true,
 std::vector<int> GetableRings = {1, 2, 3, 4};
 std::vector<std::vector<std::string>> Map;
 
-ResourceManager ResManager("external/data.json");
+ResourceManager ResManager("core/data/data.json");
 std::vector<Ring> Inventory;
 std::vector<Ring> Arm;
 Ring* ChosenRing;
@@ -44,18 +44,20 @@ float Clamp(float num, float min, float max) {
 int TakeInt(int Min, int Max) {
   std::cout << "Choose\n";
   int Chosen;
-  bool flag = true;
   do {
-    while (!(std::cin >> Chosen)) {
+    while(!(std::cin >> Chosen)) {
       std::cout << "Invalid choice\n";
+      std::cin.clear();
+      std::cin.ignore();
     }
     if ((Chosen < Min) or (Chosen > Max)) {
       std::cout << "Invalid choice!\n";
+      std::cin.clear();
+      std::cin.ignore();
     } else {
       return Chosen;
-      flag = false;
     }
-  } while (flag);
+  } while (true);
 }
 
 void Create_enemies() {
@@ -198,9 +200,13 @@ void EnemyChooser() {
   do {
     while (!(std::cin >> Chosen)) {
       std::cout << "Invalid target\n";
+      std::cin.clear();
+      std::cin.ignore();
     }
     if ((Chosen < 1) or Chosen > (Enemies.size() + StageBosses.size())){
       std::cout << "Invalid target!\n";
+      std::cin.clear();
+      std::cin.ignore();
     } else{
       if (Chosen <= StageBosses.size()) {
         Target = StageBosses[Chosen - 1];
@@ -216,7 +222,7 @@ bool NewRingChooser() {
   if (GetableRings.empty()) {
     return false;
   } else {
-    int ID = rand() % GetableRings.size() + 1;
+    int ID = rand() % GetableRings.size();
     NewRing = Ring(GetableRings[ID], &Player);
     erase(GetableRings, ID);
     return true;

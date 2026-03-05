@@ -1,7 +1,7 @@
 ﻿#include "res_manager.h"
 
 ResourceManager::ResourceManager(const std::string& path) {
-  std::ifstream file("external/data.json");
+  std::ifstream file(path);
   if (!file) {
     std::cout << "Data not opened\n";
     return;

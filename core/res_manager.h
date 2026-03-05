@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "stats.h"
-#include "external/json.hpp"
+#include "json.hpp"
 
 using json = nlohmann::json;
 

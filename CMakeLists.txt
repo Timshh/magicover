@@ -9,16 +9,24 @@ endif()
 
 project ("Magicover")
 
-add_executable (Magicover "main.cpp" "ring.cpp" "ring.h" "enemy.cpp" "enemy.h" "boss.cpp" "boss.h" "creature.h" "creature.cpp" "res_manager.cpp" "res_manager.h" "mage.h" "mage.cpp" "stats.h")
+add_executable (Magicover "core/main.cpp" "core/rings/ring.cpp" "core/rings/ring.h" "core/creatures/enemy.cpp" "core/creatures/enemy.h" "core/creatures/boss.cpp" "core/creatures/boss.h" "core/creatures/creature.h" "core/creatures/creature.cpp" "core/res_manager.cpp" "core/res_manager.h" "core/creatures/mage.h" "core/creatures/mage.cpp" "core/stats.h")
 
 add_custom_command(
     TARGET Magicover POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${CMAKE_SOURCE_DIR}/external
-            $<TARGET_FILE_DIR:Magicover>/external
+            ${CMAKE_SOURCE_DIR}/core
+            $<TARGET_FILE_DIR:Magicover>/core
     COMMENT "Copying data to build directory"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Magicover PROPERTY CXX_STANDARD 20)
 endif()
+
+target_include_directories(Magicover PRIVATE 
+    core
+    core/creatures
+    core/lib
+    core/data
+    core/rings
+)

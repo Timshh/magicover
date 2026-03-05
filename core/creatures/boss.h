@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "enemy.h"
-#include "ring.h"
+#include "rings/ring.h"
 #include "res_manager.h"
 
 class Boss : public Enemy {
