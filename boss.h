@@ -1,21 +1,21 @@
 ﻿#pragma once
 #include "enemy.h"
 #include "ring.h"
+#include "res_manager.h"
 
 class Boss : public Enemy {
  public:
-  Boss(Loader* loader = 0, int id = 0, std::vector<Creature*>* team = 0,
-       int* maxEnemies = 0, std::vector<Creature*>* enemies = 0,
-       int* maxStage = 0,
-       int* currentStage = 0, int* coordX = 0, int* coordY = 0,
-       int* normalAdd = 0,
-       int* normalRand = 0, int* eliteAdd = 0, int* eliteRand = 0,
-       std::vector<int>* getableRings = 0, std::vector<Ring>* inventory = 0,
-       std::vector<std::vector<std::string>>* map = 0);
+  Boss(Stats params, std::vector<Creature*>* team, int* maxEnemies,
+       std::vector<Creature*>* enemies, int* maxStage, int* currentStage,
+       int* coordX, int* coordY, int* normalAdd, int* normalRand, int* eliteAdd,
+       int* eliteRand, std::vector<int>* getableRings,
+       std::vector<Ring>* inventory, std::vector<std::vector<std::string>>* map,
+       ResourceManager* manager, Creature* player);
   int *MaxEnemies, *MaxStage, *CurrentStage, *CoordX, *CoordY,
       *NormalAdd, *NormalRand, *EliteAdd, *EliteRand;
-  Loader *EnemyLoader;
-  std::vector<Creature*> *Enemies;
+  ResourceManager* EnemyManager;
+  std::vector<Creature*>* Enemies;
+  Creature* Player;
   std::vector<int> *GetableRings;
   std::vector<Ring> *Inventory;
   std::vector<std::vector<std::string>> *Map;

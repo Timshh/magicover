@@ -1,8 +1,7 @@
 ﻿#include "creature.h"
 
-Creature::Creature(Loader* loader, int id, std::vector<Creature*>* team) { 
-	Params = loader->GetData(id);
-	ID = id;
+Creature::Creature(Stats params, std::vector<Creature*>* team) { 
+	Params = params;
     Team = team;
 }
 
@@ -53,6 +52,7 @@ void Creature::CheckHP() {
   if (Params.HP <= 0) {
     Alive = false;
     erase_if(*Team, [](const Creature* b) { return !b->Alive; });
+    delete &Params;
     delete this;
   }
 }

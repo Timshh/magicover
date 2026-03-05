@@ -1,14 +1,5 @@
 ﻿#pragma once
 
-#include <fstream>
-#include <filesystem>
-#include <iostream>
-#include <vector>
-
-#include "external/json.hpp"
-
-using json = nlohmann::json;
-
 struct Stats {
   int ID;
   std::string Name;
@@ -18,8 +9,6 @@ struct Stats {
   float HPMax;
   int Mana;
   float ManaMax;
-  
-  
 
   float Damage;
   int DamageRand;
@@ -58,11 +47,4 @@ struct Stats {
   int SecondChance;
 
   int RingsMax;
-};
-
-class Loader {
- public:
-  Loader(const std::string& path);
-  Stats GetData(int id);
-  std::vector<Stats> Data;
 };

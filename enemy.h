@@ -4,12 +4,11 @@
 
 class Enemy : public Creature {
  public:
-  Enemy(Loader* loader = 0, int id = 0, std::vector<Creature*>* team = 0);
-  int IsBoss = 0;
+  Enemy(Stats params, std::vector<Creature*>* team);
 
   void SetColor(int color);
   void Attack(Creature* target);
-  void Stats();
+  void Status();
 
   void virtual RecieveDmg(float damage, int element, float status) override;
   void virtual CheckHP() override;

@@ -1,6 +1,6 @@
-﻿#include "loader.h"
+﻿#include "res_manager.h"
 
-Loader::Loader(const std::string& path) {
+ResourceManager::ResourceManager(const std::string& path) {
   std::ifstream file("external/data.json");
   if (!file) {
     std::cout << "Data not opened\n";
@@ -64,9 +64,10 @@ Loader::Loader(const std::string& path) {
 
     Data.push_back(u);
   }
+  file.close();
 }
 
-Stats Loader::GetData(int id) {
+Stats ResourceManager::GetData(int id) {
   for (int i = 0; i < Data.size(); i++) {
     if (Data[i].ID == id) {
       return Data[i];

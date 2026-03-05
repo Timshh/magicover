@@ -5,9 +5,9 @@ void Enemy::SetColor(int color) {
   SetConsoleTextAttribute(hConsole, color);
 }
 
-Enemy::Enemy(Loader* loader, int id, std::vector<Creature*>* team)
-    : Creature(loader, id, team) {
-  switch (ID) {
+Enemy::Enemy(Stats params, std::vector<Creature*>* team)
+    : Creature(params, team) {
+  switch (Params.ID) {
     case 0:
       AtkText1 = "Creature attack";
       AtkText2 = "It strikes";
@@ -234,7 +234,7 @@ void Enemy::Attack(Creature* target) {
   }
 }
 
-void Enemy::Stats() {
+void Enemy::Status() {
   if (!this) {
     return;
   }

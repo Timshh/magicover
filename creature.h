@@ -4,16 +4,15 @@
 #include <iostream>
 #include <vector>
 #include <windows.h>
-#include "loader.h"
+#include "stats.h"
 
 class Creature {
  public:
-  int ID;
   bool Alive = true;
   Stats Params;
   std::vector<Creature*>* Team;
 
-  Creature(Loader* loader = 0, int id = 0, std::vector<Creature*>* team = 0);
+  Creature(Stats params, std::vector<Creature*>* team);
   
   void virtual Act(Creature* target);
   void virtual RecieveDmg(float damage, int element, float status);

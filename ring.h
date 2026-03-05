@@ -8,7 +8,7 @@
 
 class Ring {
  public:
-  Ring(int id = 0, Creature* owner = 0);
+  Ring(int id, Creature* owner);
   int ID;
   bool Uneqippable = true, Equipped = false;
   std::string Name, Description, EquipText, UnequipText;

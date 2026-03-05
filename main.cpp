@@ -1,10 +1,8 @@
 ﻿#include <cstdlib>
 #include <ctime>
 #include <iostream>
-#include <vector>
-#include <windows.h>
 #include "ring.h"
-#include "loader.h"
+#include "res_manager.h"
 #include "enemy.h"
 #include "boss.h"
 #include "creature.h"
@@ -17,14 +15,14 @@ bool OSStudents = true, OSFreeRing = true, OSEmpty = true, ORDemon = true,
 std::vector<int> GetableRings = {1, 2, 3, 4};
 std::vector<std::vector<std::string>> Map;
 
-Loader loader("external/data.json");
+ResourceManager ResManager("external/data.json");
 std::vector<Ring> Inventory;
 std::vector<Ring> Arm;
 Ring* ChosenRing;
 std::vector<Creature*> Teammates;
 std::vector<Creature*> Enemies;
 std::vector<Creature*> StageBosses;
-Creature Player(&loader, 2000, &Teammates);
+Creature Player(ResManager.GetData(2000), &Teammates);
 Ring NewRing(1, &Player);
 Creature* Target = 0;
 
@@ -60,45 +58,50 @@ int TakeInt(int Min, int Max) {
   } while (flag);
 }
 
-
-
 void Create_enemies() {
   switch (CurrStage) {
     case 0:
-      StageBosses.push_back(new Boss(&loader, 1000, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
-      StageBosses.push_back(new Boss(&loader, 1001, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1000), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1001), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
       break;
     case 1:
-      StageBosses.push_back(new Boss(&loader, 1002, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1002), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
       break;
     case 2:
-      StageBosses.push_back(new Boss(&loader, 1003, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1003), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
       break;
     case 3:
-      StageBosses.push_back(new Boss(&loader, 1004, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
-      StageBosses.push_back(new Boss(&loader, 1005, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
-      StageBosses.push_back(new Boss(&loader, 1006, &StageBosses, &MaxEnemies,
-                                 &Enemies, &MaxStage, &CurrStage, &CoordX,
-                                 &CoordY, &NormalAdd, &NormalRand, &EliteAdd,
-                                 &EliteRand, &GetableRings, &Inventory, &Map));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1004), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1005), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+      StageBosses.push_back(
+          new Boss(ResManager.GetData(1006), &StageBosses, &MaxEnemies,
+                   &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
+                   &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
+                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
       break;
   }
 }
@@ -246,14 +249,14 @@ void LocationAct() {
       break;
     case 2:
       std::cout << "Enemy appears\n";
-      Enemies.push_back(
-          new Enemy(&loader, rand() % NormalRand + NormalAdd, &Enemies));
+      Enemies.push_back(new Enemy(
+          ResManager.GetData(rand() % NormalRand + NormalAdd), &Enemies));
       State = 2;
       break;
     case 3:
       std::cout << "Powerful enemy appears\n";
       Enemies.push_back(
-          new Enemy(&loader, rand() % EliteRand + EliteAdd, &Enemies));
+          new Enemy(ResManager.GetData(rand() % EliteRand + EliteAdd), &Enemies));
       State = 2;
       break;
     case 4:
@@ -272,7 +275,7 @@ void LocationAct() {
           std::cout << "Slayer students attack Last Mage\n";
           for (int i = 0; i < (rand()%2 + 4); i++) {
             Enemies.push_back(
-                new Enemy(&loader, 3, &Enemies));
+                new Enemy(ResManager.GetData(3), &Enemies));
           }
           State = 2;
           break;
@@ -305,8 +308,8 @@ void LocationAct() {
           break;
         case 3:
           std::cout << "Ambush!\n";
-          Enemies.push_back(new Enemy(&loader, EliteAdd, &Enemies));
-          Enemies.push_back(new Enemy(&loader, NormalAdd, &Enemies));
+          Enemies.push_back(new Enemy(ResManager.GetData(EliteAdd), &Enemies));
+          Enemies.push_back(new Enemy(ResManager.GetData(NormalAdd), &Enemies));
           State = 2;
           break;
         case 4:
@@ -597,7 +600,7 @@ void Equipper() {
 }
 
 int main() {
-  Player = Creature(&loader, 2000, &Teammates);
+  Player = Creature(ResManager.GetData(2000), &Teammates);
   Teammates.push_back(&Player);
   srand(time(NULL));
   SetColor(8);
@@ -623,8 +626,8 @@ int main() {
         do {
           int counter = 1;
           Player.Params.Defence = Player.Params.DefaultDefence;
-          //DamageMult = DefaultDamageMult;
-          //StatusMult = DefaultStatusMult;
+          Player.Params.DefaultDamageMult = 1;
+          Player.Params.DefaultStatusMult = 1;
           SetColor(4);
           std::cout << "\nEnemies\n";
           SetColor(7);
@@ -632,14 +635,14 @@ int main() {
             if (boss) {
               std::cout << counter << ". ";
               counter++;
-              dynamic_cast<Boss*>(boss)->Stats();
+              dynamic_cast<Boss*>(boss)->Status();
             }
           }
           for (Creature* enemy : Enemies) {
             if (enemy) {
               std::cout << counter << ". ";
               counter++;
-              dynamic_cast<Enemy*>(enemy)->Stats();
+              dynamic_cast<Enemy*>(enemy)->Status();
             }
           }
           SetColor(11);

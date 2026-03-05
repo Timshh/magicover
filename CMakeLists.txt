@@ -9,7 +9,7 @@ endif()
 
 project ("Magicover")
 
-add_executable (Magicover "main.cpp" "ring.cpp" "ring.h" "enemy.cpp" "enemy.h" "boss.cpp" "boss.h" "creature.h" "creature.cpp" "loader.cpp" "loader.h")
+add_executable (Magicover "main.cpp" "ring.cpp" "ring.h" "enemy.cpp" "enemy.h" "boss.cpp" "boss.h" "creature.h" "creature.cpp" "res_manager.cpp" "res_manager.h" "mage.h" "mage.cpp" "stats.h")
 
 add_custom_command(
     TARGET Magicover POST_BUILD

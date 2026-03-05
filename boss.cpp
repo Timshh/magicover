@@ -1,14 +1,13 @@
 ﻿#include "boss.h"
 
-Boss::Boss(Loader* loader, int id, std::vector<Creature*>* team,
-           int* maxEnemies, std::vector<Creature*>* enemies,
-           int* maxStage, int* currentStage, int* coordX,
-           int* coordY, int* normalAdd, int* normalRand,
-           int* eliteAdd, int* eliteRand,
-           std::vector<int>* getableRings,
+Boss::Boss(Stats params, std::vector<Creature*>* team, int* maxEnemies,
+           std::vector<Creature*>* enemies, int* maxStage, int* currentStage,
+           int* coordX, int* coordY, int* normalAdd, int* normalRand,
+           int* eliteAdd, int* eliteRand, std::vector<int>* getableRings,
            std::vector<Ring>* inventory,
-           std::vector<std::vector<std::string>>* map)
-    : Enemy(loader, id, team) {
+           std::vector<std::vector<std::string>>* map, ResourceManager* manager,
+           Creature* player)
+    : Enemy(params, team) {
   MaxEnemies = maxEnemies;
   MaxStage = maxStage;
   CurrentStage = currentStage;
@@ -22,9 +21,9 @@ Boss::Boss(Loader* loader, int id, std::vector<Creature*>* team,
   GetableRings = getableRings;
   Inventory = inventory;
   Map = map;
-  EnemyLoader = loader;
-  IsBoss = 1;
-  switch (ID) {
+  EnemyManager = manager;
+  Player = player;
+  switch (Params.ID) {
     case 1000:
       SetColor(8);
       std::cout
@@ -167,7 +166,7 @@ Boss::Boss(Loader* loader, int id, std::vector<Creature*>* team,
 }
 
 void Boss::SpecialAttack(Creature* target) {
-  switch (ID) {
+  switch (Params.ID) {
     case 1000:
       std::cout << "Shield guardian used heal potion - restored 20 health\n";
       Params.HP = min(Params.HP + 20, Params.HPMax);
@@ -184,7 +183,7 @@ void Boss::SpecialAttack(Creature* target) {
     case 1002:
       if (Enemies->size() < *MaxEnemies) {
         std::cout << "Witch created cluster of arms\n";
-        Enemies->push_back(new Enemy(EnemyLoader, 999, Enemies));
+        Enemies->push_back(new Enemy(EnemyManager->GetData(999), Enemies));
       } else {
         std::cout
             << "Witch tried to create more arms but overloaded herself - 20 "
@@ -258,7 +257,7 @@ void Boss::CheckHP() {
           std::cout << "Axe guardian ring shines bright\n";
           SetColor(2);
           std::cout << "Ring of memories obtained\n\n";
-          Inventory->push_back(Ring(0));
+          Inventory->push_back(Ring(0, Player));
           SetColor(7);
           std::cout << "Spacious outer palaces look regular";
           *CoordX = 0, *CoordY = 3;
@@ -276,7 +275,7 @@ void Boss::CheckHP() {
           std::cout << "Ring shines in the dust\n";
           SetColor(2);
           std::cout << "Ring of arms obtained\n\n";
-          Inventory->push_back(Ring(888));
+          Inventory->push_back(Ring(888, Player));
           SetColor(7);
           std::cout << "Grandiose inner palaces shine before Last Mage";
           *CoordX = 0, *CoordY = 7;
@@ -313,7 +312,7 @@ void Boss::CheckHP() {
               << "As machine turned off, its chest opened. Inside was a ring\n";
           SetColor(2);
           std::cout << "Clockwork ring obtained\n\n";
-          Inventory->push_back(Ring(1834));
+          Inventory->push_back(Ring(1834, Player));
           SetColor(7);
           std::cout << "Slayers section feels majestically.Soon it will burn";
           *CoordX = 0, *CoordY = 5;
