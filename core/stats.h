@@ -12,11 +12,13 @@ struct Stats {
 
   float Damage;
   int DamageRand;
+  float DamageMult;
   float DefaultDamageMult;
 
   int Element;
   float Status;
   int StatusRand;
+  float StatusMult;
   float DefaultStatusMult;
 
   float Defence;

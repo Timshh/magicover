@@ -13,61 +13,54 @@ void Mage::Act(Creature* target) {
   Creature::Act(target);
 }
 
-void Mage::Attack(Creature* target) {
-  int AtkDamage = (Params.Damage + rand() % (Params.DamageRand + 1)) *
-                  (1 - Params.Frost / 100);
-  if (rand() % 100 >= Params.Psycho) {
-    if (rand() % 2 == 0) {
-      if (rand() % 2 == 0) {
-        std::cout << AtkText1;
-      } else {
-        std::cout << AtkText2;
-      }
-    } else {
-      if (rand() % 2 == 0) {
-        std::cout << AtkText3;
-      } else {
-        std::cout << AtkText4;
-      }
-    }
-    if (rand() % 100 >= Params.Dark) {
-      std::cout << " which inflict " << AtkDamage * target->Params.Defence
-           << " damage to "
-              "Last Mage\n";
-      target->Params.HP -= AtkDamage * target->Params.Defence;
-    } else {
-      std::cout << ". Miss\n";
-    }
-  } else {
-    std::cout << Params.Name << " in psychotic assault hurt self with "
-              << AtkDamage * (Params.Defence) << " damage\n";
-    Params.HP -= AtkDamage;
-  }
-}
-
 void Mage::Status() {
-  if (!this) {
-    return;
+  Params.Mana = min(Params.Mana + 15, Params.ManaMax);
+  for (Ring& currRing : Arm) {
+    currRing.RingAct();
   }
+  Params.Defence = Params.DefaultDefence;
+  Params.DamageMult = Params.DefaultDamageMult;
+  Params.StatusMult = Params.DefaultStatusMult;
   CheckHP();
-  if (Params.HP >= Params.HPMax / 2) {
-    std::cout << CalmText;
-  } else {
-    if (Params.HP >= Params.HPMax / 4) {
-      std::cout << HurtText;
-    } else {
-      std::cout << DamagedText;
+  SetColor(11);
+  std::cout << "\nLast Mage\n";
+  SetColor(15);
+  std::cout << "Health: ";
+  SetColor(4);
+  std::cout << Params.HP;
+  SetColor(15);
+  std::cout << " Mana: ";
+  SetColor(3);
+  std::cout << Params.Mana << "\n";
+  SetColor(10);
+  std::cout << Params.Poison << " ";
+  SetColor(9);
+  std::cout << Params.Disease << " ";
+  SetColor(8);
+  std::cout << Params.Mechanization << " ";
+  SetColor(12);
+  std::cout << Params.Stealer << std::endl;
+  SetColor(15);
+  std::cout << "1. Regenerate. Gain ";
+  SetColor(3);
+  std::cout << "15\n";
+  SetColor(15);
+  if (Params.Mana >= 20) {
+    std::cout << "2. Support with spell. ";
+    SetColor(3);
+    std::cout << "20\n";
+    SetColor(15);
+    std::cout << "3. Attack with one element. ";
+    SetColor(3);
+    std::cout << "20\n";
+    SetColor(15);
+    if (Params.Mana >= 40) {
+      std::cout << "4. Attack with two elements. ";
+      SetColor(3);
+      std::cout << "40\n";
+      SetColor(15);
     }
   }
-  SetColor(12);
-  std::cout << " " << Params.Flame;
-  SetColor(11);
-  std::cout << " " << Params.Frost;
-  SetColor(8);
-  std::cout << " " << Params.Dark;
-  SetColor(13);
-  std::cout << " " << Params.Psycho;
-  SetColor(7);
   std::cout << std::endl;
 }
 
@@ -76,8 +69,88 @@ void Mage::RecieveDmg(float damage, int element, float status) {
 }
 
 void Mage::CheckHP() {
-  if (Params.HP <= 0) {
-    std::cout << DeathText << "\n";
-  }
   Creature::CheckHP();
+}
+
+void Mage::Offence() {
+  int ChoiceElem;
+  std::cout << "Choose spell:\n";
+  std::cout << "1. Steel blood. Decrease incoming damage by half\n";
+  std::cout << "2. Blue heart. Heal ";
+  SetColor(4);
+  std::cout << "50\n";
+  SetColor(15);
+  std::cout << "3. Radiance. Heal ";
+  SetColor(4);
+  std::cout << "80";
+  SetColor(15);
+  std::cout << " but incoming damage rise by half\n";
+  std::cin >> ChoiceElem;
+  system("cls");
+  switch (ChoiceElem) {
+    case 1:
+      Params.Defence = 0.5;
+      system("cls");
+      std::cout << "Last mage blood became gray. His protction rise\n";
+      break;
+    case 2:
+      Params.HP = min(Params.HP + 50, Params.HPMax);
+      system("cls");
+      std::cout
+          << "Last Mage heart beat strong and slow, regenerating his health\n";
+      break;
+    case 3:
+      Params.HP = min(Params.HP + 80, Params.HPMax);
+      Params.Defence = 1.5;
+      system("cls");
+      std::cout
+          << "Last Mage heart glow inside his chest, refilling his health. He "
+             "is vulnerable now\n";
+      break;
+    default:
+      system("cls");
+      std::cout << "That didn't work\n";
+      break;
+      break;
+  }
+}
+
+void Mage::Magic(Creature* target) {
+  int ChoiceElem;
+  std::cout << "Choose element:\n";
+  std::cout << "1. Flame. Burn enemy slowly\n";
+  std::cout << "2. Frost. Make enemy attacks weaker\n";
+  std::cout << "3. Dark. With darken mind enemy may miss\n";
+  std::cout << "4. Psycho. Enemy may lose control and attack self\n";
+  std::cin >> ChoiceElem;
+  switch (ChoiceElem) {
+    case 1:
+      Params.Damage = 20;
+      Params.Status = 1;
+      Params.Element = 1;
+      break;
+    case 2:
+      Params.Damage = 25;
+      Params.Status = 0.75;
+      Params.Element = 2;
+      break;
+    case 3:
+      Params.Damage = 15;
+      Params.Status = 1.25;
+      Params.Element = 3;
+      break;
+    case 4:
+      Params.Damage = 10;
+      Params.Status = 1.5;
+      Params.Element = 4;
+      break;
+    default:
+      system("cls");
+      std::cout << "That didn't work\n";
+      break;
+      break;
+  }
+  system("cls");
+  target->RecieveDmg(Params.Damage * Params.DamageMult, Params.Element,
+                     Params.Status * Params.StatusMult);
 }

@@ -1,4 +1,4 @@
-[
+﻿[
     {
         "ID": 0,
         "Name": "Patient zero",
@@ -951,7 +951,7 @@
     },
     {
         "ID": 2000,
-        "Name": "Last Robe",
+        "Name": "Last Mage",
         "Team": 1,
         "HPMax": 100.0,
         "ManaMax": 100,
@@ -989,7 +989,7 @@
     },
     {
         "ID": 2001,
-        "Name": "Last Robe",
+        "Name": "Last Mage",
         "Team": 1,
         "HPMax": 100.0,
         "ManaMax": 100,
@@ -1027,7 +1027,7 @@
     },
     {
         "ID": 2002,
-        "Name": "Last Robe",
+        "Name": "Last Mage",
         "Team": 1,
         "HPMax": 100.0,
         "ManaMax": 100,
@@ -1065,7 +1065,7 @@
     },
     {
         "ID": 2003,
-        "Name": "Last Robe",
+        "Name": "Last Mage",
         "Team": 1,
         "HPMax": 100.0,
         "ManaMax": 100,
@@ -1103,7 +1103,7 @@
     },
     {
         "ID": 2004,
-        "Name": "Last Robe",
+        "Name": "Last Mage",
         "Team": 1,
         "HPMax": 100.0,
         "ManaMax": 100,

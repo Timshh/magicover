@@ -19,22 +19,22 @@ ResourceManager::ResourceManager(const std::string& path) {
     u.Name = item.at("Name").get<std::string>();
     u.Team = item.at("Team").get<int>();
 
-    u.HPMax = item.at("HPMax").get<float>();
-    u.HP = u.HPMax;
-    u.ManaMax = item.at("ManaMax").get<float>();
-    u.Mana = u.ManaMax;
+    u.HP = u.HPMax = item.at("HPMax").get<float>();
+    u.Mana = u.ManaMax = item.at("ManaMax").get<float>();
+    
 
     u.Damage = item.at("Damage").get<float>();
     u.DamageRand = item.at("DamageRand").get<int>();
-    u.DefaultDamageMult = item.at("DefaultDamageMult").get<float>();
+    u.DamageMult = u.DefaultDamageMult =
+        item.at("DefaultDamageMult").get<float>();
 
     u.Element = item.at("Element").get<int>();
     u.Status = item.at("Status").get<float>();
     u.StatusRand = item.at("StatusRand").get<int>();
-    u.DefaultStatusMult = item.at("DefaultStatusMult").get<float>();
+    u.StatusMult = u.DefaultStatusMult =
+        item.at("DefaultStatusMult").get<float>();
 
-    u.Defence = item.at("Defence").get<float>();
-    u.DefaultDefence = item.at("DefaultDefence").get<float>();
+    u.Defence = u.DefaultDefence = item.at("DefaultDefence").get<float>();
     u.DodgeChance = item.at("DodgeChance").get<float>();
 
     u.FlameResist = item.at("FlameResist").get<float>();

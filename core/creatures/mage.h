@@ -1,20 +1,21 @@
 ﻿#pragma once
 
 #include "creature.h"
+#include "ring.h"
 
 class Mage : public Creature {
  public:
   Mage(Stats params, std::vector<Creature*>* team);
-  int IsBoss = 0;
-
-  void SetColor(int color);
-  void Attack(Creature* target);
-  void Status();
+  std::vector<Ring> Inventory;
+  std::vector<Ring> Arm;
 
   void virtual RecieveDmg(float damage, int element, float status) override;
   void virtual CheckHP() override;
   void virtual Act(Creature* target) override;
 
-  std::string AtkText1, AtkText2, AtkText3, AtkText4, CalmText, HurtText,
-      DamagedText, DeathText;
+
+  void SetColor(int color);
+  void Status();
+  void Magic(Creature* target);
+  void Offence();
 };

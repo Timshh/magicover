@@ -15,16 +15,15 @@ bool OSStudents = true, OSFreeRing = true, OSEmpty = true, ORDemon = true,
 std::vector<int> GetableRings = {1, 2, 3, 4};
 std::vector<std::vector<std::string>> Map;
 
-ResourceManager ResManager("core/data/data.json");
-std::vector<Ring> Inventory;
-std::vector<Ring> Arm;
-Ring* ChosenRing;
+ResourceManager ResManager("data/creatures.json");
 std::vector<Creature*> Teammates;
 std::vector<Creature*> Enemies;
 std::vector<Creature*> StageBosses;
-Creature Player(ResManager.GetData(2000), &Teammates);
-Ring NewRing(1, &Player);
+Mage Player(ResManager.GetData(2000), &Teammates);
 Creature* Target = 0;
+Ring* ChosenRing;
+Ring NewRing(1, &Player);
+
 
 void SetColor(int color) {
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -67,130 +66,45 @@ void Create_enemies() {
           new Boss(ResManager.GetData(1000), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       StageBosses.push_back(
           new Boss(ResManager.GetData(1001), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       break;
     case 1:
       StageBosses.push_back(
           new Boss(ResManager.GetData(1002), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       break;
     case 2:
       StageBosses.push_back(
           new Boss(ResManager.GetData(1003), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       break;
     case 3:
       StageBosses.push_back(
           new Boss(ResManager.GetData(1004), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       StageBosses.push_back(
           new Boss(ResManager.GetData(1005), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       StageBosses.push_back(
           new Boss(ResManager.GetData(1006), &StageBosses, &MaxEnemies,
                    &Enemies, &MaxStage, &CurrStage, &CoordX, &CoordY,
                    &NormalAdd, &NormalRand, &EliteAdd, &EliteRand,
-                   &GetableRings, &Inventory, &Map, &ResManager, &Player));
+                   &GetableRings, &Player.Inventory, &Map, &ResManager, &Player));
       break;
   }
-}
-
-void Offence() {
-  int ChoiceElem;
-  std::cout << "Choose spell:\n";
-  std::cout << "1. Steel blood. Decrease incoming damage by half\n";
-  std::cout << "2. Blue heart. Heal ";
-  SetColor(4);
-  std::cout << "50\n";
-  SetColor(15);
-  std::cout << "3. Radiance. Heal ";
-  SetColor(4);
-  std::cout << "80";
-  SetColor(15);
-  std::cout << " but incoming damage rise by half\n";
-  std::cin >> ChoiceElem;
-  system("cls");
-  switch (ChoiceElem) {
-    case 1:
-      Player.Params.Defence = 0.5;
-      system("cls");
-      std::cout << "Last mage blood became gray. His protction rise\n";
-      break;
-    case 2:
-      Player.Params.HP =
-          Clamp(Player.Params.HP + 50, 0, Player.Params.HPMax);
-      system("cls");
-      std::cout
-          << "Last Mage heart beat strong and slow, regenerating his health\n";
-      break;
-    case 3:
-      Player.Params.HP = Clamp(Player.Params.HP + 80, 0, Player.Params.HPMax);
-      Player.Params.Defence = 1.5;
-      system("cls");
-      std::cout
-          << "Last Mage heart glow inside his chest, refilling his health. He "
-              "is vulnerable now\n";
-      break;
-    default:
-      system("cls");
-      std::cout << "That didn't work\n";
-      break;
-      break;
-  }
-}
-
-void Magic() {
-  int ChoiceElem;
-  std::cout << "Choose element:\n";
-  std::cout << "1. Flame. Burn enemy slowly\n";
-  std::cout << "2. Frost. Make enemy attacks weaker\n";
-  std::cout << "3. Dark. With darken mind enemy may miss\n";
-  std::cout << "4. Psycho. Enemy may lose control and attack self\n";
-  std::cin >> ChoiceElem;
-  switch (ChoiceElem) {
-    case 1:
-      Player.Params.Damage = 20;
-      Player.Params.Status = 1;
-      Player.Params.Element = 1;
-      break;
-    case 2:
-      Player.Params.Damage = 25;
-      Player.Params.Status = 0.75;
-      Player.Params.Element = 2;
-      break;
-    case 3:
-      Player.Params.Damage = 15;
-      Player.Params.Status = 1.25;
-      Player.Params.Element = 3;
-      break;
-    case 4:
-      Player.Params.Damage = 10;
-      Player.Params.Status = 1.5;
-      Player.Params.Element = 4;
-      break;
-    default:
-      system("cls");
-      std::cout << "That didn't work\n";
-      break;
-      break;
-  }
-  system("cls");
-  Target->RecieveDmg(Player.Params.Damage * Player.Params.DefaultDamageMult,
-                     Player.Params.Element,
-                     Player.Params.Status * Player.Params.DefaultStatusMult);
 }
 
 void EnemyChooser() {
@@ -301,7 +215,7 @@ void LocationAct() {
                 std::cout << TrapDmg << std::endl;
                 SetColor(2);
                 std::cout << NewRing.Name << " obtained" << std::endl;
-                Inventory.push_back(NewRing);
+                Player.Inventory.push_back(NewRing);
                 SetColor(7);
               } else {
                 std::cout << "Ring were a mirage, part of trap. Last Mage were "
@@ -324,7 +238,7 @@ void LocationAct() {
             SetColor(2);
             std::cout << NewRing.Name << " obtained" << std::endl;
             SetColor(7);
-            Inventory.push_back(NewRing);
+            Player.Inventory.push_back(NewRing);
           } else {
             std::cout << "Room contained a ring. It turned to dust after first "
                          "touch\n";
@@ -354,7 +268,7 @@ void LocationAct() {
               SetColor(2);
               std::cout << "Revengeance ring obtained " << std::endl;
               SetColor(7);
-              Inventory.push_back(NewRing);
+              Player.Inventory.push_back(NewRing);
               break;
             case 2:
               SetColor(4);
@@ -405,7 +319,7 @@ void DrawMap() {
   SetColor(11);
   std::cout << "\nLast Mage\n";
   SetColor(15);
-  std::cout << "1. Inventory\n";
+  std::cout << "1. Player.Inventory\n";
   if (Map[CoordY][CoordX].substr(1) == "-") {
     std::cout << Deed << ". Forward\n";
     Deed++;
@@ -485,9 +399,9 @@ void Equipper();
 
 void ShowRings() {
   std::cout << "0. Back\n";
-  for (int i = 0; i < Inventory.size(); i++) {
-    std::cout << i + 1 << ". " << Inventory[i].Name;
-    if (Inventory[i].Equipped) {
+  for (int i = 0; i < Player.Inventory.size(); i++) {
+    std::cout << i + 1 << ". " << Player.Inventory[i].Name;
+    if (Player.Inventory[i].Equipped) {
       std::cout << " - equipped";
     }
     std::cout << std::endl;
@@ -515,7 +429,7 @@ void ShowRings() {
       if (ChosenRing->Equipped) {
         ChosenRing->Equipped = false;
         ChosenRing->AddRingEffect(true);
-        erase_if(Arm, [](const Ring& r) { return !r.Equipped; });
+        erase_if(Player.Arm, [](const Ring& r) { return !r.Equipped; });
         system("cls");
         std::cout << "Uneqipped\n";
       } else {
@@ -543,10 +457,10 @@ void InventoryChooser() {
       system("cls");
       return;
     } else {
-      if ((Chosen < 1) or Chosen > (Inventory.size())) {
+      if ((Chosen < 1) or Chosen > (Player.Inventory.size())) {
         std::cout << "Invalid ring!\n";
       } else {
-        ChosenRing = &Inventory[Chosen - 1];
+        ChosenRing = &Player.Inventory[Chosen - 1];
         flag = false;
       }
     }
@@ -556,8 +470,8 @@ void InventoryChooser() {
 void Equipper() {
   std::cout << "0. Back\n";
   for (int i = 0; i < Player.Params.RingsMax; i++) {
-    if (i < Arm.size()) {
-      std::cout << i + 1 << ". " << Arm[i].Name << std::endl;
+    if (i < Player.Arm.size()) {
+      std::cout << i + 1 << ". " << Player.Arm[i].Name << std::endl;
     } else {
       std::cout << i + 1 << ". Empty\n";
       break;
@@ -574,22 +488,22 @@ void Equipper() {
       system("cls");
       return;
     } else {
-      if ((Chosen < 1) or Chosen > (Arm.size()+1)) {
+      if ((Chosen < 1) or Chosen > (Player.Arm.size()+1)) {
         std::cout << "Invalid slot!\n";
       } else {
-        if (Chosen == Arm.size() + 1) {
-          Arm.push_back(*ChosenRing);
+        if (Chosen == Player.Arm.size() + 1) {
+          Player.Arm.push_back(*ChosenRing);
           ChosenRing->Equipped = true;
           ChosenRing->AddRingEffect(true);
           system("cls");
           std::cout << "Equipped\n";
           return;
         } else {
-          if (Arm[Chosen-1].Uneqippable) {
-            Arm[Chosen - 1].Equipped = false;
-            Arm[Chosen - 1].AddRingEffect(false);
-            erase_if(Arm, [](const Ring& r) { return !r.Equipped; });
-            Arm.push_back(*ChosenRing);
+          if (Player.Arm[Chosen-1].Uneqippable) {
+            Player.Arm[Chosen - 1].Equipped = false;
+            Player.Arm[Chosen - 1].AddRingEffect(false);
+            erase_if(Player.Arm, [](const Ring& r) { return !r.Equipped; });
+            Player.Arm.push_back(*ChosenRing);
             ChosenRing->Equipped = true;
             ChosenRing->AddRingEffect(true);
             system("cls");
@@ -606,7 +520,7 @@ void Equipper() {
 }
 
 int main() {
-  Player = Creature(ResManager.GetData(2000), &Teammates);
+  Player = Mage(ResManager.GetData(2000), &Teammates);
   Teammates.push_back(&Player);
   srand(time(NULL));
   SetColor(8);
@@ -617,9 +531,6 @@ int main() {
   std::cout << "Once and for all.\n\n";
   SetColor(7);
   CurrStage = MaxStage = 0;
-  Player.Params.HP = Player.Params.HPMax = 100;
-  Player.Params.Mana = Player.Params.ManaMax = 100;
-  Player.Params.Defence = 1;
   State = 2;
   int Choice;
   Create_enemies();
@@ -631,9 +542,6 @@ int main() {
       case 2:
         do {
           int counter = 1;
-          Player.Params.Defence = Player.Params.DefaultDefence;
-          Player.Params.DefaultDamageMult = 1;
-          Player.Params.DefaultStatusMult = 1;
           SetColor(4);
           std::cout << "\nEnemies\n";
           SetColor(7);
@@ -651,38 +559,7 @@ int main() {
               dynamic_cast<Enemy*>(enemy)->Status();
             }
           }
-          SetColor(11);
-          std::cout << "\nLast Mage\n";
-          SetColor(15);
-          std::cout << "Health: ";
-          SetColor(4);
-          std::cout << Player.Params.HP;
-          SetColor(15);
-          std::cout << " Mana: ";
-          SetColor(3);
-          std::cout << Player.Params.Mana << "\n";
-          SetColor(15);
-          std::cout << "1. Regenerate. Gain ";
-          SetColor(3);
-          std::cout << "15\n";
-          SetColor(15);
-          if (Player.Params.Mana >= 20) {
-            std::cout
-                << "2. Support with spell. ";
-            SetColor(3);
-            std::cout << "20\n";
-            SetColor(15);
-            std::cout << "3. Attack with one element. ";
-            SetColor(3);
-            std::cout << "20\n";
-            SetColor(15);
-            if (Player.Params.Mana >= 40) {
-              std::cout << "4. Attack with two elements. ";
-              SetColor(3);
-              std::cout << "40\n";
-              SetColor(15);
-            }
-          }
+          Player.Status();
           SetColor(15);
           std::cin >> Choice;
           switch (Choice) {
@@ -695,14 +572,14 @@ int main() {
             case 2:
               if (Player.Params.Mana >= 20) {
                 Player.Params.Mana -= 20;
-                Offence();
+                Player.Offence();
               }
               break;
             case 3:
               if (Player.Params.Mana >= 20) {
                 Player.Params.Mana -= 20;
                 EnemyChooser();
-                Magic();
+                Player.Magic(Target);
               }
               break;
             case 4:
@@ -724,20 +601,20 @@ int main() {
                 std::cin >> Choice;
                 switch (Choice) {
                   case 1:
-                    Player.Params.DefaultDamageMult *= 0;
-                    Player.Params.DefaultStatusMult *= 3;
+                    Player.Params.DamageMult *= 0;
+                    Player.Params.StatusMult *= 3;
                     break;
                   case 2:
-                    Player.Params.DefaultDamageMult *= 1.5;
-                    Player.Params.DefaultStatusMult *= 1.5;
+                    Player.Params.DamageMult *= 1.5;
+                    Player.Params.StatusMult *= 1.5;
                     break;
                   case 3:
-                    Player.Params.DefaultDamageMult *= 3;
-                    Player.Params.DefaultStatusMult *= 0;
+                    Player.Params.DamageMult *= 3;
+                    Player.Params.StatusMult *= 0;
                     break;
                   case 4:
-                    Player.Params.DefaultDamageMult *= -1;
-                    Player.Params.DefaultStatusMult *= 4.5;
+                    Player.Params.DamageMult *= -1;
+                    Player.Params.StatusMult *= 4.5;
                     break;
                   default:
                     system("cls");
@@ -745,7 +622,7 @@ int main() {
                     break;
                     break;
                 }
-                Magic();
+                Player.Magic(Target);
               }
               break;
             default:
@@ -776,11 +653,6 @@ int main() {
                 exit(0);
               }
             }
-          }
-          Player.Params.Mana =
-              Clamp(Player.Params.Mana + 15, 0, Player.Params.ManaMax);
-          for (Ring& currRing : Arm) {
-            currRing.RingAct();
           }
         } while (not StageBosses.empty() or not Enemies.empty());
         State = 1;
