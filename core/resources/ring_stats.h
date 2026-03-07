@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-struct Stats {
+struct RingStats {
   int ID;
   std::string Name;
   int Team;

@@ -985,7 +985,7 @@
         "Desiccant": 0.0,
         "SecondAtkChance": 0.0,
         "SecondChance": 0,
-        "RingsMax": 0
+        "RingsMax": 5
     },
     {
         "ID": 2001,

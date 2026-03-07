@@ -4,7 +4,7 @@
 
 class Enemy : public Creature {
  public:
-  Enemy(Stats params, std::vector<Creature*>* team);
+  Enemy(CreatureStats params, std::vector<Creature*>* team);
 
   void SetColor(int color);
   void Attack(Creature* target);

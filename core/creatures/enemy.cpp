@@ -5,7 +5,7 @@ void Enemy::SetColor(int color) {
   SetConsoleTextAttribute(hConsole, color);
 }
 
-Enemy::Enemy(Stats params, std::vector<Creature*>* team)
+Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team)
     : Creature(params, team) {
   switch (Params.ID) {
     case 0:

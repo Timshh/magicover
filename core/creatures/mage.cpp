@@ -5,7 +5,7 @@ void Mage::SetColor(int color) {
   SetConsoleTextAttribute(hConsole, color);
 }
 
-Mage::Mage(Stats params, std::vector<Creature*>* team)
+Mage::Mage(CreatureStats params, std::vector<Creature*>* team)
     : Creature(params, team) {
 }
 

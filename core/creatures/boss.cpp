@@ -1,6 +1,6 @@
 ﻿#include "boss.h"
 
-Boss::Boss(Stats params, std::vector<Creature*>* team, int* maxEnemies,
+Boss::Boss(CreatureStats params, std::vector<Creature*>* team, int* maxEnemies,
            std::vector<Creature*>* enemies, int* maxStage, int* currentStage,
            int* coordX, int* coordY, int* normalAdd, int* normalRand,
            int* eliteAdd, int* eliteRand, std::vector<int>* getableRings,
@@ -183,7 +183,7 @@ void Boss::SpecialAttack(Creature* target) {
     case 1002:
       if (Enemies->size() < *MaxEnemies) {
         std::cout << "Witch created cluster of arms\n";
-        Enemies->push_back(new Enemy(EnemyManager->GetData(999), Enemies));
+        Enemies->push_back(new Enemy(EnemyManager->GetCreature(999), Enemies));
       } else {
         std::cout
             << "Witch tried to create more arms but overloaded herself - 20 "

@@ -9,7 +9,7 @@ ResourceManager::ResourceManager(const std::string& path) {
   json j;
   file >> j;
   for (const auto& item : j) {
-    Stats u{};
+    CreatureStats u{};
     if (!item.contains("Name")) {
       std::cout << "Missing key in item:\n" << item.dump(4) << std::endl;
       continue;
@@ -62,17 +62,17 @@ ResourceManager::ResourceManager(const std::string& path) {
 
     u.RingsMax = item.at("RingsMax").get<int>();
 
-    Data.push_back(u);
+    CreatureData.push_back(u);
   }
   file.close();
 }
 
-Stats ResourceManager::GetData(int id) {
-  for (int i = 0; i < Data.size(); i++) {
-    if (Data[i].ID == id) {
-      return Data[i];
+CreatureStats ResourceManager::GetCreature(int id) {
+  for (int i = 0; i < CreatureData.size(); i++) {
+    if (CreatureData[i].ID == id) {
+      return CreatureData[i];
     }
   }
-  return Data[0];
+  return CreatureData[0];
   std::cout << "Error" << std::endl;
 }

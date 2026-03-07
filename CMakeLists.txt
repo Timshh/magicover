@@ -26,7 +26,7 @@ if (NOT nlohmann_json_FOUND)
     endif()
 endif()
 
-add_executable (Magicover "core/main.cpp" "core/rings/ring.cpp" "core/rings/ring.h" "core/creatures/enemy.cpp" "core/creatures/enemy.h" "core/creatures/boss.cpp" "core/creatures/boss.h" "core/creatures/creature.h" "core/creatures/creature.cpp" "core/res_manager.cpp" "core/res_manager.h" "core/creatures/mage.h" "core/creatures/mage.cpp" "core/stats.h")
+add_executable (Magicover "core/main.cpp" "core/Gamemode/gamemode.cpp" "core/rings/ring.h" "core/rings/ring.cpp" "core/creatures/enemy.cpp" "core/creatures/enemy.h" "core/creatures/boss.cpp" "core/creatures/boss.h" "core/creatures/creature.h" "core/creatures/creature.cpp" "core/resources/res_manager.cpp" "core/resources/res_manager.h" "core/creatures/mage.h" "core/creatures/mage.cpp" "core/resources/creature_stats.h" "core/resources/ring_stats.h" "core/gamemode/gamemode.cpp" "core/gamemode/gamemode.h")
 target_link_libraries(Magicover PRIVATE nlohmann_json::nlohmann_json)
 
 add_custom_command(
@@ -44,6 +44,8 @@ endif()
 target_include_directories(Magicover PRIVATE 
     core
     core/creatures
-    data
     core/rings
+    core/resources
+    core/gamemode
+    data
 )

@@ -5,7 +5,7 @@
 
 class Boss : public Enemy {
  public:
-  Boss(Stats params, std::vector<Creature*>* team, int* maxEnemies,
+  Boss(CreatureStats params, std::vector<Creature*>* team, int* maxEnemies,
        std::vector<Creature*>* enemies, int* maxStage, int* currentStage,
        int* coordX, int* coordY, int* normalAdd, int* normalRand, int* eliteAdd,
        int* eliteRand, std::vector<int>* getableRings,

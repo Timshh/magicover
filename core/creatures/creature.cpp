@@ -1,6 +1,6 @@
 ﻿#include "creature.h"
 
-Creature::Creature(Stats params, std::vector<Creature*>* team) { 
+Creature::Creature(CreatureStats params, std::vector<Creature*>* team) { 
 	Params = params;
     Team = team;
 }
