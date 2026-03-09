@@ -3,19 +3,15 @@
 #include <iostream>
 #include <vector>
 #include "creature.h"
+#include "ring_stats.h"
 
 
 
 class Ring {
  public:
-  Ring(int id, Creature* owner);
-  int ID;
-  bool Uneqippable = true, Equipped = false;
-  std::string Name, Description, EquipText, UnequipText;
-  std::vector<int> PEffects;
-  std::vector<float> PStats;
-  std::vector<int> AEffects;
-  std::vector<float> AStats;
+  Ring(RingStats stats, Creature* owner);
+  RingStats Stats;
+  std::string EquipText, UnequipText;
   Creature* Owner;
 
   float Clamp(float num, float min, float max); 

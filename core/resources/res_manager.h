@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 class ResourceManager {
  public:
-  ResourceManager(const std::string& path);
+  ResourceManager(const std::string& creaturepath, const std::string& ringpath);
   CreatureStats GetCreature(int id);
   RingStats GetRing(int id);
   std::vector<CreatureStats> CreatureData;

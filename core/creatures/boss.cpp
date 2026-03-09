@@ -257,7 +257,7 @@ void Boss::CheckHP() {
           std::cout << "Axe guardian ring shines bright\n";
           SetColor(2);
           std::cout << "Ring of memories obtained\n\n";
-          Inventory->push_back(Ring(0, Player));
+          Inventory->push_back(Ring(EnemyManager->GetRing(0), Player));
           SetColor(7);
           std::cout << "Spacious outer palaces look regular";
           *CoordX = 0, *CoordY = 3;
@@ -275,7 +275,7 @@ void Boss::CheckHP() {
           std::cout << "Ring shines in the dust\n";
           SetColor(2);
           std::cout << "Ring of arms obtained\n\n";
-          Inventory->push_back(Ring(888, Player));
+          Inventory->push_back(Ring(EnemyManager->GetRing(888), Player));
           SetColor(7);
           std::cout << "Grandiose inner palaces shine before Last Mage";
           *CoordX = 0, *CoordY = 7;
@@ -312,7 +312,7 @@ void Boss::CheckHP() {
               << "As machine turned off, its chest opened. Inside was a ring\n";
           SetColor(2);
           std::cout << "Clockwork ring obtained\n\n";
-          Inventory->push_back(Ring(1834, Player));
+          Inventory->push_back(Ring(EnemyManager->GetRing(1834), Player));
           SetColor(7);
           std::cout << "Slayers section feels majestically.Soon it will burn";
           *CoordX = 0, *CoordY = 5;

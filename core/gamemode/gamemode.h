@@ -20,14 +20,14 @@ class Gamemode {
   std::vector<int> GetableRings = {1, 2, 3, 4};
   std::vector<std::vector<std::string>> Map;
 
-  ResourceManager ResManager = ResourceManager("data/creatures.json");
+  ResourceManager ResManager = ResourceManager("data/creatures.json", "data/rings.json");
   std::vector<Creature*> Teammates;
   std::vector<Creature*> Enemies;
   std::vector<Creature*> StageBosses;
   Mage Player = Mage(ResManager.GetCreature(2000), &Teammates);
   Creature* Target = 0;
   Ring* ChosenRing;
-  Ring NewRing = Ring(1, &Player);
+  Ring NewRing = Ring(ResManager.GetRing(1), &Player);
 
   void Gameloop();
 

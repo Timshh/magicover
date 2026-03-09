@@ -1,15 +1,38 @@
 ﻿#include "res_manager.h"
+#define NLOHMANN_DEFINE_TYPE_INTRUSIVE(type, member)
 
-ResourceManager::ResourceManager(const std::string& path) {
-  std::ifstream file(path);
-  if (!file) {
+ResourceManager::ResourceManager(const std::string& creaturepath,
+                                 const std::string& ringpath) {
+  std::ifstream creaturefile(creaturepath);
+  if (!creaturefile) {
     std::cout << "Data not opened\n";
     return;
   }
   json j;
-  file >> j;
+  creaturefile >> j;
+
+
+  std::vector<CreatureStats> v = j.get<std::vector<CreatureStats>>();
+  for (CreatureStats item : j) {
+    item.HP = item.HPMax;
+    item.Mana = item.ManaMax;
+    item.DamageMult = item.DefaultDamageMult;
+    item.StatusMult = item.DefaultStatusMult;
+    item.Defence = item.DefaultDefence;
+
+    CreatureData.push_back(item);
+  }
+  creaturefile.close();
+
+
+  std::ifstream ringfile(ringpath);
+  if (!ringfile) {
+    std::cout << "Data not opened\n";
+    return;
+  }
+  ringfile >> j;
   for (const auto& item : j) {
-    CreatureStats u{};
+    RingStats u{};
     if (!item.contains("Name")) {
       std::cout << "Missing key in item:\n" << item.dump(4) << std::endl;
       continue;
@@ -17,54 +40,29 @@ ResourceManager::ResourceManager(const std::string& path) {
 
     u.ID = item.at("ID").get<int>();
     u.Name = item.at("Name").get<std::string>();
-    u.Team = item.at("Team").get<int>();
+    u.Description = item.at("Description").get<std::string>();
+    if (!item.at("AEffects").is_null()) {
+      if (item.at("AEffects").is_array()) {
+        u.AEffects = item.at("AEffects").get<std::vector<int>>();
+        u.AStats = item.at("AStats").get<std::vector<float>>();
+      } else {
+        u.PEffects.push_back(item.at("AEffects").get<int>());
+        u.PStats.push_back(item.at("AStats").get<float>());
+      }
+    }
+    if (!item.at("PEffects").is_null()) {
+      if (item.at("PEffects").is_array()) {
+        u.AEffects = item.at("PEffects").get<std::vector<int>>();
+        u.AStats = item.at("PStats").get<std::vector<float>>();
+      } else {
+        u.PEffects.push_back(item.at("PEffects").get<int>());
+        u.PStats.push_back(item.at("PStats").get<float>());
+      }
+    }
 
-    u.HP = u.HPMax = item.at("HPMax").get<float>();
-    u.Mana = u.ManaMax = item.at("ManaMax").get<float>();
-    
-
-    u.Damage = item.at("Damage").get<float>();
-    u.DamageRand = item.at("DamageRand").get<int>();
-    u.DamageMult = u.DefaultDamageMult =
-        item.at("DefaultDamageMult").get<float>();
-
-    u.Element = item.at("Element").get<int>();
-    u.Status = item.at("Status").get<float>();
-    u.StatusRand = item.at("StatusRand").get<int>();
-    u.StatusMult = u.DefaultStatusMult =
-        item.at("DefaultStatusMult").get<float>();
-
-    u.Defence = u.DefaultDefence = item.at("DefaultDefence").get<float>();
-    u.DodgeChance = item.at("DodgeChance").get<float>();
-
-    u.FlameResist = item.at("FlameResist").get<float>();
-    u.FrostResist = item.at("FrostResist").get<float>();
-    u.DarkResist = item.at("DarkResist").get<float>();
-    u.PsychoResist = item.at("PsychoResist").get<float>();
-    u.PoisonResist = item.at("PoisonResist").get<float>();
-    u.DiseaseResist = item.at("DiseaseResist").get<float>();
-    u.MechanizationResist = item.at("MechanizationResist").get<float>();
-    u.StealerResist = item.at("StealerResist").get<float>();
-    u.DesiccantResist = item.at("DesiccantResist").get<float>();
-
-    u.Flame = item.at("Flame").get<float>();
-    u.Frost = item.at("Frost").get<float>();
-    u.Dark = item.at("Dark").get<float>();
-    u.Psycho = item.at("Psycho").get<float>();
-    u.Poison = item.at("Poison").get<float>();
-    u.Disease = item.at("Disease").get<float>();
-    u.Mechanization = item.at("Mechanization").get<float>();
-    u.Stealer = item.at("Stealer").get<float>();
-    u.Desiccant = item.at("Desiccant").get<float>();
-
-    u.SecondAtkChance = item.at("SecondAtkChance").get<float>();
-    u.SecondChance = item.at("SecondChance").get<int>();
-
-    u.RingsMax = item.at("RingsMax").get<int>();
-
-    CreatureData.push_back(u);
+    RingData.push_back(u);
   }
-  file.close();
+  ringfile.close();
 }
 
 CreatureStats ResourceManager::GetCreature(int id) {
@@ -74,5 +72,15 @@ CreatureStats ResourceManager::GetCreature(int id) {
     }
   }
   return CreatureData[0];
+  std::cout << "Error" << std::endl;
+}
+
+RingStats ResourceManager::GetRing(int id) {
+  for (int i = 0; i < RingData.size(); i++) {
+    if (RingData[i].ID == id) {
+      return RingData[i];
+    }
+  }
+  return RingData[0];
   std::cout << "Error" << std::endl;
 }

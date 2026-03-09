@@ -263,7 +263,7 @@ bool Gamemode::NewRingChooser() {
     return false;
   } else {
     int ID = rand() % GetableRings.size();
-    NewRing = Ring(GetableRings[ID], &Player);
+    NewRing = Ring(ResManager.GetRing(GetableRings[ID]), &Player);
     erase(GetableRings, ID);
     return true;
   }
@@ -339,7 +339,7 @@ void Gamemode::LocationAct() {
                 SetColor(15);
                 std::cout << TrapDmg << std::endl;
                 SetColor(2);
-                std::cout << NewRing.Name << " obtained" << std::endl;
+                std::cout << NewRing.Stats.Name << " obtained" << std::endl;
                 Player.Inventory.push_back(NewRing);
                 SetColor(7);
               } else {
@@ -363,7 +363,7 @@ void Gamemode::LocationAct() {
           if (NewRingChooser()) {
             std::cout << "Room contained a ring\n";
             SetColor(2);
-            std::cout << NewRing.Name << " obtained" << std::endl;
+            std::cout << NewRing.Stats.Name << " obtained" << std::endl;
             SetColor(7);
             Player.Inventory.push_back(NewRing);
           } else {
@@ -524,8 +524,8 @@ void Gamemode::DrawMap() {
 void Gamemode::ShowRings() {
   std::cout << "0. Back\n";
   for (int i = 0; i < Player.Inventory.size(); i++) {
-    std::cout << i + 1 << ". " << Player.Inventory[i].Name;
-    if (Player.Inventory[i].Equipped) {
+    std::cout << i + 1 << ". " << Player.Inventory[i].Stats.Name;
+    if (Player.Inventory[i].Stats.Equipped) {
       std::cout << " - equipped";
     }
     std::cout << std::endl;
@@ -535,7 +535,7 @@ void Gamemode::ShowRings() {
     return;
   }
   std::cout << "1. Description\n";
-  if (ChosenRing->Equipped) {
+  if (ChosenRing->Stats.Equipped) {
     std::cout << "2. Unequip";
   } else {
     std::cout << "2. Equip";
@@ -546,14 +546,14 @@ void Gamemode::ShowRings() {
   switch (Choose) {
     case 1:
       system("cls");
-      std::cout << ChosenRing->Name << std::endl;
-      std::cout << ChosenRing->Description << std::endl;
+      std::cout << ChosenRing->Stats.Name << std::endl;
+      std::cout << ChosenRing->Stats.Description << std::endl;
       break;
     case 2:
-      if (ChosenRing->Equipped) {
-        ChosenRing->Equipped = false;
+      if (ChosenRing->Stats.Equipped) {
+        ChosenRing->Stats.Equipped = false;
         ChosenRing->AddRingEffect(true);
-        erase_if(Player.Arm, [](const Ring& r) { return !r.Equipped; });
+        erase_if(Player.Arm, [](const Ring& r) { return !r.Stats.Equipped; });
         system("cls");
         std::cout << "Uneqipped\n";
       } else {
@@ -595,7 +595,7 @@ void Gamemode::Equipper() {
   std::cout << "0. Back\n";
   for (int i = 0; i < Player.Params.RingsMax; i++) {
     if (i < Player.Arm.size()) {
-      std::cout << i + 1 << ". " << Player.Arm[i].Name << std::endl;
+      std::cout << i + 1 << ". " << Player.Arm[i].Stats.Name << std::endl;
     } else {
       std::cout << i + 1 << ". Empty finger\n";
       break;
@@ -617,18 +617,19 @@ void Gamemode::Equipper() {
       } else {
         if (Chosen == Player.Arm.size() + 1) {
           Player.Arm.push_back(*ChosenRing);
-          ChosenRing->Equipped = true;
+          ChosenRing->Stats.Equipped = true;
           ChosenRing->AddRingEffect(true);
           system("cls");
           std::cout << "Equipped\n";
           return;
         } else {
-          if (Player.Arm[Chosen - 1].Uneqippable) {
-            Player.Arm[Chosen - 1].Equipped = false;
+          if (Player.Arm[Chosen - 1].Stats.Uneqippable) {
+            Player.Arm[Chosen - 1].Stats.Equipped = false;
             Player.Arm[Chosen - 1].AddRingEffect(false);
-            erase_if(Player.Arm, [](const Ring& r) { return !r.Equipped; });
+            erase_if(Player.Arm,
+                     [](const Ring& r) { return !r.Stats.Equipped; });
             Player.Arm.push_back(*ChosenRing);
-            ChosenRing->Equipped = true;
+            ChosenRing->Stats.Equipped = true;
             ChosenRing->AddRingEffect(true);
             system("cls");
             std::cout << "Equipped\n";
