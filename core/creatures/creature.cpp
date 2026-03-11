@@ -51,9 +51,6 @@ void Creature::RecieveDmg(float damage, int element, float status) {
 void Creature::CheckHP() {
   if (Params.HP <= 0) {
     Alive = false;
-    erase_if(*Team, [](const Creature* b) { return !b->Alive; });
-    delete &Params;
-    delete this;
   }
 }
 

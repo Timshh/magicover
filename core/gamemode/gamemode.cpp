@@ -14,15 +14,15 @@ void Gamemode::Gameloop() {
   std::cout << "Once and for all.\n\n";
   SetColor(7);
   CurrStage = MaxStage = 0;
-  State = 2;
+  State = GMStates::Battle;
   int Choice;
   Create_enemies();
   while (Player.Params.HP > 0) {
     switch (State) {
-      case 1:
+      case GMStates::Map:
         DrawMap();
         break;
-      case 2:
+      case GMStates::Battle:
         do {
           int counter = 1;
           SetColor(4);
@@ -119,11 +119,35 @@ void Gamemode::Gameloop() {
                 enemy->Act(&Player);
               }
             }
+            for (Creature* enemy : Enemies) {
+              if (!enemy->Alive) {
+                delete enemy;
+              }
+              
+            } 
+            erase_if(Enemies, [](const Creature* b) { return !b->Alive; });
             for (Creature* boss : StageBosses) {
               if (boss) {
                 boss->Act(&Player);
               }
             }
+            for (Creature* enemy : StageBosses) {
+              if (!enemy->Alive) {
+                delete enemy;
+                bool IsAnyBossAlive = false;
+                for (Creature* enemy : StageBosses) {
+                  if (enemy->Alive) {
+                    IsAnyBossAlive = true;
+                    break;
+                  }
+                }
+                if (!IsAnyBossAlive) {
+                  ChangeStage();
+                }
+              }
+            }
+            erase_if(StageBosses, [](const Creature* b) { return !b->Alive; });
+
             if (Player.Params.HP <= 0) {
               if (Player.Params.SecondChance > 0) {
                 Player.Params.SecondChance--;
@@ -138,9 +162,9 @@ void Gamemode::Gameloop() {
             }
           }
         } while (not StageBosses.empty() or not Enemies.empty());
-        State = 1;
+        State = GMStates::Map;
         break;
-      case 3:
+      case GMStates::Inventory:
         ShowRings();
         break;
     }
@@ -188,47 +212,26 @@ void Gamemode::SetColor(int color) {
 void Gamemode::Create_enemies() {
   switch (CurrStage) {
     case 0:
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1000), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1001), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1000), &StageBosses,
+                                     &Enemies, &MaxEnemies, &ResManager));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1001), &StageBosses, &Enemies,
+                                     &MaxEnemies, &ResManager));
       break;
     case 1:
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1002), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1002), &StageBosses,
+                                     &Enemies, &MaxEnemies, &ResManager));
       break;
     case 2:
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1003), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1003), &StageBosses,
+                                     &Enemies, &MaxEnemies, &ResManager));
       break;
     case 3:
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1004), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1005), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
-      StageBosses.push_back(new Boss(
-          ResManager.GetCreature(1006), &StageBosses, &MaxEnemies, &Enemies,
-          &MaxStage, &CurrStage, &CoordX, &CoordY, &NormalAdd, &NormalRand,
-          &EliteAdd, &EliteRand, &GetableRings, &Player.Inventory, &Map,
-          &ResManager, &Player));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1004), &StageBosses,
+                                     &Enemies, &MaxEnemies, &ResManager));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1005), &StageBosses,
+                                     &Enemies, &MaxEnemies, &ResManager));
+      StageBosses.push_back(new Boss(ResManager.GetCreature(1006), &StageBosses,
+                                     &Enemies, &MaxEnemies, &ResManager));
       break;
   }
 }
@@ -256,6 +259,99 @@ void Gamemode::EnemyChooser() {
       flag = false;
     }
   } while (flag);
+}
+
+void Gamemode::ChangeStage() {
+  switch (CurrStage) {
+    case 0:
+      std::cout << "Axe guardian ring shines bright\n";
+      SetColor(2);
+      std::cout << "Ring of memories obtained\n\n";
+      Player.Inventory.push_back(Ring(ResManager.GetRing(0), &Player));
+      SetColor(7);
+      std::cout << "Spacious outer palaces look regular";
+      CoordX = 0, CoordY = 3;
+      EliteAdd = 20;
+      EliteRand = 2;
+      NormalAdd = 1;
+      NormalRand = 4;
+      Map = {{"  ", "  ", "  ", "  ", "  "},   {"  ", "P-", "M-", "R ", "  "},
+              {" /", "  ", " \\", " \\", "  "}, {"S-", "E-", "R-", "M-", "B "},
+              {" \\", " /", " /", "  ", "  "},  {"  ", "R-", "P ", "  ", "  "},
+              {"  ", "  ", "  ", "  ", "  "}};
+      break;
+    case 1:
+      std::cout << "Ring shines in the dust\n";
+      SetColor(2);
+      std::cout << "Ring of arms obtained\n\n";
+      Player.Inventory.push_back(Ring(ResManager.GetRing(888), &Player));
+      SetColor(7);
+      std::cout << "Grandiose inner palaces shine before Last Mage";
+      CoordX = 0, CoordY = 7;
+      EliteAdd = 21;
+      EliteRand = 4;
+      NormalAdd = 2;
+      NormalRand = 5;
+      GetableRings.push_back(5);
+      GetableRings.push_back(6);
+      GetableRings.push_back(7);
+      GetableRings.push_back(8);
+      Map = {{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
+              {"  ", "  ", "  ", "P-", "R-", "R-", "R", "  ", "  ", "  "},
+              {"  ", "  ", " /", "  ", " \\", " \\", " \\", "  ", "  ", "  "},
+              {"  ", "  ", "R-", "R-", "E-", "R-", "M-", "R ", "  ", "  "},
+              {"  ", " /", "  ", "  ", "  ", " /", "  ", " \\", "  ", "  "},
+              {"  ", "P-", "M ", "  ", "  ", "R-", "E ", "  ", "R ", "  "},
+              {" /", "  ", " \\", "  ", " /", "  ", " \\", "  ", " \\", "  "},
+              {"S-", "E-", "R-", "P-", "P ", "  ", "E-", "R-", "R-", "B "},
+              {" \\", " /", " /", "  ", " \\", " /", " /", "  ", " /", "  "},
+              {"  ", "R-", "P ", "  ", "  ", "M-", "R ", "  ", "R  ", "  "},
+              {"  ", " \\", "  ", "  ", "  ", "  ", "  ", " /", "  ", "  "},
+              {"  ", "  ", "M ", "  ", "E-", "P-", "M-", "R ", "  ", "  "},
+              {"  ", "  ", " \\", " /", "  ", " \\", " /", "  ", "  ", "  "},
+              {"  ", "  ", "  ", "E-", "R-", "E-", "R ", "  ", "  ", "  "},
+              {"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "}};
+      break;
+    case 2:
+      SetColor(12);
+      std::cout << "- Overheat! Overheat! Overheat...\n";
+      SetColor(7);
+      std::cout
+          << "As machine turned off, its chest opened. Inside was a ring\n";
+      SetColor(2);
+      std::cout << "Clockwork ring obtained\n\n";
+      Player.Inventory.push_back(Ring(ResManager.GetRing(1834), &Player));
+      SetColor(7);
+      std::cout << "Slayers section feels majestically.Soon it will burn";
+      CoordX = 0, CoordY = 5;
+      EliteAdd = 23;
+      EliteRand = 3;
+      NormalAdd = 5;
+      NormalRand = 5;
+      GetableRings.push_back(9);
+      GetableRings.push_back(10);
+      Map = {{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
+              {"  ", "  ", "P-", "E-", "M-", "R ", "  ", "  "},
+              {"  ", " /", "  ", "  ", " \\", " \\", "  ", "  "},
+              {"  ", "P-", "E-", "R ", "  ", "P-", "E ", "  "},
+              {" /", "  ", "  ", " \\", " /", "  ", " \\", "  "},
+              {"S-", "E-", "R-", "M-", "P ", "  ", "P-", "B "},
+              {" \\", "  ", " /", " \\", " \\", " /", " /", "  "},
+              {"  ", "R-", "P ", "  ", "P ", "M ", "R ", "  "},
+              {"  ", "  ", "  ", "  ", " \\", " /", "  ", "  "},
+              {"  ", "  ", "  ", "  ", "  ", "R ", "  ", "  "},
+              {"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "}};
+      break;
+    case 3:
+      SetColor(10);
+      std::cout
+          << "\nYou finished the mission - you destroyed the order's core\n"
+             "Congratulations, Last Mage\n\n\n";
+      SetColor(7);
+      exit(0);
+  }
+  MaxStage += 1;
+  CurrStage += 1;
 }
 
 bool Gamemode::NewRingChooser() {
@@ -297,17 +393,17 @@ void Gamemode::LocationAct() {
       std::cout << "Enemy appears\n";
       Enemies.push_back(new Enemy(
           ResManager.GetCreature(rand() % NormalRand + NormalAdd), &Enemies));
-      State = 2;
+      State = GMStates::Battle;
       break;
     case 3:
       std::cout << "Powerful enemy appears\n";
       Enemies.push_back(new Enemy(
           ResManager.GetCreature(rand() % EliteRand + EliteAdd), &Enemies));
-      State = 2;
+      State = GMStates::Battle;
       break;
     case 4:
       Create_enemies();
-      State = 2;
+      State = GMStates::Battle;
       break;
     case 5:
       std::cout << "Last mage regenerate Health and Mana\n";
@@ -322,7 +418,7 @@ void Gamemode::LocationAct() {
           for (int i = 0; i < (rand() % 2 + 4); i++) {
             Enemies.push_back(new Enemy(ResManager.GetCreature(3), &Enemies));
           }
-          State = 2;
+          State = GMStates::Battle;
           break;
         case 2:
           std::cout
@@ -357,7 +453,7 @@ void Gamemode::LocationAct() {
               new Enemy(ResManager.GetCreature(EliteAdd), &Enemies));
           Enemies.push_back(
               new Enemy(ResManager.GetCreature(NormalAdd), &Enemies));
-          State = 2;
+          State = GMStates::Battle;
           break;
         case 4:
           if (NewRingChooser()) {
@@ -464,7 +560,7 @@ void Gamemode::DrawMap() {
     Deed = 0;
     switch (Choice) {
       case 1:
-        State = 3;
+        GMStates::Inventory;
         system("cls");
         break;
       case 2:
@@ -512,7 +608,7 @@ void Gamemode::DrawMap() {
         system("cls");
         break;
     }
-    if (State != 3) {
+    if (State != GMStates::Inventory) {
       LocationAct();
     }
   } else {
@@ -577,7 +673,7 @@ void Gamemode::InventoryChooser() {
     if (Chosen == 0) {
       ChosenRing = 0;
       flag = false;
-      State = 1;
+      State = GMStates::Map;
       system("cls");
       return;
     } else {

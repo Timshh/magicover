@@ -1,28 +1,13 @@
 ﻿#include "boss.h"
 
-Boss::Boss(CreatureStats params, std::vector<Creature*>* team, int* maxEnemies,
-           std::vector<Creature*>* enemies, int* maxStage, int* currentStage,
-           int* coordX, int* coordY, int* normalAdd, int* normalRand,
-           int* eliteAdd, int* eliteRand, std::vector<int>* getableRings,
-           std::vector<Ring>* inventory,
-           std::vector<std::vector<std::string>>* map, ResourceManager* manager,
-           Creature* player)
+Boss::Boss(CreatureStats params, std::vector<Creature*>* team,
+           std::vector<Creature*>* enemies, int* maxenemies,
+           ResourceManager* resmanager)
     : Enemy(params, team) {
-  MaxEnemies = maxEnemies;
-  MaxStage = maxStage;
-  CurrentStage = currentStage;
-  CoordX = coordX;
-  CoordY = coordY;
-  NormalAdd = normalAdd;
-  NormalRand = normalRand;
-  EliteAdd = eliteAdd;
-  EliteRand = eliteRand;
+
   Enemies = enemies;
-  GetableRings = getableRings;
-  Inventory = inventory;
-  Map = map;
-  EnemyManager = manager;
-  Player = player;
+  MaxEnemies = maxenemies;
+  ResManager = resmanager;
   switch (Params.ID) {
     case 1000:
       SetColor(8);
@@ -182,8 +167,8 @@ void Boss::SpecialAttack(Creature* target) {
       break;
     case 1002:
       if (Enemies->size() < *MaxEnemies) {
+        Enemies->push_back(new Enemy(ResManager->GetCreature(999), Enemies));
         std::cout << "Witch created cluster of arms\n";
-        Enemies->push_back(new Enemy(EnemyManager->GetCreature(999), Enemies));
       } else {
         std::cout
             << "Witch tried to create more arms but overloaded herself - 20 "
@@ -234,116 +219,15 @@ void Boss::SpecialAttack(Creature* target) {
 void Boss::Act(Creature* target) {
   Params.HP -= Params.Flame;
   CheckHP();
-  if (rand() % 100 >= SpecAttackChance) {
-    Attack(target);
-  } else {
-    SpecialAttack(target);
+  if (Alive) {
+    if (rand() % 100 >= SpecAttackChance) {
+      Attack(target);
+    } else {
+      SpecialAttack(target);
+    }
   }
 }
 
 void Boss::CheckHP() {
-  if (Params.HP <= 0) {
-    std::cout << DeathText << "\n\n";
-    Alive = false;
-    std::erase_if(*Team, [](const Creature* b) { return !b->Alive; });
-
-    // TEMP
-    if (Team->empty()) {
-      if (!Enemies->empty()) {
-        Enemies->clear();
-      }
-      switch (*CurrentStage) {
-        case 0:
-          std::cout << "Axe guardian ring shines bright\n";
-          SetColor(2);
-          std::cout << "Ring of memories obtained\n\n";
-          Inventory->push_back(Ring(EnemyManager->GetRing(0), Player));
-          SetColor(7);
-          std::cout << "Spacious outer palaces look regular";
-          *CoordX = 0, *CoordY = 3;
-          *EliteAdd = 20;
-          *EliteRand = 2;
-          *NormalAdd = 1;
-          *NormalRand = 4;
-          *Map = {
-              {"  ", "  ", "  ", "  ", "  "},   {"  ", "P-", "M-", "R ", "  "},
-              {" /", "  ", " \\", " \\", "  "}, {"S-", "E-", "R-", "M-", "B "},
-              {" \\", " /", " /", "  ", "  "},  {"  ", "R-", "P ", "  ", "  "},
-              {"  ", "  ", "  ", "  ", "  "}};
-          break;
-        case 1:
-          std::cout << "Ring shines in the dust\n";
-          SetColor(2);
-          std::cout << "Ring of arms obtained\n\n";
-          Inventory->push_back(Ring(EnemyManager->GetRing(888), Player));
-          SetColor(7);
-          std::cout << "Grandiose inner palaces shine before Last Mage";
-          *CoordX = 0, *CoordY = 7;
-          *EliteAdd = 21;
-          *EliteRand = 4;
-          *NormalAdd = 2;
-          *NormalRand = 5;
-          GetableRings->push_back(5);
-          GetableRings->push_back(6);
-          GetableRings->push_back(7);
-          GetableRings->push_back(8);
-          *Map = {
-              {"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
-              {"  ", "  ", "  ", "P-", "R-", "R-", "R", "  ", "  ", "  "},
-              {"  ", "  ", " /", "  ", " \\", " \\", " \\", "  ", "  ", "  "},
-              {"  ", "  ", "R-", "R-", "E-", "R-", "M-", "R ", "  ", "  "},
-              {"  ", " /", "  ", "  ", "  ", " /", "  ", " \\", "  ", "  "},
-              {"  ", "P-", "M ", "  ", "  ", "R-", "E ", "  ", "R ", "  "},
-              {" /", "  ", " \\", "  ", " /", "  ", " \\", "  ", " \\", "  "},
-              {"S-", "E-", "R-", "P-", "P ", "  ", "E-", "R-", "R-", "B "},
-              {" \\", " /", " /", "  ", " \\", " /", " /", "  ", " /", "  "},
-              {"  ", "R-", "P ", "  ", "  ", "M-", "R ", "  ", "R  ", "  "},
-              {"  ", " \\", "  ", "  ", "  ", "  ", "  ", " /", "  ", "  "},
-              {"  ", "  ", "M ", "  ", "E-", "P-", "M-", "R ", "  ", "  "},
-              {"  ", "  ", " \\", " /", "  ", " \\", " /", "  ", "  ", "  "},
-              {"  ", "  ", "  ", "E-", "R-", "E-", "R ", "  ", "  ", "  "},
-              {"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "}};
-          break;
-        case 2:
-          SetColor(12);
-          std::cout << "- Overheat! Overheat! Overheat...\n";
-          SetColor(7);
-          std::cout
-              << "As machine turned off, its chest opened. Inside was a ring\n";
-          SetColor(2);
-          std::cout << "Clockwork ring obtained\n\n";
-          Inventory->push_back(Ring(EnemyManager->GetRing(1834), Player));
-          SetColor(7);
-          std::cout << "Slayers section feels majestically.Soon it will burn";
-          *CoordX = 0, *CoordY = 5;
-          *EliteAdd = 23;
-          *EliteRand = 3;
-          *NormalAdd = 5;
-          *NormalRand = 5;
-          GetableRings->push_back(9);
-          GetableRings->push_back(10);
-          *Map = {{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
-                 {"  ", "  ", "P-", "E-", "M-", "R ", "  ", "  "},
-                 {"  ", " /", "  ", "  ", " \\", " \\", "  ", "  "},
-                 {"  ", "P-", "E-", "R ", "  ", "P-", "E ", "  "},
-                 {" /", "  ", "  ", " \\", " /", "  ", " \\", "  "},
-                 {"S-", "E-", "R-", "M-", "P ", "  ", "P-", "B "},
-                 {" \\", "  ", " /", " \\", " \\", " /", " /", "  "},
-                 {"  ", "R-", "P ", "  ", "P ", "M ", "R ", "  "},
-                 {"  ", "  ", "  ", "  ", " \\", " /", "  ", "  "},
-                 {"  ", "  ", "  ", "  ", "  ", "R ", "  ", "  "},
-                 {"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "}};
-          break;
-        case 3:
-          SetColor(10);
-          std::cout
-              << "\nYou finished the mission - you destroyed the order's core\n"
-                 "Congratulations, Last Mage\n\n\n";
-          SetColor(7);
-          exit(0);
-      }
-      *MaxStage += 1;
-      *CurrentStage += 1;
-    }
-  }
+  Enemy::CheckHP();
 }

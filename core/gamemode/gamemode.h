@@ -5,22 +5,31 @@
 #include "ring.h"
 #include "res_manager.h"
 #include "enemy.h"
+#include "renderer.h"
 #include "boss.h"
 #include "mage.h"
 
-
+enum class GMStates { 
+    Battle,
+    Map,
+    Inventory
+};
 
 class Gamemode {
  public:
   Gamemode();
   int MaxStage, CurrStage, MaxEnemies = 2, CoordX = 0, CoordY = 3, NormalRand,
-                           NormalAdd, EliteRand, EliteAdd, State;
+                           NormalAdd, EliteRand, EliteAdd;
   bool OSStudents = true, OSFreeRing = true, OSEmpty = true, ORDemon = true,
        ORDevil = true;
+  GMStates State;
+
   std::vector<int> GetableRings = {1, 2, 3, 4};
   std::vector<std::vector<std::string>> Map;
 
   ResourceManager ResManager = ResourceManager("data/creatures.json", "data/rings.json");
+  Renderer Render = Renderer();
+  
   std::vector<Creature*> Teammates;
   std::vector<Creature*> Enemies;
   std::vector<Creature*> StageBosses;
@@ -37,6 +46,7 @@ class Gamemode {
 
   void Create_enemies();
   void EnemyChooser();
+  void ChangeStage();
   
   void LocationAct();
   void DrawMap();

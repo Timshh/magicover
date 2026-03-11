@@ -46,14 +46,14 @@ ResourceManager::ResourceManager(const std::string& creaturepath,
         u.AEffects = item.at("AEffects").get<std::vector<int>>();
         u.AStats = item.at("AStats").get<std::vector<float>>();
       } else {
-        u.PEffects.push_back(item.at("AEffects").get<int>());
-        u.PStats.push_back(item.at("AStats").get<float>());
+        u.AEffects.push_back(item.at("AEffects").get<int>());
+        u.AStats.push_back(item.at("AStats").get<float>());
       }
     }
     if (!item.at("PEffects").is_null()) {
       if (item.at("PEffects").is_array()) {
-        u.AEffects = item.at("PEffects").get<std::vector<int>>();
-        u.AStats = item.at("PStats").get<std::vector<float>>();
+        u.PEffects = item.at("PEffects").get<std::vector<int>>();
+        u.PStats = item.at("PStats").get<std::vector<float>>();
       } else {
         u.PEffects.push_back(item.at("PEffects").get<int>());
         u.PStats.push_back(item.at("PStats").get<float>());

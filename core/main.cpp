@@ -3,5 +3,5 @@
 int main() { 
   Gamemode Game = Gamemode();
   Game.Gameloop();
-  exit(0);
+  return 0;
 }

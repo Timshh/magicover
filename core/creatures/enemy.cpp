@@ -199,7 +199,9 @@ Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team)
 
 void Enemy::Act(Creature* target) {
 Creature::Act(target);
-Attack(target);
+  if (Alive) {
+    Attack(target);
+  }
 }
 
 void Enemy::Attack(Creature* target) {
