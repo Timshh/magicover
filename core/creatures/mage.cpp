@@ -1,12 +1,7 @@
 ﻿#include "mage.h"
 
-void Mage::SetColor(int color) {
-  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-  SetConsoleTextAttribute(hConsole, color);
-}
-
-Mage::Mage(CreatureStats params, std::vector<Creature*>* team)
-    : Creature(params, team) {
+Mage::Mage(CreatureStats params, std::vector<Creature*>* team, Renderer* render)
+    : Creature(params, team, render) {
 }
 
 void Mage::Act(Creature* target) {
@@ -22,50 +17,32 @@ void Mage::Status() {
   Params.DamageMult = Params.DefaultDamageMult;
   Params.StatusMult = Params.DefaultStatusMult;
   CheckHP();
-  SetColor(11);
-  std::cout << "\nLast Mage\n";
-  SetColor(15);
-  std::cout << "Health: ";
-  SetColor(4);
-  std::cout << Params.HP;
-  SetColor(15);
-  std::cout << " Mana: ";
-  SetColor(3);
-  std::cout << Params.Mana << "\n";
-  SetColor(10);
-  std::cout << Params.Poison << " ";
-  SetColor(9);
-  std::cout << Params.Disease << " ";
-  SetColor(8);
-  std::cout << Params.Mechanization << " ";
-  SetColor(12);
-  std::cout << Params.Stealer << std::endl;
-  SetColor(15);
-  std::cout << "1. Regenerate. Gain ";
-  SetColor(3);
-  std::cout << "15\n";
-  SetColor(15);
+  Render->PrintMessage(11, "\nLast Mage\n");
+  Render->PrintMessage(15, "Health: ");
+  Render->PrintMessage(4, Params.HP);
+  Render->PrintMessage(15, " Mana: ");
+  Render->PrintMessage(3, Params.Mana, "\n");
+  Render->PrintMessage(10, Params.Poison, " ");
+  Render->PrintMessage(9, Params.Disease, " ");
+  Render->PrintMessage(8, Params.Mechanization, " ");
+  Render->PrintMessage(12, Params.Stealer, "\n");
+  Render->PrintMessage(15, "1. Regenerate. Gain ");
+  Render->PrintMessage(3, "15\n");
   if (Params.Mana >= 20) {
-    std::cout << "2. Support with spell. ";
-    SetColor(3);
-    std::cout << "20\n";
-    SetColor(15);
-    std::cout << "3. Attack with one element. ";
-    SetColor(3);
-    std::cout << "20\n";
-    SetColor(15);
+    Render->PrintMessage(15, "2. Support with spell. ");
+    Render->PrintMessage(3, "20\n");
+    Render->PrintMessage(15, "3. Attack with one element. ");
+    Render->PrintMessage(3, "20\n");
     if (Params.Mana >= 40) {
-      std::cout << "4. Attack with two elements. ";
-      SetColor(3);
-      std::cout << "40\n";
-      SetColor(15);
+      Render->PrintMessage(15, "4. Attack with two elements. ");
+      Render->PrintMessage(3, "40\n");
     }
   }
-  std::cout << std::endl;
+  Render->PrintMessage(15, "\n");
 }
 
-void Mage::RecieveDmg(float damage, int element, float status) {
-  Creature::RecieveDmg(damage, element, status);
+void Mage::ReceiveDmg(float damage, int element, float status) {
+  Creature::ReceiveDmg(damage, element, status);
 }
 
 void Mage::CheckHP() {
@@ -74,42 +51,38 @@ void Mage::CheckHP() {
 
 void Mage::Offence() {
   int ChoiceElem;
-  std::cout << "Choose spell:\n";
-  std::cout << "1. Steel blood. Decrease incoming damage by half\n";
-  std::cout << "2. Blue heart. Heal ";
-  SetColor(4);
-  std::cout << "50\n";
-  SetColor(15);
-  std::cout << "3. Radiance. Heal ";
-  SetColor(4);
-  std::cout << "80";
-  SetColor(15);
-  std::cout << " but incoming damage rise by half\n";
+  Render->PrintMessage(15, "Choose spell:\n");
+  Render->PrintMessage(15, "1. Steel blood. Decrease incoming damage by half\n");
+  Render->PrintMessage(15, "2. Blue heart. Heal ");
+  Render->PrintMessage(4, "50\n");
+  Render->PrintMessage(15, "3. Radiance. Heal ");
+  Render->PrintMessage(4, "80");
+  Render->PrintMessage(15, " but incoming damage rise by half\n");
   std::cin >> ChoiceElem;
-  system("cls");
+  Render->CleanRender();
   switch (ChoiceElem) {
     case 1:
       Params.Defence = 0.5;
-      system("cls");
-      std::cout << "Last mage blood became gray. His protction rise\n";
+      Render->CleanRender();
+      Render->PrintMessage(15, "Last mage blood became gray. His protction rise\n");
       break;
     case 2:
       Params.HP = min(Params.HP + 50, Params.HPMax);
-      system("cls");
-      std::cout
-          << "Last Mage heart beat strong and slow, regenerating his health\n";
+      Render->CleanRender();
+      Render->PrintMessage(
+          15,
+          "Last Mage heart beat strong and slow, regenerating his health\n");
       break;
     case 3:
       Params.HP = min(Params.HP + 80, Params.HPMax);
       Params.Defence = 1.5;
-      system("cls");
-      std::cout
-          << "Last Mage heart glow inside his chest, refilling his health. He "
-             "is vulnerable now\n";
+      Render->CleanRender();
+      Render->PrintMessage(15, "Last Mage heart glow inside his chest, refilling his health. He "
+             "is vulnerable now\n");
       break;
     default:
-      system("cls");
-      std::cout << "That didn't work\n";
+      Render->CleanRender();
+      Render->PrintMessage(15, "That didn't work\n");
       break;
       break;
   }
@@ -117,11 +90,11 @@ void Mage::Offence() {
 
 void Mage::Magic(Creature* target) {
   int ChoiceElem;
-  std::cout << "Choose element:\n";
-  std::cout << "1. Flame. Burn enemy slowly\n";
-  std::cout << "2. Frost. Make enemy attacks weaker\n";
-  std::cout << "3. Dark. With darken mind enemy may miss\n";
-  std::cout << "4. Psycho. Enemy may lose control and attack self\n";
+  Render->PrintMessage(
+      15,
+      "Choose element:\n1. Flame. Burn enemy slowly\n2. Frost. Make enemy "
+      "attacks weaker\n3. Dark. With darken mind enemy may miss\n4. Psycho. "
+      "Enemy may lose control and attack self\n");
   std::cin >> ChoiceElem;
   switch (ChoiceElem) {
     case 1:
@@ -145,12 +118,12 @@ void Mage::Magic(Creature* target) {
       Params.Element = 4;
       break;
     default:
-      system("cls");
-      std::cout << "That didn't work\n";
+      Render->CleanRender();
+      Render->PrintMessage(4, "That didn't work\n");
       break;
       break;
   }
-  system("cls");
-  target->RecieveDmg(Params.Damage * Params.DamageMult, Params.Element,
+  Render->CleanRender();
+  target->ReceiveDmg(Params.Damage * Params.DamageMult, Params.Element,
                      Params.Status * Params.StatusMult);
 }

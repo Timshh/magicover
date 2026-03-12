@@ -4,15 +4,14 @@
 
 class Enemy : public Creature {
  public:
-  Enemy(CreatureStats params, std::vector<Creature*>* team);
+  Enemy(CreatureStats params, std::vector<Creature*>* team, Renderer* render);
 
-  void SetColor(int color);
   void Attack(Creature* target);
   void Status();
 
-  void virtual RecieveDmg(float damage, int element, float status) override;
-  void virtual CheckHP() override;
-  void virtual Act(Creature* target) override;
+  void ReceiveDmg(float damage, int element, float status) override;
+  void CheckHP() override;
+  void Act(Creature* target) override;
 
   std::string AtkText1, AtkText2, AtkText3, AtkText4, CalmText, HurtText,
       DamagedText, DeathText;

@@ -33,7 +33,7 @@ class Gamemode {
   std::vector<Creature*> Teammates;
   std::vector<Creature*> Enemies;
   std::vector<Creature*> StageBosses;
-  Mage Player = Mage(ResManager.GetCreature(2000), &Teammates);
+  Mage Player = Mage(ResManager.GetCreature(2000), &Teammates, &Render);
   Creature* Target = 0;
   Ring* ChosenRing;
   Ring NewRing = Ring(ResManager.GetRing(1), &Player);
@@ -41,7 +41,6 @@ class Gamemode {
   void Gameloop();
 
   void SetColor(int color);
-  float Clamp(float num, float min, float max);
   int TakeInt(int min, int max);
 
   void Create_enemies();

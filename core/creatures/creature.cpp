@@ -1,11 +1,12 @@
 ﻿#include "creature.h"
 
-Creature::Creature(CreatureStats params, std::vector<Creature*>* team) { 
+Creature::Creature(CreatureStats params, std::vector<Creature*>* team, Renderer* render) { 
 	Params = params;
     Team = team;
+    Render = render;
 }
 
-void Creature::RecieveDmg(float damage, int element, float status) {
+void Creature::ReceiveDmg(float damage, int element, float status) {
   float Hit = damage * Params.Defence;
   Params.HP -= Hit;
   std::cout << Params.Name + " got hit - " << Hit

@@ -30,14 +30,13 @@ if (NOT nlohmann_json_FOUND)
 endif()
 
 set (SOURCES "core/main.cpp" 
-"core/Gamemode/gamemode.cpp" 
+"core/gamemode/gamemode.cpp" 
 "core/rings/ring.cpp" 
 "core/creatures/enemy.cpp" 
 "core/creatures/boss.cpp" 
 "core/creatures/creature.cpp" 
 "core/resources/res_manager.cpp" 
 "core/creatures/mage.cpp" 
-"core/gamemode/gamemode.cpp"
 "core/render/renderer.cpp")
 set (HEADERS "core/rings/ring.h" 
 "core/creatures/enemy.h" 

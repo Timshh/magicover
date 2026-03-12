@@ -2,12 +2,9 @@
 
 Renderer::Renderer() {}
 
-void Renderer::PrintMessage(std::string text, int color) {
-  SetColor(color);
-  std::cout << text;
-}
-
 void Renderer::SetColor(int color) {
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleTextAttribute(hConsole, color);
 }
+
+void Renderer::CleanRender() { system("cls"); }

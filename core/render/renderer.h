@@ -8,6 +8,11 @@
 class Renderer {
  public:
   Renderer();
-  void PrintMessage(std::string text, int color = 15);
+  template <typename... Args>
+  void PrintMessage(int color = 15, Args&&... args) {
+    SetColor(color);
+    (std::cout << ... << args);
+  }
   void SetColor(int color);
+  void CleanRender();
 };
