@@ -3,7 +3,7 @@
 Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team,
              Renderer* render)
     : Creature(params, team, render) {
-  switch (Params.ID) {
+  /* switch (Params.ID) {
     case 0:
       AtkText1 = "Creature attack";
       AtkText2 = "It strikes";
@@ -190,7 +190,7 @@ Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team,
       DamagedText = "Arms cluster barely stand";
       DeathText = "Arms cluster fell to dust";
       break;
-  }
+  }*/
 }
 
 void Enemy::Act(Creature* target) {
@@ -204,19 +204,7 @@ void Enemy::Attack(Creature* target) {
   int AtkDamage = (Params.Damage + rand() % (Params.DamageRand + 1)) *
                   (1 - Params.Frost / 100);
   if (rand() % 100 >= Params.Psycho) {
-    if (rand() % 2 == 0) {
-      if (rand() % 2 == 0) {
-        Render->PrintMessage(15, AtkText1);
-      } else {
-        Render->PrintMessage(15, AtkText2);
-      }
-    } else {
-      if (rand() % 2 == 0) {
-        Render->PrintMessage(15, AtkText3);
-      } else {
-        Render->PrintMessage(15, AtkText4);
-      }
-    }
+    Render->PrintMessage(15, Params.AtkTexts[rand() % Params.AtkTexts.size()]);
     if (rand() % 100 >= Params.Dark) {
       Render->PrintMessage(15, " which inflict ", AtkDamage * target->Params.Defence,
                           " damage to Last Mage\n");
@@ -237,12 +225,12 @@ void Enemy::Status() {
   }
   CheckHP();
   if (Params.HP >= Params.HPMax / 2) {
-    Render->PrintMessage(15, CalmText);
+    Render->PrintMessage(15, Params.CalmText);
   } else {
     if (Params.HP >= Params.HPMax / 4) {
-      Render->PrintMessage(15, HurtText);
+      Render->PrintMessage(15, Params.HurtText);
     } else {
-      Render->PrintMessage(15, DamagedText);
+      Render->PrintMessage(15, Params.DamagedText);
     }
   }
   Render->PrintMessage(12, " ", Params.Flame);
@@ -258,7 +246,7 @@ void Enemy::ReceiveDmg(float damage, int element, float status) {
 
 void Enemy::CheckHP() {
   if (Params.HP <= 0) {
-    Render->PrintMessage(15, DeathText, "\n");
+    Render->PrintMessage(15, Params.DeathText, "\n");
   }
   Creature::CheckHP();
 }

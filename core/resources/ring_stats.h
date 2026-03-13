@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 struct RingStats {
-  int ID;
-
   bool Uneqippable = true, Equipped = false;
 
   std::string Name, Description;

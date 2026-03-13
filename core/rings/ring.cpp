@@ -13,66 +13,6 @@ float Ring::Clamp(float num, float min, float max) {
 Ring::Ring(RingStats stats, Creature* owner) {
   Stats = stats;
   Owner = owner;
-  switch (Stats.ID) {
-    case 1:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 2:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 3:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 4:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 5:
-      EquipText =
-          "Strange, but instead of pain Last Mage feel hope. Hope, that he is "
-          "the one who will finish with Order";
-      UnequipText = "";
-      break;
-    case 6:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 7:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 8:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 9:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 10:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 666:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 0:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 888:
-      EquipText = "";
-      UnequipText = "";
-      break;
-    case 1834:
-      EquipText = "";
-      UnequipText = "";
-      break;
-  }
 }
 
 void Ring::RingAct() {

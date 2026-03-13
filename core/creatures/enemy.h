@@ -12,7 +12,4 @@ class Enemy : public Creature {
   void ReceiveDmg(float damage, int element, float status) override;
   void CheckHP() override;
   void Act(Creature* target) override;
-
-  std::string AtkText1, AtkText2, AtkText3, AtkText4, CalmText, HurtText,
-      DamagedText, DeathText;
 };

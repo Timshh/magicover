@@ -11,7 +11,6 @@ ResourceManager::ResourceManager(const std::string& creaturepath,
   json j;
   creaturefile >> j;
 
-
   std::vector<CreatureStats> v = j.get<std::vector<CreatureStats>>();
   for (CreatureStats item : j) {
     item.HP = item.HPMax;
@@ -20,7 +19,7 @@ ResourceManager::ResourceManager(const std::string& creaturepath,
     item.StatusMult = item.DefaultStatusMult;
     item.Defence = item.DefaultDefence;
 
-    CreatureData.push_back(item);
+    CreatureData.insert({item.Name, item});
   }
   creaturefile.close();
 
@@ -37,8 +36,6 @@ ResourceManager::ResourceManager(const std::string& creaturepath,
       std::cout << "Missing key in item:\n" << item.dump(4) << std::endl;
       continue;
     }
-
-    u.ID = item.at("ID").get<int>();
     u.Name = item.at("Name").get<std::string>();
     u.Description = item.at("Description").get<std::string>();
     if (!item.at("AEffects").is_null()) {
@@ -59,28 +56,23 @@ ResourceManager::ResourceManager(const std::string& creaturepath,
         u.PStats.push_back(item.at("PStats").get<float>());
       }
     }
-
-    RingData.push_back(u);
+    RingData.insert({u.Name, u});
   }
   ringfile.close();
 }
 
-CreatureStats ResourceManager::GetCreature(int id) {
-  for (int i = 0; i < CreatureData.size(); i++) {
-    if (CreatureData[i].ID == id) {
-      return CreatureData[i];
-    }
+CreatureStats ResourceManager::GetCreature(std::string id) {
+  if (CreatureData.contains(id)) {
+    return CreatureData.at(id);
   }
-  return CreatureData[0];
-  std::cout << "Error" << std::endl;
+  std::cout << "Creature not found error: " << id << std::endl;
+  return CreatureData.at("Patient zero");
 }
 
-RingStats ResourceManager::GetRing(int id) {
-  for (int i = 0; i < RingData.size(); i++) {
-    if (RingData[i].ID == id) {
-      return RingData[i];
-    }
+RingStats ResourceManager::GetRing(std::string id) {
+  if (RingData.contains(id)) {
+    return RingData.at(id);
   }
-  return RingData[0];
-  std::cout << "Error" << std::endl;
+  std::cout << "Ring not found error" << std::endl;
+  return RingData.at("Blue Blood ring");
 }

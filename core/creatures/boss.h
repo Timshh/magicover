@@ -12,7 +12,6 @@ class Boss : public Enemy {
   int *MaxEnemies;
   ResourceManager *ResManager;
   int SpecAttackChance = 30;
-  std::string Hint = "";
   bool SpecFlag = false;
 
   void SpecialAttack(Creature* target);
