@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "boss.h"
 #include "mage.h"
+#include "map.h"
 
 enum class GMStates { 
     Battle,
@@ -24,7 +25,6 @@ class Gamemode {
   GMStates State;
 
   std::vector<std::string> GetableRings = {"Blue Blood ring", "Heart ring", "Shiny ring", "Scaly ring"}, NormalEnemies, EliteEnemies;
-  std::vector<std::vector<std::string>> Map;
 
   ResourceManager ResManager = ResourceManager("data/creatures.json", "data/rings.json");
   Renderer Render = Renderer();
@@ -34,17 +34,18 @@ class Gamemode {
   Creature* Target = 0;
   Ring* ChosenRing;
   Ring* NewRing;
+  Map GMMap = Map(&Render);
+
+  void LocationAct(int roomType);
 
   void Gameloop();
 
   int TakeInt(int min, int max);
+
   // Battle
   void CreateBoss();
   void EnemyChooser();
   void ChangeStage();
-  //Map
-  void LocationAct();
-  void DrawMap();
   //Inventory
   bool NewRingChooser();
   void ShowRings();

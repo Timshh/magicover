@@ -37,7 +37,9 @@ set (SOURCES "core/main.cpp"
 "core/creatures/creature.cpp" 
 "core/resources/res_manager.cpp" 
 "core/creatures/mage.cpp" 
-"core/render/renderer.cpp")
+"core/render/renderer.cpp"
+"core/gamemode/mapgenerator.cpp"
+"core/gamemode/map.cpp")
 set (HEADERS "core/rings/ring.h" 
 "core/creatures/enemy.h" 
 "core/creatures/creature.h" 
@@ -46,7 +48,9 @@ set (HEADERS "core/rings/ring.h"
 "core/resources/creature_stats.h" 
 "core/resources/ring_stats.h" 
 "core/gamemode/gamemode.h"
-"core/render/renderer.h")
+"core/render/renderer.h"
+"core/gamemode/mapgenerator.h"
+"core/gamemode/map.h")
 
 add_executable (${PROJECT_NAME} ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json::nlohmann_json)
