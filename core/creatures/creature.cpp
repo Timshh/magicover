@@ -1,9 +1,12 @@
 ﻿#include "creature.h"
 
-Creature::Creature(CreatureStats params, std::vector<Creature*>* team, Renderer* render) { 
+Creature::Creature(CreatureStats params, std::vector<Creature*>* team,
+                   ConsoleRenderer* render, Renderer* renderer)
+    : PersonalObserver(CreatureObserver()) { 
 	Params = params;
     Team = team;
     Render = render;
+    PersonalObserver.AddSubscriber(renderer);
 }
 
 void Creature::ReceiveDmg(float damage, int element, float status) {

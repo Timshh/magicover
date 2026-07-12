@@ -4,7 +4,8 @@
 
 class Enemy : public Creature {
  public:
-  Enemy(CreatureStats params, std::vector<Creature*>* team, Renderer* render);
+  Enemy(CreatureStats params, std::vector<Creature*>* team,
+        ConsoleRenderer* render, Renderer* renderer);
 
   void Attack(Creature* target);
   void Status();

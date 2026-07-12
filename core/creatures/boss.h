@@ -7,9 +7,11 @@ class Boss : public Enemy {
  public:
   Boss(CreatureStats params, std::vector<Creature*>* team,
        std::vector<Creature*>* enemies, int* maxenemies,
-       ResourceManager* resmanager, Renderer* render);
+       ResourceManager* resmanager, ConsoleRenderer* render,
+       Renderer* renderer);
   std::vector<Creature*>* Enemies;
   int *MaxEnemies;
+  Renderer* GlobalRenderer;
   ResourceManager *ResManager;
   int SpecAttackChance = 30;
   bool SpecFlag = false;

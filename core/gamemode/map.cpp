@@ -1,6 +1,6 @@
 ﻿#include "map.h"
 
-Map::Map(Renderer* render) {
+Map::Map(ConsoleRenderer* render) {
   Render = render;
   CreateMap();
 }

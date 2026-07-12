@@ -2,9 +2,13 @@
 
 Renderer::Renderer() {}
 
-void Renderer::SetColor(int color) {
-  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-  SetConsoleTextAttribute(hConsole, color);
+void Renderer::CallAct(RenderActions action) {
+  switch (action) {
+    case RenderActions::Attack:
+      std::cout << "Attack!\n";
+      break;
+    case RenderActions::TakeDamage:
+      std::cout << "Took damage!\n";
+      break;
+  }
 }
-
-void Renderer::CleanRender() { system("cls"); }

@@ -2,8 +2,9 @@
 
 Gamemode::Gamemode() {}
 
-void Gamemode::Gameloop() {
-  Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render);
+void Gamemode::Gameloop() { 
+  Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render,
+                &GlobalRenderer);
   Teammates.push_back(&Player);
   srand(time(NULL));
   Render.PrintMessage(8, "You are the Last Mage. \nYour goal is simple - revenge."
@@ -190,37 +191,31 @@ void Gamemode::CreateBoss() {
       StageBosses.push_back(new Boss(ResManager.GetCreature("Shield guardian"),
                                      &StageBosses,
                                      &Enemies, &MaxEnemies, &ResManager,
-                                     &Render));
+                                     &Render, &GlobalRenderer));
       StageBosses.push_back(new Boss(ResManager.GetCreature("Axe guardian"),
                                      &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager,
-                                     &Render));
+                                     &ResManager, &Render, &GlobalRenderer));
       break;
     case 1:
       StageBosses.push_back(new Boss(ResManager.GetCreature("InfArmY"),
                                      &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager,
-                                     &Render));
+                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
       break;
     case 2:
       StageBosses.push_back(new Boss(ResManager.GetCreature("GO-13M"),
                                      &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager,
-                                     &Render));
+                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
       break;
     case 3:
       StageBosses.push_back(new Boss(ResManager.GetCreature("Wings"),
                                      &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager,
-                                     &Render));
+                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
       StageBosses.push_back(new Boss(ResManager.GetCreature("Tyrant"),
                                      &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager,
-                                     &Render));
+                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
       StageBosses.push_back(new Boss(ResManager.GetCreature("Halo"),
                                      &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager,
-                                     &Render));
+                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
       break;
   }
 }
@@ -457,14 +452,14 @@ void Gamemode::LocationAct(int roomType) {
       Render.PrintMessage(4, "Enemy appears\n");
       Enemies.push_back(new Enemy(
           ResManager.GetCreature(NormalEnemies[rand() % NormalEnemies.size()]),
-          &Enemies, &Render));
+          &Enemies, &Render, &GlobalRenderer));
       State = GMStates::Battle;
       break;
     case 3:
       Render.PrintMessage(4, "Powerful enemy appears\n");
       Enemies.push_back(new Enemy(
           ResManager.GetCreature(EliteEnemies[rand() % EliteEnemies.size()]),
-          &Enemies, &Render));
+          &Enemies, &Render, &GlobalRenderer));
       State = GMStates::Battle;
       break;
     case 4:
@@ -478,8 +473,8 @@ void Gamemode::LocationAct(int roomType) {
         case 1:
           Render.PrintMessage(4, "Slayer students attack Last Mage\n");
           for (int i = 0; i < (rand() % 2 + 4); i++) {
-            Enemies.push_back(new Enemy(
-                ResManager.GetCreature("Warrior student"), &Enemies, &Render));
+            Enemies.push_back(new Enemy(ResManager.GetCreature("Warrior student"), &Enemies,
+                          &Render, &GlobalRenderer));
           }
           State = GMStates::Battle;
           break;
@@ -511,9 +506,9 @@ void Gamemode::LocationAct(int roomType) {
         case 3:
           Render.PrintMessage(4, "Ambush!\n");
           Enemies.push_back(new Enemy(ResManager.GetCreature(EliteEnemies[0]),
-                                      &Enemies, &Render));
+                                      &Enemies, &Render, &GlobalRenderer));
           Enemies.push_back(new Enemy(ResManager.GetCreature(NormalEnemies[0]),
-                                      &Enemies, &Render));
+                                      &Enemies, &Render, &GlobalRenderer));
           State = GMStates::Battle;
           break;
         case 4:

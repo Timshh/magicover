@@ -1,7 +1,8 @@
 ﻿#include "mage.h"
 
-Mage::Mage(CreatureStats params, std::vector<Creature*>* team, Renderer* render)
-    : Creature(params, team, render) {
+Mage::Mage(CreatureStats params, std::vector<Creature*>* team,
+           ConsoleRenderer* render, Renderer* renderer)
+    : Creature(params, team, render, renderer) {
 }
 
 void Mage::Act(Creature* target) {

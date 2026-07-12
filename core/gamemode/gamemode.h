@@ -5,10 +5,11 @@
 #include "ring.h"
 #include "res_manager.h"
 #include "enemy.h"
-#include "renderer.h"
+#include "consoleRenderer.h"
 #include "boss.h"
 #include "mage.h"
 #include "map.h"
+#include "renderer.h"
 
 enum class GMStates { 
     Battle,
@@ -27,10 +28,11 @@ class Gamemode {
   std::vector<std::string> GetableRings = {"Blue Blood ring", "Heart ring", "Shiny ring", "Scaly ring"}, NormalEnemies, EliteEnemies;
 
   ResourceManager ResManager = ResourceManager("data/creatures.json", "data/rings.json");
-  Renderer Render = Renderer();
+  ConsoleRenderer Render = ConsoleRenderer();
+  Renderer GlobalRenderer = Renderer();
   
   std::vector<Creature*> Teammates, Enemies, StageBosses;
-  Mage Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render);
+  Mage Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render, &GlobalRenderer);
   Creature* Target = 0;
   Ring* ChosenRing;
   Ring* NewRing;
