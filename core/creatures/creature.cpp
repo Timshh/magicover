@@ -2,18 +2,17 @@
 
 Creature::Creature(CreatureStats params, std::vector<Creature*>* team,
                    ConsoleRenderer* render, Renderer* renderer)
-    : PersonalObserver(CreatureObserver()) { 
-	Params = params;
-    Team = team;
-    Render = render;
-    PersonalObserver.AddSubscriber(renderer);
+    : PersonalObserver(CreatureObserver()),
+      Params(params),
+      Team(team),
+      Render(render) {
+  PersonalObserver.AddSubscriber(renderer);
 }
 
 void Creature::ReceiveDmg(float damage, int element, float status) {
   float Hit = damage * Params.Defence;
   Params.HP -= Hit;
-  std::cout << Params.Name + " got hit - " << Hit
-            << " damage\n";
+  std::cout << Params.Name + " got hit - " << Hit << " damage\n";
   switch (element) {
     case 1:
       Params.Flame += status * Params.FlameResist;

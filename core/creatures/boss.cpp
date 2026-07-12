@@ -131,7 +131,7 @@ void Boss::Act(Creature* target) {
   Params.HP -= Params.Flame;
   CheckHP();
   if (Alive) {
-    if (rand() % 100 >= SpecAttackChance) {
+    if (rand() % 100 >= Params.SpecAtkChance) {
       Attack(target);
     } else {
       SpecialAttack(target);

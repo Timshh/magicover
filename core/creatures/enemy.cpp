@@ -5,7 +5,7 @@ Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team,
     : Creature(params, team, render, renderer) {}
 
 void Enemy::Act(Creature* target) {
-Creature::Act(target);
+  Creature::Act(target);
   if (Alive) {
     Attack(target);
   }
@@ -18,15 +18,17 @@ void Enemy::Attack(Creature* target) {
   if (rand() % 100 >= Params.Psycho) {
     Render->PrintMessage(15, Params.AtkTexts[rand() % Params.AtkTexts.size()]);
     if (rand() % 100 >= Params.Dark) {
-      Render->PrintMessage(15, " which inflict ", AtkDamage * target->Params.Defence,
-                          " damage to Last Mage\n");
+      Render->PrintMessage(15, " which inflict ",
+                           AtkDamage * target->Params.Defence,
+                           " damage to Last Mage\n");
       target->Params.HP -= AtkDamage * target->Params.Defence;
     } else {
       Render->PrintMessage(15, ". Miss\n");
     }
   } else {
-    Render->PrintMessage(15, Params.Name, " in psychotic assault hurt self with "
-             , AtkDamage * (Params.Defence), " damage\n");
+    Render->PrintMessage(15, Params.Name,
+                         " in psychotic assault hurt self with ",
+                         AtkDamage * (Params.Defence), " damage\n");
     Params.HP -= AtkDamage;
   }
 }

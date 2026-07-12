@@ -13,9 +13,7 @@ struct MapGraph {
   int Start, Boss;
 };
 
-
-
-class MapGenerator{
+class MapGenerator {
  public:
   MapGenerator();
   MapGraph GenerateMap(int layers = 10, int minnodes = 2, int maxnodes = 5);

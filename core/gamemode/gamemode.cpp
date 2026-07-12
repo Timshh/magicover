@@ -2,14 +2,16 @@
 
 Gamemode::Gamemode() {}
 
-void Gamemode::Gameloop() { 
+void Gamemode::Gameloop() {
   Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render,
                 &GlobalRenderer);
   Teammates.push_back(&Player);
   srand(time(NULL));
-  Render.PrintMessage(8, "You are the Last Mage. \nYour goal is simple - revenge."
-               "To revenge for all the order slayed - to destroy their mage "
-               "slayers.\n");
+  Render.PrintMessage(
+      8,
+      "You are the Last Mage. \nYour goal is simple - revenge."
+      "To revenge for all the order slayed - to destroy their mage "
+      "slayers.\n");
   Render.PrintMessage(4, "Once and for all.\n\n");
   CurrStage = MaxStage = 0;
   State = GMStates::Battle;
@@ -66,16 +68,20 @@ void Gamemode::Gameloop() {
                 Player.Params.Mana -= 40;
                 Render.PrintMessage(15, "Choose catalyst\n");
                 Render.PrintMessage(
-                   15, "1. Flame. Ignite element. Doesn't damage but increase "
-                       "status much\n");
+                    15,
+                    "1. Flame. Ignite element. Doesn't damage but increase "
+                    "status much\n");
                 Render.PrintMessage(
-                   15, "2. Frost. Break element. Increase damage and status\n");
+                    15,
+                    "2. Frost. Break element. Increase damage and status\n");
                 Render.PrintMessage(
-                   15, "3. Dark. Nullify element. Doesn't create status but "
-                       "make damage bigger\n");
+                    15,
+                    "3. Dark. Nullify element. Doesn't create status but "
+                    "make damage bigger\n");
                 Render.PrintMessage(
-                   15, "4. Psycho. Overload element. Deal low heal to enemy "
-                       "but add large status\n");
+                    15,
+                    "4. Psycho. Overload element. Deal low heal to enemy "
+                    "but add large status\n");
                 std::cin >> Choice;
                 switch (Choice) {
                   case 1:
@@ -119,7 +125,7 @@ void Gamemode::Gameloop() {
                 delete enemy;
                 erase(Enemies, enemy);
               }
-            } 
+            }
 
             for (Creature* boss : StageBosses) {
               if (boss) {
@@ -189,33 +195,32 @@ void Gamemode::CreateBoss() {
   switch (CurrStage) {
     case 0:
       StageBosses.push_back(new Boss(ResManager.GetCreature("Shield guardian"),
-                                     &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager,
-                                     &Render, &GlobalRenderer));
+                                     &StageBosses, &Enemies, &MaxEnemies,
+                                     &ResManager, &Render, &GlobalRenderer));
       StageBosses.push_back(new Boss(ResManager.GetCreature("Axe guardian"),
                                      &StageBosses, &Enemies, &MaxEnemies,
                                      &ResManager, &Render, &GlobalRenderer));
       break;
     case 1:
       StageBosses.push_back(new Boss(ResManager.GetCreature("InfArmY"),
-                                     &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
+                                     &StageBosses, &Enemies, &MaxEnemies,
+                                     &ResManager, &Render, &GlobalRenderer));
       break;
     case 2:
       StageBosses.push_back(new Boss(ResManager.GetCreature("GO-13M"),
-                                     &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
+                                     &StageBosses, &Enemies, &MaxEnemies,
+                                     &ResManager, &Render, &GlobalRenderer));
       break;
     case 3:
       StageBosses.push_back(new Boss(ResManager.GetCreature("Wings"),
-                                     &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
+                                     &StageBosses, &Enemies, &MaxEnemies,
+                                     &ResManager, &Render, &GlobalRenderer));
       StageBosses.push_back(new Boss(ResManager.GetCreature("Tyrant"),
-                                     &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
+                                     &StageBosses, &Enemies, &MaxEnemies,
+                                     &ResManager, &Render, &GlobalRenderer));
       StageBosses.push_back(new Boss(ResManager.GetCreature("Halo"),
-                                     &StageBosses,
-                                     &Enemies, &MaxEnemies, &ResManager, &Render, &GlobalRenderer));
+                                     &StageBosses, &Enemies, &MaxEnemies,
+                                     &ResManager, &Render, &GlobalRenderer));
       break;
   }
 }
@@ -250,19 +255,21 @@ void Gamemode::ChangeStage() {
     case 0:
       Render.PrintMessage(15, "Axe guardian ring shines bright\n");
       Render.PrintMessage(2, "Ring of memories obtained\n\n");
-      Player.Inventory.push_back(Ring(ResManager.GetRing("Ring of memories"), &Player));
+      Player.Inventory.push_back(
+          Ring(ResManager.GetRing("Ring of memories"), &Player));
       Render.PrintMessage(7, "Spacious outer palaces look regular");
 
       CoordX = 0, CoordY = 3;
       NormalEnemies = {"Hunter", "Warrior student", "Knight",
-                       "Demon", "Pseudo-Witch", "Pseudo-Mage"};
+                       "Demon",  "Pseudo-Witch",    "Pseudo-Mage"};
       EliteEnemies = {"Archer", "Draconic hunter"};
       GMMap.CreateMap();
       break;
     case 1:
       Render.PrintMessage(15, "Ring shines in the dust\n");
       Render.PrintMessage(2, "Ring of arms obtained\n\n");
-      Player.Inventory.push_back(Ring(ResManager.GetRing("Ring of arms"), &Player));
+      Player.Inventory.push_back(
+          Ring(ResManager.GetRing("Ring of arms"), &Player));
       Render.PrintMessage(7, "Grandiose inner palaces shine before Last Mage");
 
       CoordX = 0, CoordY = 7;
@@ -278,10 +285,12 @@ void Gamemode::ChangeStage() {
     case 2:
       Render.PrintMessage(12, "- Overheat! Overheat! Overheat...\n");
       Render.PrintMessage(
-         7, "As machine turned off, its chest opened. Inside was a ring\n");
+          7, "As machine turned off, its chest opened. Inside was a ring\n");
       Render.PrintMessage(2, "Clockwork ring obtained\n\n");
-      Player.Inventory.push_back(Ring(ResManager.GetRing("Clockwork ring"), &Player));
-      Render.PrintMessage(7, "Slayers section feels majestically. Soon it will burn");
+      Player.Inventory.push_back(
+          Ring(ResManager.GetRing("Clockwork ring"), &Player));
+      Render.PrintMessage(
+          7, "Slayers section feels majestically. Soon it will burn");
 
       CoordX = 0, CoordY = 5;
       NormalEnemies = {"Pseudo-Witch",  "Pseudo-Mage",     "Automaton-Cleaner",
@@ -293,8 +302,9 @@ void Gamemode::ChangeStage() {
       break;
     case 3:
       Render.PrintMessage(
-         10, "\nYou finished the mission - you destroyed the order's core\n"
-             "Congratulations, Last Mage\n\n\n");
+          10,
+          "\nYou finished the mission - you destroyed the order's core\n"
+          "Congratulations, Last Mage\n\n\n");
       exit(0);
   }
   MaxStage += 1;
@@ -473,7 +483,8 @@ void Gamemode::LocationAct(int roomType) {
         case 1:
           Render.PrintMessage(4, "Slayer students attack Last Mage\n");
           for (int i = 0; i < (rand() % 2 + 4); i++) {
-            Enemies.push_back(new Enemy(ResManager.GetCreature("Warrior student"), &Enemies,
+            Enemies.push_back(
+                new Enemy(ResManager.GetCreature("Warrior student"), &Enemies,
                           &Render, &GlobalRenderer));
           }
           State = GMStates::Battle;

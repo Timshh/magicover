@@ -13,10 +13,6 @@
 class Creature {
  public:
   bool Alive = true;
-  CreatureStats Params;
-  std::vector<Creature*>* Team;
-  ConsoleRenderer* Render;
-  CreatureObserver PersonalObserver;
 
   Creature(CreatureStats params, std::vector<Creature*>* team,
            ConsoleRenderer* render, Renderer* renderer);
@@ -24,4 +20,10 @@ class Creature {
   void virtual Act(Creature* target);
   void virtual ReceiveDmg(float damage, int element, float status);
   void virtual CheckHP();
+  CreatureStats Params;
+  std::vector<Creature*>* Team;
+
+ protected:
+  ConsoleRenderer* Render;
+  CreatureObserver PersonalObserver;
 };

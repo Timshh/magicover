@@ -18,6 +18,7 @@ class ResourceManager {
   CreatureStats GetCreature(std::string id);
   RingStats GetRing(std::string id);
 
+ private:
   std::map<std::string, CreatureStats> CreatureData;
   std::map<std::string, RingStats> RingData;
 };

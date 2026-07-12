@@ -9,14 +9,14 @@ class Boss : public Enemy {
        std::vector<Creature*>* enemies, int* maxenemies,
        ResourceManager* resmanager, ConsoleRenderer* render,
        Renderer* renderer);
-  std::vector<Creature*>* Enemies;
-  int *MaxEnemies;
-  Renderer* GlobalRenderer;
-  ResourceManager *ResManager;
-  int SpecAttackChance = 30;
-  bool SpecFlag = false;
-
   void SpecialAttack(Creature* target);
   void Act(Creature* target) override;
   void CheckHP() override;
+
+ protected:
+  int* MaxEnemies;
+  bool SpecFlag = false;
+  Renderer* GlobalRenderer;
+  ResourceManager* ResManager;
+  std::vector<Creature*>* Enemies;
 };

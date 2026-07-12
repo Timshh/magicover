@@ -10,10 +10,7 @@ float Ring::Clamp(float num, float min, float max) {
   return num;
 }
 
-Ring::Ring(RingStats stats, Creature* owner) {
-  Stats = stats;
-  Owner = owner;
-}
+Ring::Ring(RingStats stats, Creature* owner) : Stats(stats), Owner(owner) {}
 
 void Ring::RingAct() {
   for (int i = 0; i < Stats.AEffects.size(); i++) {
@@ -26,15 +23,16 @@ void Ring::RingAct() {
             Clamp(Owner->Params.Mana + 5, 0, Owner->Params.ManaMax);
         break;
       case 3:
-        Owner->Params.HP = Clamp(Owner->Params.HP + (rand() % int(Stats.AStats[i]) * 2) -
+        Owner->Params.HP =
+            Clamp(Owner->Params.HP + (rand() % int(Stats.AStats[i]) * 2) -
                       Stats.AStats[i] + 1,
-                        0, Owner->Params.HPMax);
+                  0, Owner->Params.HPMax);
         break;
       case 4:
-        Owner->Params.Mana = Clamp(Owner->Params.Mana + rand() % (int(Stats.AStats[i]) * 2) -
+        Owner->Params.Mana =
+            Clamp(Owner->Params.Mana + rand() % (int(Stats.AStats[i]) * 2) -
                       Stats.AStats[i] + 1,
-            0,
-                  Owner->Params.ManaMax);
+                  0, Owner->Params.ManaMax);
         break;
     }
   }
