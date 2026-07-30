@@ -1,170 +1,39 @@
 ﻿#include "gamemode.h"
 
-Gamemode::Gamemode() {}
+Gamemode::Gamemode()
+    : Player(Manager.GetCreature("Last Mage"), &Teammates, &Render,
+             &GlobalRenderer),
+      GMBattle(&Render, &GlobalRenderer, &Teammates, &Enemies, &StageBosses,
+               &Player, &CurrStage, &MaxEnemies, &Manager),
+      GMMap(&Render),
+      GMInventory(&Render, &Player, &GetableRings, &Manager),
+      Manager(ResourceManager("data/creatures.json",
+      "data/rings.json")){
+  Teammates.push_back(&Player);
+}
 
 void Gamemode::Gameloop() {
-  Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render,
-                &GlobalRenderer);
-  Teammates.push_back(&Player);
-  srand(time(NULL));
   Render.PrintMessage(
       8,
       "You are the Last Mage. \nYour goal is simple - revenge."
       "To revenge for all the order slayed - to destroy their mage "
       "slayers.\n");
   Render.PrintMessage(4, "Once and for all.\n\n");
-  CurrStage = MaxStage = 0;
-  State = GMStates::Battle;
-  int Choice;
-  CreateBoss();
+  GMBattle.CreateBoss();
+
   while (Player.Params.HP > 0) {
     switch (State) {
       case GMStates::Map:
         LocationAct(GMMap.MapAct());
         break;
       case GMStates::Battle:
-        do {
-          int counter = 1;
-          Render.PrintMessage(4, "\nEnemies\n");
-          for (Creature* boss : StageBosses) {
-            if (boss) {
-              Render.PrintMessage(7, counter, ". ");
-              counter++;
-              dynamic_cast<Boss*>(boss)->Status();
-            }
-          }
-          for (Creature* enemy : Enemies) {
-            if (enemy) {
-              Render.PrintMessage(7, counter, ". ");
-              counter++;
-              dynamic_cast<Enemy*>(enemy)->Status();
-            }
-          }
-          Player.Status();
-          std::cin >> Choice;
-          switch (Choice) {
-            case 1:
-              Player.Params.Mana =
-                  min(Player.Params.Mana + 15, Player.Params.ManaMax);
-              Render.CleanRender();
-              Render.PrintMessage(15, "Last Mage started regenerating\n");
-              break;
-            case 2:
-              if (Player.Params.Mana >= 20) {
-                Player.Params.Mana -= 20;
-                Player.Offence();
-              }
-              break;
-            case 3:
-              if (Player.Params.Mana >= 20) {
-                Player.Params.Mana -= 20;
-                EnemyChooser();
-                Player.Magic(Target);
-              }
-              break;
-            case 4:
-              if (Player.Params.Mana >= 40) {
-                EnemyChooser();
-                Player.Params.Mana -= 40;
-                Render.PrintMessage(15, "Choose catalyst\n");
-                Render.PrintMessage(
-                    15,
-                    "1. Flame. Ignite element. Doesn't damage but increase "
-                    "status much\n");
-                Render.PrintMessage(
-                    15,
-                    "2. Frost. Break element. Increase damage and status\n");
-                Render.PrintMessage(
-                    15,
-                    "3. Dark. Nullify element. Doesn't create status but "
-                    "make damage bigger\n");
-                Render.PrintMessage(
-                    15,
-                    "4. Psycho. Overload element. Deal low heal to enemy "
-                    "but add large status\n");
-                std::cin >> Choice;
-                switch (Choice) {
-                  case 1:
-                    Player.Params.DamageMult *= 0;
-                    Player.Params.StatusMult *= 3;
-                    break;
-                  case 2:
-                    Player.Params.DamageMult *= 1.5;
-                    Player.Params.StatusMult *= 1.5;
-                    break;
-                  case 3:
-                    Player.Params.DamageMult *= 3;
-                    Player.Params.StatusMult *= 0;
-                    break;
-                  case 4:
-                    Player.Params.DamageMult *= -1;
-                    Player.Params.StatusMult *= 4.5;
-                    break;
-                  default:
-                    Render.CleanRender();
-                    Render.PrintMessage(4, "That didn't work\n");
-                    break;
-                    break;
-                }
-                Player.Magic(Target);
-              }
-              break;
-            default:
-              Render.CleanRender();
-              Render.PrintMessage(4, "That didn't work\n");
-              break;
-          }
-          if (rand() % 101 >= Player.Params.SecondAtkChance) {
-            for (Creature* enemy : Enemies) {
-              if (enemy) {
-                enemy->Act(&Player);
-              }
-            }
-            for (Creature* enemy : Enemies) {
-              if (!enemy->Alive) {
-                delete enemy;
-                erase(Enemies, enemy);
-              }
-            }
-
-            for (Creature* boss : StageBosses) {
-              if (boss) {
-                boss->Act(&Player);
-              }
-            }
-            for (Creature* enemy : StageBosses) {
-              if (!enemy->Alive) {
-                delete enemy;
-                erase(StageBosses, enemy);
-                bool IsAnyBossAlive = false;
-                for (Creature* enemy : StageBosses) {
-                  if (enemy->Alive) {
-                    IsAnyBossAlive = true;
-                    break;
-                  }
-                }
-                if (!IsAnyBossAlive) {
-                  ChangeStage();
-                }
-              }
-            }
-
-            if (Player.Params.HP <= 0) {
-              if (Player.Params.SecondChance > 0) {
-                Player.Params.SecondChance--;
-                Player.Params.HP = 1;
-                Render.PrintMessage(4, "\nMage refused to fall.\n");
-              } else {
-                Render.PrintMessage(4, "\nThe Last Mage fell.\n\n");
-                exit(0);
-              }
-            }
-          }
-        } while (not StageBosses.empty() or not Enemies.empty());
+        GMBattle.StartBattle();
         State = GMStates::Map;
         break;
       case GMStates::Inventory:
-        ShowRings();
+        if (GMInventory.ShowRings()) {
+          State = GMStates::Map;
+        }
         break;
     }
   }
@@ -191,72 +60,13 @@ int Gamemode::TakeInt(int min, int max) {
   } while (true);
 }
 
-void Gamemode::CreateBoss() {
-  switch (CurrStage) {
-    case 0:
-      StageBosses.push_back(new Boss(ResManager.GetCreature("Shield guardian"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      StageBosses.push_back(new Boss(ResManager.GetCreature("Axe guardian"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      break;
-    case 1:
-      StageBosses.push_back(new Boss(ResManager.GetCreature("InfArmY"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      break;
-    case 2:
-      StageBosses.push_back(new Boss(ResManager.GetCreature("GO-13M"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      break;
-    case 3:
-      StageBosses.push_back(new Boss(ResManager.GetCreature("Wings"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      StageBosses.push_back(new Boss(ResManager.GetCreature("Tyrant"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      StageBosses.push_back(new Boss(ResManager.GetCreature("Halo"),
-                                     &StageBosses, &Enemies, &MaxEnemies,
-                                     &ResManager, &Render, &GlobalRenderer));
-      break;
-  }
-}
-
-void Gamemode::EnemyChooser() {
-  Render.PrintMessage(15, "Choose enemy\n");
-  int Chosen;
-  bool flag = true;
-  do {
-    while (!(std::cin >> Chosen)) {
-      Render.PrintMessage(4, "Invalid target\n");
-      std::cin.clear();
-      std::cin.ignore();
-    }
-    if ((Chosen < 1) or Chosen > (Enemies.size() + StageBosses.size())) {
-      Render.PrintMessage(4, "Invalid target!\n");
-      std::cin.clear();
-      std::cin.ignore();
-    } else {
-      if (Chosen <= StageBosses.size()) {
-        Target = StageBosses[Chosen - 1];
-      } else {
-        Target = Enemies[Chosen - StageBosses.size() - 1];
-      }
-      flag = false;
-    }
-  } while (flag);
-}
-
 void Gamemode::ChangeStage() {
   switch (CurrStage) {
     case 0:
       Render.PrintMessage(15, "Axe guardian ring shines bright\n");
       Render.PrintMessage(2, "Ring of memories obtained\n\n");
       Player.Inventory.push_back(
-          Ring(ResManager.GetRing("Ring of memories"), &Player));
+          Ring(Manager.GetRing("Ring of memories"), &Player));
       Render.PrintMessage(7, "Spacious outer palaces look regular");
 
       CoordX = 0, CoordY = 3;
@@ -269,7 +79,7 @@ void Gamemode::ChangeStage() {
       Render.PrintMessage(15, "Ring shines in the dust\n");
       Render.PrintMessage(2, "Ring of arms obtained\n\n");
       Player.Inventory.push_back(
-          Ring(ResManager.GetRing("Ring of arms"), &Player));
+          Ring(Manager.GetRing("Ring of arms"), &Player));
       Render.PrintMessage(7, "Grandiose inner palaces shine before Last Mage");
 
       CoordX = 0, CoordY = 7;
@@ -288,7 +98,7 @@ void Gamemode::ChangeStage() {
           7, "As machine turned off, its chest opened. Inside was a ring\n");
       Render.PrintMessage(2, "Clockwork ring obtained\n\n");
       Player.Inventory.push_back(
-          Ring(ResManager.GetRing("Clockwork ring"), &Player));
+          Ring(Manager.GetRing("Clockwork ring"), &Player));
       Render.PrintMessage(
           7, "Slayers section feels majestically. Soon it will burn");
 
@@ -311,141 +121,6 @@ void Gamemode::ChangeStage() {
   CurrStage += 1;
 }
 
-bool Gamemode::NewRingChooser() {
-  if (GetableRings.empty()) {
-    return false;
-  } else {
-    int ID = rand() % GetableRings.size();
-    NewRing = new Ring(ResManager.GetRing(GetableRings[ID]), &Player);
-    erase(GetableRings, GetableRings[ID]);
-    return true;
-  }
-}
-
-void Gamemode::ShowRings() {
-  Render.PrintMessage(15, "0. Back\n");
-  for (int i = 0; i < Player.Inventory.size(); i++) {
-    Render.PrintMessage(15, i + 1, ". ", Player.Inventory[i].Stats.Name);
-    if (Player.Inventory[i].Stats.Equipped) {
-      Render.PrintMessage(15, " - equipped");
-    }
-    Render.PrintMessage(15, "\n");
-  }
-  InventoryChooser();
-  if (ChosenRing == 0) {
-    return;
-  }
-  Render.PrintMessage(15, "1. Description\n");
-  if (ChosenRing->Stats.Equipped) {
-    Render.PrintMessage(15, "2. Unequip");
-  } else {
-    Render.PrintMessage(15, "2. Equip");
-  }
-  Render.PrintMessage(15, "\n3. Back\n");
-  int Choose;
-  std::cin >> Choose;
-  switch (Choose) {
-    case 1:
-      Render.CleanRender();
-      Render.PrintMessage(15, ChosenRing->Stats.Name, "\n");
-      Render.PrintMessage(15, ChosenRing->Stats.Description, "\n");
-      break;
-    case 2:
-      if (ChosenRing->Stats.Equipped) {
-        ChosenRing->Stats.Equipped = false;
-        ChosenRing->AddRingEffect(true);
-        erase_if(Player.Arm, [](const Ring& r) { return !r.Stats.Equipped; });
-        Render.CleanRender();
-        Render.PrintMessage(15, "Uneqipped\n");
-      } else {
-        Equipper();
-      }
-      break;
-    default:
-      Render.CleanRender();
-      break;
-  }
-}
-
-void Gamemode::InventoryChooser() {
-  Render.PrintMessage(15, "Choose\n");
-  int Chosen;
-  bool flag = true;
-  do {
-    while (!(std::cin >> Chosen)) {
-      Render.PrintMessage(15, "Invalid ring\n");
-    }
-    if (Chosen == 0) {
-      ChosenRing = 0;
-      flag = false;
-      State = GMStates::Map;
-      Render.CleanRender();
-      return;
-    } else {
-      if ((Chosen < 1) or Chosen > (Player.Inventory.size())) {
-        Render.PrintMessage(15, "Invalid ring!\n");
-      } else {
-        ChosenRing = &Player.Inventory[Chosen - 1];
-        flag = false;
-      }
-    }
-  } while (flag);
-}
-
-void Gamemode::Equipper() {
-  Render.PrintMessage(15, "0. Back\n");
-  for (int i = 0; i < Player.Params.RingsMax; i++) {
-    if (i < Player.Arm.size()) {
-      Render.PrintMessage(15, i + 1, ". ", Player.Arm[i].Stats.Name, "\n");
-    } else {
-      Render.PrintMessage(15, i + 1, ". Empty finger\n");
-      break;
-    }
-  }
-  int Chosen, CurrSlot;
-  bool flag = true;
-  do {
-    while (!(std::cin >> Chosen)) {
-      Render.PrintMessage(15, "Invalid slot\n");
-      Render.CleanRender();
-    }
-    if (Chosen == 0) {
-      flag = false;
-      Render.CleanRender();
-      return;
-    } else {
-      if ((Chosen < 1) or Chosen > (Player.Params.RingsMax)) {
-        Render.PrintMessage(15, "Invalid slot!\n");
-      } else {
-        if (Chosen == Player.Arm.size() + 1) {
-          Player.Arm.push_back(*ChosenRing);
-          ChosenRing->Stats.Equipped = true;
-          ChosenRing->AddRingEffect(true);
-          Render.CleanRender();
-          Render.PrintMessage(15, "Equipped\n");
-          return;
-        } else {
-          if (Player.Arm[Chosen - 1].Stats.Uneqippable) {
-            Player.Arm[Chosen - 1].Stats.Equipped = false;
-            Player.Arm[Chosen - 1].AddRingEffect(false);
-            erase_if(Player.Arm,
-                     [](const Ring& r) { return !r.Stats.Equipped; });
-            Player.Arm.push_back(*ChosenRing);
-            ChosenRing->Stats.Equipped = true;
-            ChosenRing->AddRingEffect(true);
-            Render.CleanRender();
-            Render.PrintMessage(15, "Equipped\n");
-            return;
-          } else {
-            Render.PrintMessage(15, "This ring is not removable");
-          }
-        }
-        flag = false;
-      }
-    }
-  } while (flag);
-}
-
 void Gamemode::LocationAct(int roomType) {
   Render.CleanRender();
   switch (roomType) {
@@ -455,20 +130,20 @@ void Gamemode::LocationAct(int roomType) {
       State = GMStates::Inventory;
       break;
     case 1:
-      CreateBoss();
+      GMBattle.CreateBoss();
       State = GMStates::Battle;
       break;
     case 2:
       Render.PrintMessage(4, "Enemy appears\n");
       Enemies.push_back(new Enemy(
-          ResManager.GetCreature(NormalEnemies[rand() % NormalEnemies.size()]),
+          Manager.GetCreature(NormalEnemies[rand() % NormalEnemies.size()]),
           &Enemies, &Render, &GlobalRenderer));
       State = GMStates::Battle;
       break;
     case 3:
       Render.PrintMessage(4, "Powerful enemy appears\n");
       Enemies.push_back(new Enemy(
-          ResManager.GetCreature(EliteEnemies[rand() % EliteEnemies.size()]),
+          Manager.GetCreature(EliteEnemies[rand() % EliteEnemies.size()]),
           &Enemies, &Render, &GlobalRenderer));
       State = GMStates::Battle;
       break;
@@ -483,9 +158,8 @@ void Gamemode::LocationAct(int roomType) {
         case 1:
           Render.PrintMessage(4, "Slayer students attack Last Mage\n");
           for (int i = 0; i < (rand() % 2 + 4); i++) {
-            Enemies.push_back(
-                new Enemy(ResManager.GetCreature("Warrior student"), &Enemies,
-                          &Render, &GlobalRenderer));
+            Enemies.push_back(new Enemy(Manager.GetCreature("Warrior student"),
+                                        &Enemies, &Render, &GlobalRenderer));
           }
           State = GMStates::Battle;
           break;
@@ -500,11 +174,12 @@ void Gamemode::LocationAct(int roomType) {
             case 2:
               int TrapDmg = rand() % 10 + 5;
               Player.Params.HP -= TrapDmg;
-              if (NewRingChooser()) {
+              if (GMInventory.NewRingChooser()) {
                 Render.PrintMessage(15, "Last Mage took a ring in cost of ");
                 Render.PrintMessage(15, TrapDmg, "\n");
-                Render.PrintMessage(2, NewRing->Stats.Name, " obtained", "\n");
-                Player.Inventory.push_back(*NewRing);
+                Render.PrintMessage(2, GMInventory.NewRing->Stats.Name,
+                                    " obtained", "\n");
+                Player.Inventory.push_back(*GMInventory.NewRing);
               } else {
                 Render.PrintMessage(
                     15,
@@ -516,17 +191,18 @@ void Gamemode::LocationAct(int roomType) {
           break;
         case 3:
           Render.PrintMessage(4, "Ambush!\n");
-          Enemies.push_back(new Enemy(ResManager.GetCreature(EliteEnemies[0]),
+          Enemies.push_back(new Enemy(Manager.GetCreature(EliteEnemies[0]),
                                       &Enemies, &Render, &GlobalRenderer));
-          Enemies.push_back(new Enemy(ResManager.GetCreature(NormalEnemies[0]),
+          Enemies.push_back(new Enemy(Manager.GetCreature(NormalEnemies[0]),
                                       &Enemies, &Render, &GlobalRenderer));
           State = GMStates::Battle;
           break;
         case 4:
-          if (NewRingChooser()) {
+          if (GMInventory.NewRingChooser()) {
             Render.PrintMessage(15, "Room contained a ring\n");
-            Render.PrintMessage(15, NewRing->Stats.Name, " obtained", "\n");
-            Player.Inventory.push_back(*NewRing);
+            Render.PrintMessage(15, GMInventory.NewRing->Stats.Name,
+                                " obtained", "\n");
+            Player.Inventory.push_back(*GMInventory.NewRing);
           } else {
             Render.PrintMessage(
                 15, "Room contained a ring. It turned to dust after touch\n");
@@ -552,7 +228,7 @@ void Gamemode::LocationAct(int roomType) {
                   "some of his health. Soon after demon give him a ring\n");
               Render.PrintMessage(4, "- Here you go. Good luck, Last Mage\n");
               Render.PrintMessage(2, "Revengeance ring obtained ", "\n");
-              Player.Inventory.push_back(*NewRing);
+              Player.Inventory.push_back(*GMInventory.NewRing);
               break;
             case 2:
               Render.PrintMessage(4, "- Well, bye then\n");

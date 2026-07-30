@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
 
 #include "boss.h"
@@ -8,6 +6,8 @@
 #include "enemy.h"
 #include "mage.h"
 #include "map.h"
+#include "battle.h"
+#include "inventory.h"
 #include "renderer.h"
 #include "res_manager.h"
 #include "ring.h"
@@ -20,37 +20,29 @@ class Gamemode {
   void Gameloop();
 
  private:
-  int MaxStage, CurrStage, MaxEnemies, CoordX, CoordY;
+  int MaxStage = 0, CurrStage = 0, MaxEnemies, CoordX, CoordY;
   bool OSStudents = true, OSFreeRing = true, OSEmpty = true, ORDemon = true,
        ORDevil = true;
-  GMStates State;
+  GMStates State = GMStates::Battle;
 
   std::vector<std::string> GetableRings = {"Blue Blood ring", "Heart ring",
                                            "Shiny ring", "Scaly ring"},
                            NormalEnemies, EliteEnemies;
 
-  ResourceManager ResManager =
-      ResourceManager("data/creatures.json", "data/rings.json");
+  ResourceManager Manager;
   ConsoleRenderer Render = ConsoleRenderer();
   Renderer GlobalRenderer = Renderer();
 
   std::vector<Creature*> Teammates, Enemies, StageBosses;
-  Mage Player = Mage(ResManager.GetCreature("Last Mage"), &Teammates, &Render,
+  Mage Player = Mage(Manager.GetCreature("Last Mage"), &Teammates, &Render,
                      &GlobalRenderer);
-  Creature* Target = 0;
-  Ring* ChosenRing;
-  Ring* NewRing;
-  Map GMMap = Map(&Render);
+  
+  Map GMMap;
+  Battle GMBattle;
+  Inventory GMInventory;
 
   int TakeInt(int min, int max);
   void LocationAct(int roomType);
-  // Battle
-  void CreateBoss();
-  void EnemyChooser();
+
   void ChangeStage();
-  // Inventory
-  bool NewRingChooser();
-  void ShowRings();
-  void InventoryChooser();
-  void Equipper();
 };

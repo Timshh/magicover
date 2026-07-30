@@ -7,7 +7,7 @@ Boss::Boss(CreatureStats params, std::vector<Creature*>* team,
     : Enemy(params, team, render, renderer),
       Enemies(enemies),
       MaxEnemies(maxenemies),
-      ResManager(resmanager),
+      Manager(resmanager),
       GlobalRenderer(renderer) {
   switch (Params.SpecAtkID) {
     case 1:
@@ -73,7 +73,7 @@ void Boss::SpecialAttack(Creature* target) {
       break;
     case 3:
       if (Enemies->size() < *MaxEnemies) {
-        Enemies->push_back(new Enemy(ResManager->GetCreature("Arms cluster"),
+        Enemies->push_back(new Enemy(Manager->GetCreature("Arms cluster"),
                                      Enemies, Render, GlobalRenderer));
         Render->PrintMessage(15, "Witch created cluster of arms\n");
       } else {
