@@ -6,7 +6,6 @@
 #include <iostream>
 #include <vector>
 
-#include "consoleRenderer.h"
 #include "creatureObserver.h"
 #include "creature_stats.h"
 
@@ -14,16 +13,15 @@ class Creature {
  public:
   bool Alive = true;
 
-  Creature(CreatureStats params, std::vector<Creature*>* team,
-           ConsoleRenderer* render, Renderer* renderer);
+  Creature(CreatureStats const params, std::vector<Creature*>* const team);
 
-  void virtual Act(Creature* target);
-  void virtual ReceiveDmg(float damage, int element, float status);
+  void virtual Act(Creature* const target);
+  void virtual ReceiveDmg(float const damage, int const element,
+                          float const status);
   void virtual CheckHP();
   CreatureStats Params;
   std::vector<Creature*>* Team;
 
  protected:
-  ConsoleRenderer* Render;
   CreatureObserver PersonalObserver;
 };

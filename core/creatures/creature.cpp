@@ -1,15 +1,14 @@
 ﻿#include "creature.h"
 
-Creature::Creature(CreatureStats params, std::vector<Creature*>* team,
-                   ConsoleRenderer* render, Renderer* renderer)
+Creature::Creature(CreatureStats const params,
+                   std::vector<Creature*>* const team)
     : PersonalObserver(CreatureObserver()),
       Params(params),
-      Team(team),
-      Render(render) {
-  PersonalObserver.AddSubscriber(renderer);
+      Team(team) {
 }
 
-void Creature::ReceiveDmg(float damage, int element, float status) {
+void Creature::ReceiveDmg(float const damage, int const element,
+                          float const status) {
   float Hit = damage * Params.Defence;
   Params.HP -= Hit;
   std::cout << Params.Name + " got hit - " << Hit << " damage\n";
@@ -57,7 +56,7 @@ void Creature::CheckHP() {
   }
 }
 
-void Creature::Act(Creature* target) {
+void Creature::Act(Creature* const target) {
   Params.HP -= Params.Flame;
   CheckHP();
 }

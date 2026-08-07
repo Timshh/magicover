@@ -3,20 +3,17 @@
 #include <iostream>
 #include <vector>
 #include "mapgenerator.h"
-#include "consoleRenderer.h"
 
 class Map{
  public:
-  Map(ConsoleRenderer* render);
+  Map();
 
   void CreateMap();
-  int MapAct();
+  int MapAct(int const way);
 
  private:
   MapGenerator Generator = MapGenerator();
 
   MapGraph CurrentMap;
   int CurrentLocation;
-
-  ConsoleRenderer* Render;
 };

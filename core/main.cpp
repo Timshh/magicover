@@ -1,9 +1,11 @@
-﻿#include "gamemode.h"
-#include <ctime>
+﻿#include <ctime>
 
-int main() { 
-	srand(time(NULL));
-  Gamemode Game = Gamemode();
-  Game.Gameloop();
+#include "consoleUI.h"
+#include "core.h"
+
+int main() {
+  srand(time(NULL));
+  ConsoleUI UI;
+  UI.Run();
   return 0;
 }

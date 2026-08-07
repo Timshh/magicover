@@ -5,18 +5,16 @@
 
 class Boss : public Enemy {
  public:
-  Boss(CreatureStats params, std::vector<Creature*>* team,
-       std::vector<Creature*>* enemies, int* maxenemies,
-       ResourceManager* Manager, ConsoleRenderer* render,
-       Renderer* renderer);
-  void SpecialAttack(Creature* target);
-  void Act(Creature* target) override;
+  Boss(CreatureStats const params, std::vector<Creature*>* const team,
+       std::vector<Creature*>* const enemies, int* const maxenemies,
+       ResourceManager* const Manager);
+  void SpecialAttack(Creature* const target);
+  void Act(Creature* const target) override;
   void CheckHP() override;
 
  protected:
   int* MaxEnemies;
   bool SpecFlag = false;
-  Renderer* GlobalRenderer;
   ResourceManager* Manager;
   std::vector<Creature*>* Enemies;
 };

@@ -3,28 +3,21 @@
 #include <iostream>
 #include <vector>
 
-#include "consoleRenderer.h"
 #include "mage.h"
 #include "res_manager.h"
 #include "ring.h"
 
 class Inventory {
  public:
-  Inventory(ConsoleRenderer* const render, Mage* const player,
-            std::vector<std::string>* const getableRings,
-            ResourceManager* const manager);
+  Inventory(Mage* const player, ResourceManager* const manager);
 
-  bool NewRingChooser();
-  bool ShowRings();
-  bool InventoryChooser();
-  void Equipper();
-  Ring* NewRing;
+  std::vector<std::string> GetableRings;
+  void Equipper(int const ringid, int const slot);
+  void Unequipper(int const slot);
+  void AddRing(std::string const id = "");
 
  private:
-  
   Ring* ChosenRing;
-  ConsoleRenderer* Render;
   Mage* Player;
-  std::vector<std::string>* GetableRings;
   ResourceManager* Manager;
 };
