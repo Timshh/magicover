@@ -18,6 +18,7 @@ enum class GMStates { Battle, Map, Inventory };
 class Core {
  private:
   ResourceManager Manager;
+  CoreObserver Observer;
 
  public:
   Core();
@@ -44,7 +45,7 @@ class Core {
   Mage Player;
 
  private:
-  CoreObserver Observer;
+  
 
   Map GMMap;
 

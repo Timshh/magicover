@@ -19,6 +19,7 @@ class ConsoleUI : public UIController {
   void SetColor(int const color);
   void CleanRender();
   void Run();
+  void CallAct(RenderActions const action, int ID, int params) override;
 
  private:
   int TakeInt(int const min, int const max);

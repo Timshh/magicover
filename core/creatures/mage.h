@@ -5,7 +5,8 @@
 
 class Mage : public Creature {
  public:
-  Mage(CreatureStats const params, std::vector<Creature*>* const team);
+  Mage(CreatureStats const params, std::vector<Creature*>* const team,
+       CoreObserver* const observer, int const id);
   std::vector<Ring> Inventory;
   std::vector<Ring> Arm;
 

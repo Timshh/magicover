@@ -2,8 +2,9 @@
 
 Boss::Boss(CreatureStats const params, std::vector<Creature*>* const team,
            std::vector<Creature*>* const enemies, int* const maxenemies,
-           ResourceManager* const resmanager)
-    : Enemy(params, team),
+           ResourceManager* const resmanager, CoreObserver* const observer,
+           int const id)
+    : Enemy(params, team, observer, id),
       Enemies(enemies),
       MaxEnemies(maxenemies),
       Manager(resmanager) {
@@ -33,7 +34,7 @@ void Boss::SpecialAttack(Creature* const target) {
     case 3:
       if (Enemies->size() < *MaxEnemies) {
         Enemies->push_back(
-            new Enemy(Manager->GetCreature("Arms cluster"), Enemies));
+            new Enemy(Manager->GetCreature("Arms cluster"), Enemies, Observer, Enemies->size()));
       } else {
         Params.HP -= 20;
         CheckHP();

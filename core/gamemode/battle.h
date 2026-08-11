@@ -5,12 +5,13 @@
 #include "enemy.h"
 #include "mage.h"
 #include "res_manager.h"
+#include "coreObserver.h"
 
 enum class BattleActions { Regenerate, SupportSpell, Spell, PowerfulSpell };
 
 class Battle {
  public:
-  Battle(Mage* const player, ResourceManager* const manager);
+  Battle(Mage* const player, ResourceManager* const manager, CoreObserver* observer);
 
   void CreateBoss(int const stage);
   void CreateEnemy(std::string const id = "");
@@ -25,6 +26,7 @@ class Battle {
   std::vector<Creature*> Teammates, Enemies, StageBosses;
 
  private:
+  CoreObserver* Observer;
   void BossCreator(std::string const id);
   void PrepareCast(int const choice);
   Mage* Player;

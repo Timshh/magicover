@@ -2,4 +2,4 @@
 
 UIController::UIController() {}
 
-void UIController::CallAct(RenderActions const action) {}
+void UIController::CallAct(RenderActions const action, int ID, int params) {}

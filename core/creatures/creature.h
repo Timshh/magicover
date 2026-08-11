@@ -6,14 +6,14 @@
 #include <iostream>
 #include <vector>
 
-#include "creatureObserver.h"
+#include "coreObserver.h"
 #include "creature_stats.h"
 
 class Creature {
  public:
   bool Alive = true;
 
-  Creature(CreatureStats const params, std::vector<Creature*>* const team);
+  Creature(CreatureStats const params, std::vector<Creature*>* const team, CoreObserver* const observer, int const id);
 
   void virtual Act(Creature* const target);
   void virtual ReceiveDmg(float const damage, int const element,
@@ -23,5 +23,6 @@ class Creature {
   std::vector<Creature*>* Team;
 
  protected:
-  CreatureObserver PersonalObserver;
+  int ID;
+  CoreObserver* Observer;
 };

@@ -1,7 +1,8 @@
 ﻿#include "mage.h"
 
-Mage::Mage(CreatureStats const params, std::vector<Creature*>* const team)
-    : Creature(params, team) {}
+Mage::Mage(CreatureStats const params, std::vector<Creature*>* const team,
+           CoreObserver* const observer, int const id)
+    : Creature(params, team, observer, id) {}
 
 void Mage::Act(Creature* const target) { Creature::Act(target); }
 

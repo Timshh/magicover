@@ -1,12 +1,13 @@
 ﻿#include "battle.h"
 
-Battle::Battle(Mage* const player, ResourceManager* const manager)
+Battle::Battle(Mage* const player, ResourceManager* const manager,
+               CoreObserver* observer)
     : Teammates({player}),
       Enemies(),
       StageBosses(),
       Player(player),
       MaxEnemies(5),
-      Manager(manager) {}
+      Manager(manager), Observer(observer) {}
 
 void Battle::CreateBoss(int const stage) {
   switch (stage) {
@@ -34,7 +35,7 @@ void Battle::CreateEnemy(std::string const id) {
   if (id == "") {
     index = NormalEnemies[rand() % NormalEnemies.size()];
   }
-  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies));
+  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies, Observer, Enemies.size()));
 }
 
 void Battle::CreateElite(std::string const id) {
@@ -42,7 +43,8 @@ void Battle::CreateElite(std::string const id) {
   if (id == "") {
     index = EliteEnemies[rand() % EliteEnemies.size()];
   }
-  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies));
+  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies, Observer,
+                              Enemies.size()));
 }
 
 std::vector<BattleActions> Battle::BattleGetActions() {
@@ -59,7 +61,8 @@ std::vector<BattleActions> Battle::BattleGetActions() {
 
 void Battle::BossCreator(std::string const id) {
   StageBosses.push_back(new Boss(Manager->GetCreature(id), &StageBosses,
-                                 &Enemies, &MaxEnemies, Manager));
+                                 &Enemies, &MaxEnemies, Manager, Observer,
+                                 StageBosses.size() + 10000));
 }
 
 void Battle::PrepareCast(int const choice) {

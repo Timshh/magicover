@@ -4,7 +4,8 @@
 
 class Enemy : public Creature {
  public:
-  Enemy(CreatureStats params, std::vector<Creature*>* team);
+  Enemy(CreatureStats params, std::vector<Creature*>* team,
+        CoreObserver* const observer, int const id);
 
   void Attack(Creature* target);
   void Status();

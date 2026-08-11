@@ -4,12 +4,12 @@ Core::Core()
     : GMMap(),
       Manager("data/creatures.json", "data/rings.json"),
       Observer(),
-      GMBattle(&Player, &Manager),
-      Player(Manager.GetCreature("Last Mage"), &GMBattle.Teammates),
+      GMBattle(&Player, &Manager, &Observer),
+      Player(Manager.GetCreature("Last Mage"), &GMBattle.Teammates, &Observer,
+             -1),
       GMRoom(&Player, &GMInventory, &GMBattle),
       GMInventory(&Player, &Manager),
-      CurrStage(0)
-       {}
+      CurrStage(0) {}
 
 std::vector<BattleActions> Core::BattleGetActions() {
   return GMBattle.BattleGetActions();

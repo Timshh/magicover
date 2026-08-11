@@ -1,7 +1,8 @@
 ﻿#include "enemy.h"
 
-Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team)
-    : Creature(params, team) {}
+Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team,
+             CoreObserver* const observer, int const id)
+    : Creature(params, team, observer, id) {}
 
 void Enemy::Act(Creature* target) {
   Creature::Act(target);
@@ -11,16 +12,16 @@ void Enemy::Act(Creature* target) {
 }
 
 void Enemy::Attack(Creature* target) {
-  PersonalObserver.CallAct(RenderActions::Attack);
   int AtkDamage = (Params.Damage + rand() % (Params.DamageRand + 1)) *
                   (1 - Params.Frost / 100);
   if (rand() % 100 >= Params.Psycho) {
     if (rand() % 100 >= Params.Dark) {
-      target->Params.HP -= AtkDamage * target->Params.Defence;
+      Observer->CallAct(RenderActions::Attack, ID);
+      target->ReceiveDmg(AtkDamage, 0, 0);
     } else {
     }
   } else {
-    Params.HP -= AtkDamage;
+    ReceiveDmg(AtkDamage, 0, 0);
   }
 }
 
@@ -38,7 +39,6 @@ void Enemy::Status() {
 }
 
 void Enemy::ReceiveDmg(float damage, int element, float status) {
-  PersonalObserver.CallAct(RenderActions::TakeDamage);
   Creature::ReceiveDmg(damage, element, status);
 }
 

@@ -1,24 +1,23 @@
 ﻿#include "creature.h"
 
 Creature::Creature(CreatureStats const params,
-                   std::vector<Creature*>* const team)
-    : PersonalObserver(CreatureObserver()),
-      Params(params),
-      Team(team) {
-}
+                   std::vector<Creature*>* const team,
+                   CoreObserver* const observer, int const id)
+    : Params(params), Team(team), Observer(observer), ID(id) {}
 
 void Creature::ReceiveDmg(float const damage, int const element,
                           float const status) {
   float Hit = damage * Params.Defence;
   Params.HP -= Hit;
-  std::cout << Params.Name + " got hit - " << Hit << " damage\n";
+  Observer->CallAct(RenderActions::TakeDamage, ID, Hit);
   switch (element) {
     case 1:
       Params.Flame += status * Params.FlameResist;
       if (Params.Flame >= 50) {
         Params.Flame = 0;
         Params.HP -= 100;
-        std::cout << "Flame overload! " << Params.Name << " exploded";
+        Observer->CallAct(RenderActions::TakeDamage, ID, 100);
+        //std::cout << "Flame overload! " << Params.Name << " exploded";
       }
       break;
     case 2:
@@ -26,7 +25,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Frost >= 50) {
         Params.Frost = 0;
         Params.HP -= 100;
-        std::cout << "Frost overload! " << Params.Name << " were frozen";
+        Observer->CallAct(RenderActions::TakeDamage, ID, 100);
+        //std::cout << "Frost overload! " << Params.Name << " were frozen";
       }
       break;
     case 3:
@@ -34,7 +34,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Dark >= 50) {
         Params.Dark = 0;
         Params.HP -= 100;
-        std::cout << "Dark overload! " << Params.Name << " got corrupted";
+        Observer->CallAct(RenderActions::TakeDamage, ID, 100);
+        //std::cout << "Dark overload! " << Params.Name << " got corrupted";
       }
       break;
     case 4:
@@ -42,8 +43,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Psycho >= 50) {
         Params.Psycho = 0;
         Params.HP -= 100;
-        std::cout << "Psycho overload! " << Params.Name
-                  << " attacked self in hysteria";
+        Observer->CallAct(RenderActions::TakeDamage, ID, 100);
+        //std::cout << "Psycho overload! " << Params.Name << " attacked self in hysteria";
       }
       break;
   }

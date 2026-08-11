@@ -8,7 +8,6 @@ class CreatureObserver {
  public:
   void AddSubscriber(UIController* const subscriber);
   void RemoveSubscriber(UIController* const subscriber);
-  void CallAct(RenderActions const action);
   CreatureObserver();
 
  private:

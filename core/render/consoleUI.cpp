@@ -151,6 +151,27 @@ void ConsoleUI::Run() {
   }
 }
 
+void ConsoleUI::CallAct(RenderActions const action, int ID, int params) {
+  Creature* target;
+  if (ID == -1) {
+    target = &Game.Player;
+  } else {
+    if (ID >= 10000) {
+      target = Game.GMBattle.StageBosses[ID - 10000];
+    } else {
+      target = Game.GMBattle.Enemies[ID];
+    }
+  }
+  switch (action) {
+    case RenderActions::Attack:
+      PrintMessage(15, target->Params.Name, " attacks\n");
+      break;
+    case RenderActions::TakeDamage:
+      PrintMessage(15, target->Params.Name, " recieved ", params, " damage\n");
+      break;
+  }
+}
+
 int ConsoleUI::TakeInt(int const min, int const max) {
   int Chosen;
   do {
