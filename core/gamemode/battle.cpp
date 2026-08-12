@@ -7,7 +7,8 @@ Battle::Battle(Mage* const player, ResourceManager* const manager,
       StageBosses(),
       Player(player),
       MaxEnemies(5),
-      Manager(manager), Observer(observer) {}
+      Manager(manager),
+      Observer(observer) {}
 
 void Battle::CreateBoss(int const stage) {
   switch (stage) {
@@ -35,7 +36,8 @@ void Battle::CreateEnemy(std::string const id) {
   if (id == "") {
     index = NormalEnemies[rand() % NormalEnemies.size()];
   }
-  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies, Observer, Enemies.size()));
+  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies, Observer,
+                              Enemies.size()));
 }
 
 void Battle::CreateElite(std::string const id) {
@@ -131,36 +133,24 @@ void Battle::BattleAct(BattleActions const action, int const choice1,
   }
   if (rand() % 101 >= Player->Params.SecondAtkChance) {
     for (Creature* enemy : Enemies) {
-      if (enemy) {
+      if (enemy && enemy->Alive) {
         enemy->Act(Player);
-      }
-    }
-    for (Creature* enemy : Enemies) {
-      if (!enemy->Alive) {
-        delete enemy;
-        erase(Enemies, enemy);
       }
     }
 
     for (Creature* boss : StageBosses) {
-      if (boss) {
+      if (boss && boss->Alive) {
         boss->Act(Player);
       }
     }
+    bool IsAnyBossAlive = false;
     for (Creature* enemy : StageBosses) {
-      if (!enemy->Alive) {
-        delete enemy;
-        erase(StageBosses, enemy);
-        bool IsAnyBossAlive = false;
-        for (Creature* enemy : StageBosses) {
-          if (enemy->Alive) {
-            IsAnyBossAlive = true;
-            break;
-          }
-        }
-        if (!IsAnyBossAlive) {
-        }
+      if (enemy->Alive) {
+        IsAnyBossAlive = true;
+        break;
       }
+    }
+    if (!IsAnyBossAlive) {
     }
   }
 }

@@ -18,15 +18,20 @@ void ConsoleUI::Battle() {
   for (int i = 1; i <= Game.GMBattle.Enemies.size(); i++) {
     Creature* enemy = Game.GMBattle.Enemies[i - 1];
     PrintMessage(7, i, ". ");
-    if (enemy->Params.HP >= enemy->Params.HPMax / 2) {
-      PrintMessage(15, enemy->Params.CalmText);
-    } else {
-      if (enemy->Params.HP >= enemy->Params.HPMax / 4) {
-        PrintMessage(15, enemy->Params.HurtText);
+    if (enemy->Alive) {
+      if (enemy->Params.HP >= enemy->Params.HPMax / 2) {
+        PrintMessage(15, enemy->Params.CalmText);
       } else {
-        PrintMessage(15, enemy->Params.DamagedText);
+        if (enemy->Params.HP >= enemy->Params.HPMax / 4) {
+          PrintMessage(15, enemy->Params.HurtText);
+        } else {
+          PrintMessage(15, enemy->Params.DamagedText);
+        }
       }
+    } else {
+      PrintMessage(15, enemy->Params.Name, ", dead");
     }
+
     PrintMessage(12, " ", enemy->Params.Flame);
     PrintMessage(11, " ", enemy->Params.Frost);
     PrintMessage(8, " ", enemy->Params.Dark);
@@ -164,11 +169,145 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params) {
   }
   switch (action) {
     case RenderActions::Attack:
-      PrintMessage(15, target->Params.Name, " attacks\n");
+      PrintMessage(
+          15, target->Params.AtkTexts[rand() % target->Params.AtkTexts.size()],
+          "\n");
       break;
+
+    case RenderActions::SupportSpell:
+      switch (params) {
+        case 1:
+          CleanRender();
+          PrintMessage(15, "Last mage blood became gray. His protction rise\n");
+          break;
+        case 2:
+          CleanRender();
+          PrintMessage(15,
+                       "Last Mage heart beat strong and slow, "
+                       "regenerating his health\n");
+          break;
+        case 3:
+          CleanRender();
+          PrintMessage(
+              15,
+              "Last Mage heart glow inside his chest, refilling his health. He "
+              "is vulnerable now\n");
+          break;
+      }
+      break;
+
     case RenderActions::TakeDamage:
       PrintMessage(15, target->Params.Name, " recieved ", params, " damage\n");
       break;
+
+    case RenderActions::SpecialAttack:
+      switch (target->Params.SpecAtkID) {
+        case 1:
+          PrintMessage(
+              15, "Shield guardian used heal potion - restored 20 health\n");
+          break;
+        case 2:
+          PrintMessage(15,
+                       "Axe guardian looked at ring on his arm. His "
+                       "elemental statuses "
+                       "decreased slightly\n");
+          break;
+        case 3:
+          PrintMessage(15, "Witch created cluster of arms\n");
+          PrintMessage(
+              15,
+              "Witch tried to create more arms but overloaded herself - 20 "
+              "damage\n");
+          break;
+        case 4:
+          PrintMessage(15, "Golem releases steam\n");
+          PrintMessage(12, "- Overheat. Processing...\n");
+          break;
+        case 5:
+          std::cout,
+              "Wings throw feathers around. Feathers decrease enemy "
+              "statuses\n";
+          break;
+        case 6:
+          PrintMessage(
+              15, "Tyrant emits a mighty roar and strike with all limbs. ");
+          break;
+        case 7:
+          PrintMessage(
+              15,
+              "Halo shine with purple light. Light heal all enemies by 20 "
+              "health\n");
+          break;
+      }
+      break;
+
+    case RenderActions::Death:
+      if (ID == -1) {
+        PrintMessage(15, "Last Mage fell\n\n");
+      } else {
+        PrintMessage(15, target->Params.DeathText, "\n");
+      }
+      break;
+
+    case RenderActions::AtkPreparing:
+      switch (target->Params.SpecAtkID) {
+        case 6:
+          PrintMessage(15, "Tyrant prepares something, her core glow bright\n");
+          break;
+      }
+      break;
+
+    case RenderActions::Appear:
+      switch (target->Params.SpecAtkID) {
+        case 1:
+          PrintMessage(8,
+                       "Two guardians of castle stand before Last Mage. "
+                       "One raise his "
+                       "heavy shield, another prepared "
+                       "battle axe. Fight is only "
+                       "option\n");
+          break;
+        case 3:
+          PrintMessage(
+              8,
+              "The palace smell dry. In center of it stands mummified "
+              "witch "
+              "corpse with eight arms. As Mage get closer she rise her "
+              "gaze "
+              "to "
+              "Last Mage, her dead eyes glow red. This is mad witch who "
+              "cheated death now known as ");
+          PrintMessage(4, "InfArmY");
+          PrintMessage(8, " - supreme ripper\n");
+          break;
+        case 4:
+          PrintMessage(8,
+                       "As Last Mage enter the palace, smoke fill it. As "
+                       "steam cleared, "
+                       "Gorgeous machine stood before Last Mage. ");
+          PrintMessage(14, "GO-13M. Greatest clockwork mechanism.");
+          PrintMessage(
+              8, " It's a pity that such perfection is enemy of the Mage\n");
+          PrintMessage(12, "- Powerful treat detected. Starting battle\n ");
+          break;
+        case 6:
+          PrintMessage(
+              8,
+              "Gorgeous creature were watching in mosaic window as Last "
+              "Mage "
+              "appeared. It slowly turns to manifest itself. Thin legs "
+              "levitate "
+              "above ground, Halo shines with purple, Wings spread wide "
+              "and "
+              "separate from body, long "
+              "tail curl around thin arm and purple core shine inside its "
+              "chest. Round dark helmet hide its head. Creature look too "
+              "weird "
+              "to be a human. This is the final battle. Battle with\n");
+          PrintMessage(13, "TYRANT");
+          PrintMessage(8, " - the order creator and the first slayer\n");
+          break;
+      }
   }
 }
 

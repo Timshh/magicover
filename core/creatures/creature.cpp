@@ -53,6 +53,7 @@ void Creature::ReceiveDmg(float const damage, int const element,
 
 void Creature::CheckHP() {
   if (Params.HP <= 0) {
+    Observer->CallAct(RenderActions::Death, ID);
     Alive = false;
   }
 }

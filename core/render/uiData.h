@@ -2,6 +2,14 @@
 
 enum class RenderActions {
   Attack,
-  TakeDamage
+  TakeDamage,
+  SpecialAttack,
+  Spell,
+  PowerfulSpell,
+  SupportSpell,
+  Regen,
+  Death,
+  Appear,
+  AtkPreparing
 
 };

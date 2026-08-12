@@ -21,6 +21,7 @@ Boss::Boss(CreatureStats const params, std::vector<Creature*>* const team,
 }
 
 void Boss::SpecialAttack(Creature* const target) {
+  Observer->CallAct(RenderActions::SpecialAttack, ID);
   switch (Params.SpecAtkID) {
     case 1:
       Params.HP = min(Params.HP + 20, Params.HPMax);
