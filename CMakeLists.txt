@@ -63,6 +63,7 @@ set (HEADERS "core/rings/ring.h"
 "core/gamemode/battle.h"
 "core/gamemode/map.h"
 "core/gamemode/room.h"
+"core/gamemode/mapData.h"
 "core/gamemode/inventory.h")
 
 add_executable (${PROJECT_NAME} ${SOURCES} ${HEADERS})

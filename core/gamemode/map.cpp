@@ -4,14 +4,16 @@ Map::Map() { CreateMap(); }
 
 void Map::CreateMap() {
   CurrentMap = Generator.GenerateMap();
-  CurrentLocation = CurrentMap.Start;
+  CurrentLocation = 0;
 }
 
 int Map::MapAct(int const way) {
-  CurrentLocation = CurrentMap.Nodes[CurrentLocation].Next[way - 2];
-  if (CurrentLocation != CurrentMap.Boss) {
-    return CurrentMap.Nodes[CurrentLocation].Type;
-  } else {
-    return 0;
-  }
+  CurrentLocation = way;
+  return CurrentMap.Nodes[CurrentLocation].Type;
+}
+
+int Map::GetNodeType(int const id) { return CurrentMap.Nodes.at(id).Type; }
+
+std::vector<int> Map::GetWays() {
+  return CurrentMap.Nodes[CurrentLocation].Next;
 }

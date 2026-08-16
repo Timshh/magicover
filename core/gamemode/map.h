@@ -10,6 +10,8 @@ class Map{
 
   void CreateMap();
   int MapAct(int const way);
+  int GetNodeType(int const id);
+  std::vector<int> GetWays();
 
  private:
   MapGenerator Generator = MapGenerator();

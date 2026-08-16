@@ -7,6 +7,9 @@ Creature::Creature(CreatureStats const params,
 
 void Creature::ReceiveDmg(float const damage, int const element,
                           float const status) {
+  if (!Alive) {
+    return;
+  }
   float Hit = damage * Params.Defence;
   Params.HP -= Hit;
   Observer->CallAct(RenderActions::TakeDamage, ID, Hit);
@@ -16,8 +19,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Flame >= 50) {
         Params.Flame = 0;
         Params.HP -= 100;
+        Observer->CallAct(RenderActions::Overload, ID, 1);
         Observer->CallAct(RenderActions::TakeDamage, ID, 100);
-        //std::cout << "Flame overload! " << Params.Name << " exploded";
       }
       break;
     case 2:
@@ -25,8 +28,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Frost >= 50) {
         Params.Frost = 0;
         Params.HP -= 100;
+        Observer->CallAct(RenderActions::Overload, ID, 2);
         Observer->CallAct(RenderActions::TakeDamage, ID, 100);
-        //std::cout << "Frost overload! " << Params.Name << " were frozen";
       }
       break;
     case 3:
@@ -34,8 +37,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Dark >= 50) {
         Params.Dark = 0;
         Params.HP -= 100;
+        Observer->CallAct(RenderActions::Overload, ID, 3);
         Observer->CallAct(RenderActions::TakeDamage, ID, 100);
-        //std::cout << "Dark overload! " << Params.Name << " got corrupted";
       }
       break;
     case 4:
@@ -43,8 +46,8 @@ void Creature::ReceiveDmg(float const damage, int const element,
       if (Params.Psycho >= 50) {
         Params.Psycho = 0;
         Params.HP -= 100;
+        Observer->CallAct(RenderActions::Overload, ID, 4);
         Observer->CallAct(RenderActions::TakeDamage, ID, 100);
-        //std::cout << "Psycho overload! " << Params.Name << " attacked self in hysteria";
       }
       break;
   }
@@ -52,6 +55,9 @@ void Creature::ReceiveDmg(float const damage, int const element,
 }
 
 void Creature::CheckHP() {
+  if (!Alive) {
+    return;
+  }
   if (Params.HP <= 0) {
     Observer->CallAct(RenderActions::Death, ID);
     Alive = false;
@@ -59,6 +65,9 @@ void Creature::CheckHP() {
 }
 
 void Creature::Act(Creature* const target) {
+  if (!Alive) {
+    return;
+  }
   Params.HP -= Params.Flame;
   CheckHP();
 }

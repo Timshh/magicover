@@ -29,7 +29,6 @@ void Mage::ReceiveDmg(float const damage, int const element,
 void Mage::CheckHP() { Creature::CheckHP(); }
 
 void Mage::Offence(int const choice) {
-  Observer->CallAct(RenderActions::SupportSpell, ID, choice);
   switch (choice) {
     case 1:
       Params.Defence = 0.5;

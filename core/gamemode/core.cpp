@@ -20,7 +20,13 @@ void Core::BattleAct(BattleActions const action, int const choice1,
   GMBattle.BattleAct(action, choice1, target, choice2);
 }
 
-void Core::BattleFinish() { State = GMStates::Map; }
+void Core::BattleFinish() {
+  State = GMStates::Map;
+  if (IsFightingBoss) {
+    IsFightingBoss = false;
+    ChangeStage();
+  }
+}
 
 void Core::MapChooseRoom(int const way) {
   switch (GMMap.MapAct(way)) {
@@ -28,6 +34,7 @@ void Core::MapChooseRoom(int const way) {
       State = GMStates::Inventory;
       break;
     case 1:
+      IsFightingBoss = true;
       GMBattle.CreateBoss(CurrStage);
       State = GMStates::Battle;
       break;
@@ -71,11 +78,14 @@ void Core::RingEquip(int const ringid, int const slot) {
 void Core::RingUnequip(int const slot) { GMInventory.Unequipper(slot); }
 
 void Core::StartGame() {
+  Observer.CallAct(RenderActions::GameStart);
   GMBattle.CreateBoss(CurrStage);
   State = GMStates::Battle;
+  IsFightingBoss = true;
 }
 
 void Core::ChangeStage() {
+  Observer.CallAct(RenderActions::StageChange, -2, CurrStage);
   switch (CurrStage) {
     case 0:
       GMInventory.AddRing("Ring of memories");
@@ -83,7 +93,6 @@ void Core::ChangeStage() {
       GMBattle.NormalEnemies = {"Hunter", "Warrior student", "Knight",
                                 "Demon",  "Pseudo-Witch",    "Pseudo-Mage"};
       GMBattle.EliteEnemies = {"Archer", "Draconic hunter"};
-      GMMap.CreateMap();
       break;
     case 1:
       GMInventory.AddRing("Ring of arms");
@@ -93,7 +102,6 @@ void Core::ChangeStage() {
       GMBattle.EliteEnemies = {"Automaton-Hunter", "Armored knight"};
       GMInventory.GetableRings.assign(
           {"Thorn ring", "Light ring", "Light ring", "Glass ring"});
-      GMMap.CreateMap();
       break;
     case 2:
       GMInventory.AddRing("Clockwork ring");
@@ -103,10 +111,10 @@ void Core::ChangeStage() {
                                 "Witch candidate",   "Automaton-Dragon"};
       GMBattle.EliteEnemies = {"Slayer candidate", "Slayer"};
       GMInventory.GetableRings.assign({"Unstable ring", "Dice ring"});
-      GMMap.CreateMap();
       break;
     case 3:
       exit(0);
   }
+  GMMap.CreateMap();
   CurrStage += 1;
 }

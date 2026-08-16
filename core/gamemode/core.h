@@ -42,15 +42,13 @@ class Core {
   int CurrStage;
   GMStates State;
   Battle GMBattle;
+  Map GMMap;
+  Inventory GMInventory;
+  Room GMRoom;
   Mage Player;
 
  private:
-  
-
-  Map GMMap;
-
-  Inventory GMInventory;
-  Room GMRoom;
+  bool IsFightingBoss = false;
 
   void ChangeStage();
 };

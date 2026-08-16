@@ -3,15 +3,7 @@
 #include <iostream>
 #include <vector>
 
-struct Node {
-  int ID, Layer, Type;
-  std::vector<int> Next;
-};
-
-struct MapGraph {
-  std::vector<Node> Nodes;
-  int Start, Boss;
-};
+#include "mapData.h"
 
 class MapGenerator {
  public:

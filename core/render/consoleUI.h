@@ -16,6 +16,8 @@ class ConsoleUI : public UIController {
     (std::cout << ... << args);
   }
   void Battle();
+  void Map();
+  void Inventory();
   void SetColor(int const color);
   void CleanRender();
   void Run();

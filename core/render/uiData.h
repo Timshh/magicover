@@ -10,6 +10,9 @@ enum class RenderActions {
   Regen,
   Death,
   Appear,
-  AtkPreparing
-
+  AtkPreparing,
+  BattleEnd,
+  StageChange,
+  GameStart,
+  Overload
 };

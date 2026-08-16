@@ -65,28 +65,29 @@ void Battle::BossCreator(std::string const id) {
   StageBosses.push_back(new Boss(Manager->GetCreature(id), &StageBosses,
                                  &Enemies, &MaxEnemies, Manager, Observer,
                                  StageBosses.size() + 10000));
+  Observer->CallAct(RenderActions::Appear, StageBosses.size() + 9999);
 }
 
 void Battle::PrepareCast(int const choice) {
   switch (choice) {
     case 1:
       Player->Params.Damage = 20;
-      Player->Params.Status = 1;
+      Player->Params.Status = 5;
       Player->Params.Element = 1;
       break;
     case 2:
       Player->Params.Damage = 25;
-      Player->Params.Status = 0.75;
+      Player->Params.Status = 3.5;
       Player->Params.Element = 2;
       break;
     case 3:
       Player->Params.Damage = 15;
-      Player->Params.Status = 1.25;
+      Player->Params.Status = 7.5;
       Player->Params.Element = 3;
       break;
     case 4:
       Player->Params.Damage = 10;
-      Player->Params.Status = 1.5;
+      Player->Params.Status = 9;
       Player->Params.Element = 4;
       break;
   }
@@ -98,20 +99,23 @@ void Battle::BattleAct(BattleActions const action, int const choice1,
     case BattleActions::Regenerate:
       Player->Params.Mana =
           min(Player->Params.Mana + 15, Player->Params.ManaMax);
+      Observer->CallAct(RenderActions::Regen, -1);
       break;
     case BattleActions::SupportSpell:
       Player->Params.Mana -= 20;
+      Observer->CallAct(RenderActions::SupportSpell, -1, choice1);
       Player->Offence(choice1);
       break;
     case BattleActions::Spell:
       Player->Params.Mana -= 20;
       PrepareCast(choice1);
+      Observer->CallAct(RenderActions::Spell, -1, choice1);
       Player->Magic(target);
       break;
     case BattleActions::PowerfulSpell:
       Player->Params.Mana -= 40;
-      PrepareCast(choice1);
-      switch (choice2) {
+      PrepareCast(choice2);
+      switch (choice1) {
         case 1:
           Player->Params.DamageMult *= 0;
           Player->Params.StatusMult *= 3;
@@ -129,28 +133,40 @@ void Battle::BattleAct(BattleActions const action, int const choice1,
           Player->Params.StatusMult *= 4.5;
           break;
       }
+      Observer->CallAct(RenderActions::PowerfulSpell, -1, choice2);
       Player->Magic(target);
   }
   if (rand() % 101 >= Player->Params.SecondAtkChance) {
     for (Creature* enemy : Enemies) {
-      if (enemy && enemy->Alive) {
+      if (enemy->Alive) {
         enemy->Act(Player);
       }
     }
-
     for (Creature* boss : StageBosses) {
-      if (boss && boss->Alive) {
+      if (boss->Alive) {
         boss->Act(Player);
       }
     }
-    bool IsAnyBossAlive = false;
-    for (Creature* enemy : StageBosses) {
-      if (enemy->Alive) {
-        IsAnyBossAlive = true;
-        break;
-      }
-    }
-    if (!IsAnyBossAlive) {
+  }
+  bool IsAnyEnemyAlive = false;
+  for (Creature* enemy : Enemies) {
+    if (enemy->Alive) {
+      IsAnyEnemyAlive = true;
+      break;
     }
   }
+  for (Creature* enemy : StageBosses) {
+    if (enemy->Alive) {
+      IsAnyEnemyAlive = true;
+      break;
+    }
+  }
+  if (!IsAnyEnemyAlive) {
+    if (StageBosses.empty()) {
+      Observer->CallAct(RenderActions::BattleEnd);
+    }
+    Enemies.clear();
+    StageBosses.clear();
+  }
+  Player->Status();
 }
