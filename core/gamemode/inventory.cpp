@@ -30,12 +30,15 @@ void Inventory::Unequipper(int const slot) {
   erase_if(Player->Arm, [](const Ring& r) { return !r.Stats.Equipped; });
 }
 
-void Inventory::AddRing(std::string const id) {
+bool Inventory::AddRing(std::string const id) {
   if (!GetableRings.empty()) {
     std::string index = id;
     if (id == "") {
       index = GetableRings[rand() % GetableRings.size()];
     }
     Player->Inventory.push_back(Ring(Manager->GetRing(index), Player));
+    return true;
+  } else {
+    return false;
   }
 }

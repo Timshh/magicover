@@ -5,6 +5,7 @@ enum class RenderActions {
   TakeDamage,
   SpecialAttack,
   Spell,
+  NewRing,
   PowerfulSpell,
   SupportSpell,
   Regen,
@@ -14,5 +15,6 @@ enum class RenderActions {
   BattleEnd,
   StageChange,
   GameStart,
-  Overload
+  Overload,
+  RoomAct
 };

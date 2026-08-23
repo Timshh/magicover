@@ -8,7 +8,8 @@ class CoreObserver {
  public:
   void AddSubscriber(UIController* const subscriber);
   void RemoveSubscriber(UIController* const subscriber);
-  void CallAct(RenderActions const action, int ID = -2, int params = 0);
+  void CallAct(RenderActions const action, int ID = -2, int params = 0,
+               int subparams = 0);
   CoreObserver();
 
  private:

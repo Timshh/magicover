@@ -18,10 +18,12 @@ class ConsoleUI : public UIController {
   void Battle();
   void Map();
   void Inventory();
+  void Room();
   void SetColor(int const color);
   void CleanRender();
   void Run();
-  void CallAct(RenderActions const action, int ID, int params) override;
+  void CallAct(RenderActions const action, int ID, int params,
+               int subparams) override;
 
  private:
   int TakeInt(int const min, int const max);

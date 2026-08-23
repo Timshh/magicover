@@ -13,7 +13,7 @@
 #include "room.h"
 #include "uiController.h"
 
-enum class GMStates { Battle, Map, Inventory };
+enum class GMStates { Battle, Map, Inventory, Room };
 
 class Core {
  private:

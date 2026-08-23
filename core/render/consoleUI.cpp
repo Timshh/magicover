@@ -269,6 +269,20 @@ void ConsoleUI::Inventory() {
   }
 }
 
+void ConsoleUI::Room() {
+  if (Game.RoomGetActions() != 0) {
+    PrintMessage(7, "\nChoose\n");
+    int choice = TakeInt(0, Game.RoomGetActions());
+    CleanRender();
+    Game.RoomAct(choice);
+  } else {
+    PrintMessage(7, "\n1. Continue\n");
+    int choice = TakeInt(1, 1);
+    CleanRender();
+    Game.State = GMStates::Map;
+  }
+}
+
 void ConsoleUI::Run() {
   while (Game.Player.Alive) {
     switch (Game.State) {
@@ -281,11 +295,15 @@ void ConsoleUI::Run() {
       case GMStates::Map:
         Map();
         break;
+      case GMStates::Room:
+        Room();
+        break;
     }
   }
 }
 
-void ConsoleUI::CallAct(RenderActions const action, int ID, int params) {
+void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
+                        int subparams) {
   Creature* target;
   if (ID != -2) {
     if (ID == -1) {
@@ -303,6 +321,104 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params) {
       PrintMessage(
           15, target->Params.AtkTexts[rand() % target->Params.AtkTexts.size()],
           "\n");
+      break;
+
+    case RenderActions::NewRing:
+      PrintMessage(
+          2,
+          Game.Player.Inventory.at(Game.Player.Inventory.size() - 1).Stats.Name,
+          " obtained\n");
+      break;
+
+    case RenderActions::RoomAct:
+      switch (params) {
+        case 1:
+          PrintMessage(15, "Slayer students attack Last Mage\n");
+          break;
+        case 2:
+          switch (subparams) {
+            case 0:
+              PrintMessage(15,
+                           "Room have a trap\n1. Go away\n2. Get the ring in "
+                           "the trap\n");
+              break;
+            case 1:
+              PrintMessage(15, "That was a good choice\n");
+              break;
+            case 2:
+              break;
+            case 3:
+              PrintMessage(15, "Ring were a mirage, part of trap\n");
+              break;
+          }
+
+          break;
+        case 3:
+          PrintMessage(15, "Ambush!\n");
+          break;
+        case 5:
+          PrintMessage(15, "Room contained a ring. ");
+          switch (subparams) {
+            case 1:
+              PrintMessage(15, "\n");
+              break;
+            case 2:
+              PrintMessage(15, "It turned into dust after a touch\n");
+              break;
+          }
+          break;
+        case 4:
+          switch (subparams) {
+            case 0:
+              PrintMessage(
+                  15,
+                  "There is a demon sitting in a room. A red ring shine on his "
+                  "finger. Ring Last Mage knew long ago\n");
+              PrintMessage(
+                  15,
+                  "- Hello there. Looks like i have a Mage here. Maybe i can "
+                  "call guard... But i won't. Interested in deal? I can take "
+                  "part of your health and create ring of your lifepower\n");
+              PrintMessage(7, "1. Accept the deal\n2. Reject the deal\n");
+              break;
+            case 1:
+              PrintMessage(4, "- It's a pleasure to work with a Mage\n");
+              PrintMessage(
+                  7,
+                  "As Demon cast his spell, Last mage feel that he lost "
+                  "some of his health. Soon after demon give him a ring\n");
+              PrintMessage(4, "- Here you go. Good luck, Last Mage\n");
+              PrintMessage(2, "Revengeance ring obtained ", "\n");
+              break;
+            case 2:
+              PrintMessage(4, "- Well, bye then\n");
+              break;
+          }
+          break;
+        case 6:
+          switch (subparams) {
+            case 0:
+              PrintMessage(
+                  15,
+                  "There's cell with Mage skeleton. Last Mage can to give rest "
+                  "to this Mage in cost of all Mana\n1. Do\n2. Go away\n");
+              break;
+            case 1:
+              PrintMessage(
+                  15,
+                  "Last Mage use all of his Mana to release Mage soul. He "
+                  "feel that his Mana limit changed");
+              break;
+            case 2:
+              PrintMessage(15, "Last Mage go away");
+              break;
+          }
+
+          break;
+        case 7:
+          PrintMessage(15, "Room was empty\n");
+          break;
+      }
       break;
 
     case RenderActions::GameStart:

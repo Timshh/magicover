@@ -23,7 +23,8 @@ enum class RoomTypes {
 
 class Room {
  public:
-  Room(Mage* const player, Inventory* const inventory, Battle* const battle);
+  Room(Mage* const player, Inventory* const inventory, Battle* const battle,
+       CoreObserver* observer);
 
   int RoomGetActions();
   bool RoomAct(int const action);
@@ -31,6 +32,7 @@ class Room {
 
  private:
   Mage* Player;
+  CoreObserver* Observer;
 
   RoomTypes RoomType;
 

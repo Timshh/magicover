@@ -7,7 +7,7 @@ Core::Core()
       GMBattle(&Player, &Manager, &Observer),
       Player(Manager.GetCreature("Last Mage"), &GMBattle.Teammates, &Observer,
              -1),
-      GMRoom(&Player, &GMInventory, &GMBattle),
+      GMRoom(&Player, &GMInventory, &GMBattle, &Observer),
       GMInventory(&Player, &Manager),
       CurrStage(0) {}
 
@@ -51,6 +51,7 @@ void Core::MapChooseRoom(int const way) {
       Player.Params.Mana = Player.Params.ManaMax;
       break;
     case 5:
+      State = GMStates::Room;
       if (GMRoom.InitRoom(static_cast<RoomTypes>(
               rand() % static_cast<int>(RoomTypes::COUNT)))) {
         State = GMStates::Battle;

@@ -14,7 +14,7 @@ class Inventory {
   std::vector<std::string> GetableRings;
   void Equipper(int const ringid, int const slot);
   void Unequipper(int const slot);
-  void AddRing(std::string const id = "");
+  bool AddRing(std::string const id = "");
 
  private:
   Ring* ChosenRing;

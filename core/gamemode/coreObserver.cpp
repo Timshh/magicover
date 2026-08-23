@@ -8,9 +8,10 @@ void CoreObserver::RemoveSubscriber(UIController* const subscriber) {
   std::erase(Subscribers, subscriber);
 }
 
-void CoreObserver::CallAct(RenderActions const action, int ID, int params) {
+void CoreObserver::CallAct(RenderActions const action, int ID, int params,
+                           int subparams) {
   for (UIController* renderer : Subscribers) {
-    renderer->CallAct(action, ID, params);
+    renderer->CallAct(action, ID, params, subparams);
   }
 }
 
