@@ -5,17 +5,18 @@
 
 class Mage : public Creature {
  public:
-  Mage(CreatureStats params, std::vector<Creature*>* team,
-       ConsoleRenderer* render, Renderer* renderer);
+  Mage(CreatureStats const params, std::vector<Creature*>* const team,
+       CoreObserver* const observer, int const id);
   std::vector<Ring> Inventory;
   std::vector<Ring> Arm;
 
-  void ReceiveDmg(float damage, int element, float status) override;
+  void ReceiveDmg(float const damage, int const element,
+                  float const status) override;
   void CheckHP() override;
-  void Act(Creature* target) override;
+  void Act(Creature* const target) override;
 
 
   void Status();
-  void Magic(Creature* target);
-  void Offence();
+  void Magic(Creature* const target);
+  void Offence(int const choice);
 };

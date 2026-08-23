@@ -3,6 +3,8 @@
 MapGenerator::MapGenerator() {}
 
 MapGraph MapGenerator::GenerateMap(int layers, int minNodes, int maxNodes) {
+  return TestMap;
+  /*
   MapGraph Graph;
 
   std::vector<std::vector<int>> LayersNodes;
@@ -22,14 +24,13 @@ MapGraph MapGenerator::GenerateMap(int layers, int minNodes, int maxNodes) {
     }
   }
 
-  Graph.Start = LayersNodes.front().front();
   Graph.Boss = LayersNodes.back().front();
   Graph.Nodes[Graph.Boss].Type = 1;
 
   for (int layer = 0; layer < layers - 1; ++layer) {
     for (int nodeId : LayersNodes[layer]) {
       std::vector<int>& NextLayer = LayersNodes[layer + 1];
-      int connections = rand()%NextLayer.size()+1;
+      int connections = rand() % NextLayer.size() + 1;
       for (int c = 0; c < connections; ++c) {
         int target = NextLayer[c];
         Graph.Nodes[nodeId].Next.push_back(target);
@@ -66,5 +67,5 @@ MapGraph MapGenerator::GenerateMap(int layers, int minNodes, int maxNodes) {
     Graph.Nodes[nodeId].Next.push_back(bossNode);
   }
 
-  return Graph;
+  return Graph;*/
 }

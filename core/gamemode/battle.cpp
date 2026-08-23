@@ -1,218 +1,172 @@
 ﻿#include "battle.h"
 
-Battle::Battle(ConsoleRenderer* globalRender, Renderer* render,
-               std::vector<Creature*>* const teammates,
-               std::vector<Creature*>* const enemies,
-               std::vector<Creature*>* const stageBosses, Mage* player,
-               int* const stage,
-               int* const maxEnemies, ResourceManager* const manager)
-    : GlobalRender(globalRender),
-      Render(render),
-      Teammates(teammates),
-      Enemies(enemies),
-      StageBosses(stageBosses),
-      Player(player),  
-    Stage(stage),
-      MaxEnemies(maxEnemies),
-      Manager(manager) {}
+Battle::Battle(Mage* const player, ResourceManager* const manager,
+               CoreObserver* observer)
+    : Teammates({player}),
+      Enemies(),
+      StageBosses(),
+      Player(player),
+      MaxEnemies(5),
+      Manager(manager),
+      Observer(observer) {}
 
-void Battle::EnemyChooser() {
-  GlobalRender->PrintMessage(15, "Choose enemy\n");
-  int Chosen;
-  bool flag = true;
-  do {
-    while (!(std::cin >> Chosen)) {
-      GlobalRender->PrintMessage(4, "Invalid target\n");
-      std::cin.clear();
-      std::cin.ignore();
-    }
-    if ((Chosen < 1) or Chosen > (Enemies->size() + StageBosses->size())) {
-      GlobalRender->PrintMessage(4, "Invalid target!\n");
-      std::cin.clear();
-      std::cin.ignore();
-    } else {
-      if (Chosen <= StageBosses->size()) {
-        Target = StageBosses->at(Chosen - 1);
-      } else {
-        Target = Enemies->at(Chosen - StageBosses->size() - 1);
-      }
-      flag = false;
-    }
-  } while (flag);
-}
-
-void Battle::CreateBoss() {
-  switch (*Stage) {
+void Battle::CreateBoss(int const stage) {
+  switch (stage) {
     case 0:
-      StageBosses->push_back(new Boss(Manager->GetCreature("Shield guardian"),
-                                      StageBosses, Enemies, MaxEnemies,
-                                      Manager, GlobalRender, Render));
-      StageBosses->push_back(new Boss(Manager->GetCreature("Axe guardian"),
-                                      StageBosses, Enemies, MaxEnemies, Manager,
-                                      GlobalRender, Render));
+      BossCreator("Shield guardian");
+
+      BossCreator("Axe guardian");
       break;
     case 1:
-      StageBosses->push_back(new Boss(Manager->GetCreature("InfArmY"),
-                                      StageBosses, Enemies, MaxEnemies, Manager,
-                                      GlobalRender, Render));
+      BossCreator("InfArmY");
       break;
     case 2:
-      StageBosses->push_back(new Boss(Manager->GetCreature("GO-13M"),
-                                      StageBosses, Enemies, MaxEnemies, Manager,
-                                      GlobalRender, Render));
+      BossCreator("GO-13M");
       break;
     case 3:
-      StageBosses->push_back(new Boss(Manager->GetCreature("Wings"),
-                                      StageBosses, Enemies, MaxEnemies, Manager,
-                                      GlobalRender, Render));
-      StageBosses->push_back(new Boss(Manager->GetCreature("Tyrant"),
-                                      StageBosses, Enemies, MaxEnemies, Manager,
-                                      GlobalRender, Render));
-      StageBosses->push_back(new Boss(Manager->GetCreature("Halo"), StageBosses,
-                                      Enemies, MaxEnemies, Manager,
-                                      GlobalRender, Render));
+      BossCreator("Wings");
+      BossCreator("Tyrant");
+      BossCreator("Halo");
       break;
   }
 }
 
-bool Battle::StartBattle() {
-  int Choice;
-  do {
-    int counter = 1;
-    GlobalRender->PrintMessage(4, "\nEnemies\n");
-    for (Creature* boss : *StageBosses) {
-      if (boss) {
-        GlobalRender->PrintMessage(7, counter, ". ");
-        counter++;
-        dynamic_cast<Boss*>(boss)->Status();
-      }
-    }
-    for (Creature* enemy : *Enemies) {
-      if (enemy) {
-        GlobalRender->PrintMessage(7, counter, ". ");
-        counter++;
-        dynamic_cast<Enemy*>(enemy)->Status();
-      }
-    }
-    Player->Status();
-    std::cin >> Choice;
-    switch (Choice) {
-      case 1:
-        Player->Params.Mana =
-            min(Player->Params.Mana + 15, Player->Params.ManaMax);
-        GlobalRender->CleanRender();
-        GlobalRender->PrintMessage(15, "Last Mage started regenerating\n");
-        break;
-      case 2:
-        if (Player->Params.Mana >= 20) {
-          Player->Params.Mana -= 20;
-          Player->Offence();
-        }
-        break;
-      case 3:
-        if (Player->Params.Mana >= 20) {
-          Player->Params.Mana -= 20;
-          EnemyChooser();
-          Player->Magic(Target);
-        }
-        break;
-      case 4:
-        if (Player->Params.Mana >= 40) {
-          EnemyChooser();
-          Player->Params.Mana -= 40;
-          GlobalRender->PrintMessage(15, "Choose catalyst\n");
-          GlobalRender->PrintMessage(
-              15,
-              "1. Flame. Ignite element. Doesn't damage but increase "
-              "status much\n");
-          GlobalRender->PrintMessage(
-              15, "2. Frost. Break element. Increase damage and status\n");
-          GlobalRender->PrintMessage(
-              15,
-              "3. Dark. Nullify element. Doesn't create status but "
-              "make damage bigger\n");
-          GlobalRender->PrintMessage(
-              15,
-              "4. Psycho. Overload element. Deal low heal to enemy "
-              "but add large status\n");
-          std::cin >> Choice;
-          switch (Choice) {
-            case 1:
-              Player->Params.DamageMult *= 0;
-              Player->Params.StatusMult *= 3;
-              break;
-            case 2:
-              Player->Params.DamageMult *= 1.5;
-              Player->Params.StatusMult *= 1.5;
-              break;
-            case 3:
-              Player->Params.DamageMult *= 3;
-              Player->Params.StatusMult *= 0;
-              break;
-            case 4:
-              Player->Params.DamageMult *= -1;
-              Player->Params.StatusMult *= 4.5;
-              break;
-            default:
-              GlobalRender->CleanRender();
-              GlobalRender->PrintMessage(4, "That didn't work\n");
-              break;
-              break;
-          }
-          Player->Magic(Target);
-        }
-        break;
-      default:
-        GlobalRender->CleanRender();
-        GlobalRender->PrintMessage(4, "That didn't work\n");
-        break;
-    }
-    if (rand() % 101 >= Player->Params.SecondAtkChance) {
-      for (Creature* enemy : *Enemies) {
-        if (enemy) {
-          enemy->Act(Player);
-        }
-      }
-      for (Creature* enemy : *Enemies) {
-        if (!enemy->Alive) {
-          delete enemy;
-          erase(*Enemies, enemy);
-        }
-      }
+void Battle::CreateEnemy(std::string const id) {
+  std::string index = id;
+  if (id == "") {
+    index = NormalEnemies[rand() % NormalEnemies.size()];
+  }
+  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies, Observer,
+                              Enemies.size()));
+}
 
-      for (Creature* boss : *StageBosses) {
-        if (boss) {
-          boss->Act(Player);
-        }
-      }
-      for (Creature* enemy : *StageBosses) {
-        if (!enemy->Alive) {
-          delete enemy;
-          erase(*StageBosses, enemy);
-          bool IsAnyBossAlive = false;
-          for (Creature* enemy : *StageBosses) {
-            if (enemy->Alive) {
-              IsAnyBossAlive = true;
-              break;
-            }
-          }
-          if (!IsAnyBossAlive) {
-            return true;
-          }
-        }
-      }
+void Battle::CreateElite(std::string const id) {
+  std::string index = id;
+  if (id == "") {
+    index = EliteEnemies[rand() % EliteEnemies.size()];
+  }
+  Enemies.push_back(new Enemy(Manager->GetCreature(index), &Enemies, Observer,
+                              Enemies.size()));
+}
 
-      if (Player->Params.HP <= 0) {
-        if (Player->Params.SecondChance > 0) {
-          Player->Params.SecondChance--;
-          Player->Params.HP = 1;
-          GlobalRender->PrintMessage(4, "\nMage refused to fall.\n");
-        } else {
-          GlobalRender->PrintMessage(4, "\nThe Last Mage fell.\n\n");
-          exit(0);
-        }
+std::vector<BattleActions> Battle::BattleGetActions() {
+  std::vector<BattleActions> result = {{BattleActions::Regenerate}};
+  if (Player->Params.Mana >= 20) {
+    result.push_back(BattleActions::SupportSpell);
+    result.push_back(BattleActions::Spell);
+    if (Player->Params.Mana >= 40) {
+      result.push_back(BattleActions::PowerfulSpell);
+    }
+  }
+  return result;
+}
+
+void Battle::BossCreator(std::string const id) {
+  StageBosses.push_back(new Boss(Manager->GetCreature(id), &StageBosses,
+                                 &Enemies, &MaxEnemies, Manager, Observer,
+                                 StageBosses.size() + 10000));
+  Observer->CallAct(RenderActions::Appear, StageBosses.size() + 9999);
+}
+
+void Battle::PrepareCast(int const choice) {
+  switch (choice) {
+    case 1:
+      Player->Params.Damage = 20;
+      Player->Params.Status = 5;
+      Player->Params.Element = 1;
+      break;
+    case 2:
+      Player->Params.Damage = 25;
+      Player->Params.Status = 3.5;
+      Player->Params.Element = 2;
+      break;
+    case 3:
+      Player->Params.Damage = 15;
+      Player->Params.Status = 7.5;
+      Player->Params.Element = 3;
+      break;
+    case 4:
+      Player->Params.Damage = 10;
+      Player->Params.Status = 9;
+      Player->Params.Element = 4;
+      break;
+  }
+}
+
+void Battle::BattleAct(BattleActions const action, int const choice1,
+                       Creature* const target, int const choice2) {
+  switch (action) {
+    case BattleActions::Regenerate:
+      Player->Params.Mana =
+          min(Player->Params.Mana + 15, Player->Params.ManaMax);
+      Observer->CallAct(RenderActions::Regen, -1);
+      break;
+    case BattleActions::SupportSpell:
+      Player->Params.Mana -= 20;
+      Observer->CallAct(RenderActions::SupportSpell, -1, choice1);
+      Player->Offence(choice1);
+      break;
+    case BattleActions::Spell:
+      Player->Params.Mana -= 20;
+      PrepareCast(choice1);
+      Observer->CallAct(RenderActions::Spell, -1, choice1);
+      Player->Magic(target);
+      break;
+    case BattleActions::PowerfulSpell:
+      Player->Params.Mana -= 40;
+      PrepareCast(choice2);
+      switch (choice1) {
+        case 1:
+          Player->Params.DamageMult *= 0;
+          Player->Params.StatusMult *= 3;
+          break;
+        case 2:
+          Player->Params.DamageMult *= 1.5;
+          Player->Params.StatusMult *= 1.5;
+          break;
+        case 3:
+          Player->Params.DamageMult *= 3;
+          Player->Params.StatusMult *= 0;
+          break;
+        case 4:
+          Player->Params.DamageMult *= -1;
+          Player->Params.StatusMult *= 4.5;
+          break;
+      }
+      Observer->CallAct(RenderActions::PowerfulSpell, -1, choice2);
+      Player->Magic(target);
+  }
+  if (rand() % 101 >= Player->Params.SecondAtkChance) {
+    for (Creature* enemy : Enemies) {
+      if (enemy->Alive) {
+        enemy->Act(Player);
       }
     }
-  } while (not StageBosses->empty() or not Enemies->empty());
-  return false;
+    for (Creature* boss : StageBosses) {
+      if (boss->Alive) {
+        boss->Act(Player);
+      }
+    }
+  }
+  bool IsAnyEnemyAlive = false;
+  for (Creature* enemy : Enemies) {
+    if (enemy->Alive) {
+      IsAnyEnemyAlive = true;
+      break;
+    }
+  }
+  for (Creature* enemy : StageBosses) {
+    if (enemy->Alive) {
+      IsAnyEnemyAlive = true;
+      break;
+    }
+  }
+  if (!IsAnyEnemyAlive) {
+    if (StageBosses.empty()) {
+      Observer->CallAct(RenderActions::BattleEnd);
+    }
+    Enemies.clear();
+    StageBosses.clear();
+  }
+  Player->Status();
 }

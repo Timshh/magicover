@@ -1,33 +1,35 @@
 ﻿#pragma once
 
 #include "boss.h"
-#include "consoleRenderer.h"
 #include "creature.h"
 #include "enemy.h"
 #include "mage.h"
 #include "res_manager.h"
+#include "coreObserver.h"
+
+enum class BattleActions { Regenerate, SupportSpell, Spell, PowerfulSpell };
 
 class Battle {
  public:
-  Battle(ConsoleRenderer* globalRender, Renderer* render,
-         std::vector<Creature*>* const teammates,
-         std::vector<Creature*>* const enemies,
-         std::vector<Creature*>* const stageBosses,
-         Mage* player, int* const stage,
-         int* const maxEnemies, ResourceManager* const manager);
+  Battle(Mage* const player, ResourceManager* const manager, CoreObserver* observer);
 
-  void CreateBoss();
-  void EnemyChooser();
-  bool StartBattle();
+  void CreateBoss(int const stage);
+  void CreateEnemy(std::string const id = "");
+  void CreateElite(std::string const id = "");
+
+  std::vector<BattleActions> BattleGetActions();
+  void BattleAct(BattleActions const action, int const choice1,
+                 Creature* const target, int const choice2);
+
+  int MaxEnemies;
+  std::vector<std::string> NormalEnemies, EliteEnemies;
+  std::vector<Creature*> Teammates, Enemies, StageBosses;
 
  private:
+  CoreObserver* Observer;
+  void BossCreator(std::string const id);
+  void PrepareCast(int const choice);
   Mage* Player;
-  ConsoleRenderer* GlobalRender;
-  Renderer* Render;
-  Creature* Target = nullptr;
 
-  int *Stage, *MaxEnemies;
-
-  std::vector<Creature*>*Teammates, *Enemies, *StageBosses;
   ResourceManager* Manager;
 };

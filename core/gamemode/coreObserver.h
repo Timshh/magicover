@@ -1,14 +1,16 @@
 ﻿#pragma once
 #include <vector>
 
-#include "uiController.h"
 #include "uiData.h"
+#include "uiController.h"
 
-class CreatureObserver {
+class CoreObserver {
  public:
   void AddSubscriber(UIController* const subscriber);
   void RemoveSubscriber(UIController* const subscriber);
-  CreatureObserver();
+  void CallAct(RenderActions const action, int ID = -2, int params = 0,
+               int subparams = 0);
+  CoreObserver();
 
  private:
   std::vector<UIController*> Subscribers;
