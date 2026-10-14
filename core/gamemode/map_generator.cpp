@@ -1,4 +1,4 @@
-﻿#include "mapgenerator.h"
+﻿#include "map_generator.h"
 
 MapGenerator::MapGenerator() {}
 

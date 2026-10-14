@@ -2,16 +2,14 @@
 #include <iostream>
 
 #include "battle.h"
-#include "boss.h"
-#include "coreObserver.h"
-#include "enemy.h"
+#include "core_observer.h"
 #include "inventory.h"
 #include "mage.h"
 #include "map.h"
 #include "res_manager.h"
 #include "ring.h"
 #include "room.h"
-#include "uiController.h"
+#include "ui_controller.h"
 
 enum class GMStates { Battle, Map, Inventory, Room };
 

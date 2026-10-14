@@ -1,4 +1,4 @@
-﻿#include "creatureObserver.h"
+﻿#include "creature_observer.h"
 
 void CreatureObserver::AddSubscriber(UIController* const subscriber) {
   Subscribers.push_back(subscriber);

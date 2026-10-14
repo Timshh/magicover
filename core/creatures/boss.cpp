@@ -10,70 +10,70 @@ Boss::Boss(CreatureStats const params, std::vector<Creature*>* const team,
       Manager(resmanager) {}
 
 void Boss::SpecialAttack(Creature* const target) {
-  switch (Params.SpecAtkID) {
+  switch (params.SpecAtkID) {
     case 1:
-      Observer->CallAct(RenderActions::SpecialAttack, ID);
-      Params.HP = min(Params.HP + 20, Params.HPMax);
+      observer_->CallAct(RenderActions::SpecialAttack, id_);
+      params.HP = min(params.HP + 20, params.HPMax);
       break;
     case 2:
-      Observer->CallAct(RenderActions::SpecialAttack, ID);
-      Params.Flame = max(Params.Flame - 3, 0);
-      Params.Frost = max(Params.Frost - 3, 0);
-      Params.Dark = max(Params.Dark - 3, 0);
-      Params.Psycho = max(Params.Psycho - 3, 0);
+      observer_->CallAct(RenderActions::SpecialAttack, id_);
+      params.Flame = max(params.Flame - 3, 0);
+      params.Frost = max(params.Frost - 3, 0);
+      params.Dark = max(params.Dark - 3, 0);
+      params.Psycho = max(params.Psycho - 3, 0);
       break;
     case 3:
       if (Enemies->size() < *MaxEnemies) {
-        Observer->CallAct(RenderActions::SpecialAttack, ID);
+        observer_->CallAct(RenderActions::SpecialAttack, id_);
         Enemies->push_back(new Enemy(Manager->GetCreature("Arms cluster"),
-                                     Enemies, Observer, Enemies->size()));
+                                     Enemies, observer_, Enemies->size()));
       } else {
-        Observer->CallAct(RenderActions::SpecialAttack, ID, 1);
-        ReceiveDmg(20, 0, 0);
+        observer_->CallAct(RenderActions::SpecialAttack, id_, 1);
+        ReceiveDamage(20, 0, 0);
         CheckHP();
       }
       break;
     case 4:
-      Observer->CallAct(RenderActions::SpecialAttack, ID);
+      observer_->CallAct(RenderActions::SpecialAttack, id_);
       break;
     case 5:
-      Observer->CallAct(RenderActions::SpecialAttack, ID);
-      for (Creature* boss : *Team) {
-        boss->Params.Flame = max(boss->Params.Flame - 3, 0);
-        boss->Params.Frost = max(boss->Params.Frost - 3, 0);
-        boss->Params.Dark = max(boss->Params.Dark - 3, 0);
-        boss->Params.Psycho = max(boss->Params.Psycho - 3, 0);
+      observer_->CallAct(RenderActions::SpecialAttack, id_);
+      for (Creature* boss : *team) {
+        boss->params.Flame = max(boss->params.Flame - 3, 0);
+        boss->params.Frost = max(boss->params.Frost - 3, 0);
+        boss->params.Dark = max(boss->params.Dark - 3, 0);
+        boss->params.Psycho = max(boss->params.Psycho - 3, 0);
       }
       break;
     case 6:
       if (SpecFlag) {
-        Observer->CallAct(RenderActions::SpecialAttack, ID);
-        float AtkDamage = (40 + rand() % (11)) * (1 - Params.Frost / 100) *
-                          target->Params.Defence;
-        target->ReceiveDmg(AtkDamage, 0, 0);
+        observer_->CallAct(RenderActions::SpecialAttack, id_);
+        float AtkDamage = (40 + rand() % (11)) * (1 - params.Frost / 100) *
+                          target->params.Defence;
+        target->ReceiveDamage(AtkDamage, 0, 0);
         SpecFlag = false;
       } else {
-        Observer->CallAct(RenderActions::AtkPreparing, ID);
+        observer_->CallAct(RenderActions::AtkPreparing, id_);
         SpecFlag = true;
       }
       break;
     case 7:
-      Observer->CallAct(RenderActions::SpecialAttack, ID);
-      for (Creature* boss : *Team) {
-        boss->Params.HP = min(boss->Params.HP + 20, boss->Params.HPMax);
+      observer_->CallAct(RenderActions::SpecialAttack, id_);
+      for (Creature* boss : *team) {
+        boss->params.HP = min(boss->params.HP + 20, boss->params.HPMax);
       }
       break;
   }
 }
 
 void Boss::Act(Creature* const target) {
-  Params.HP -= Params.Flame;
+  params.HP -= params.Flame;
   CheckHP();
-  if (Alive) {
+  if (alive) {
     if (SpecFlag) {
       SpecialAttack(target);
     } else {
-      if (rand() % 100 >= Params.SpecAtkChance) {
+      if (rand() % 100 >= params.SpecAtkChance) {
         Attack(target);
       } else {
         SpecialAttack(target);

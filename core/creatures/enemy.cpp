@@ -6,22 +6,22 @@ Enemy::Enemy(CreatureStats params, std::vector<Creature*>* team,
 
 void Enemy::Act(Creature* target) {
   Creature::Act(target);
-  if (Alive) {
+  if (alive) {
     Attack(target);
   }
 }
 
 void Enemy::Attack(Creature* target) {
-  int AtkDamage = (Params.Damage + rand() % (Params.DamageRand + 1)) *
-                  (1 - Params.Frost / 100);
-  if (rand() % 100 >= Params.Psycho) {
-    if (rand() % 100 >= Params.Dark) {
-      Observer->CallAct(RenderActions::Attack, ID);
-      target->ReceiveDmg(AtkDamage, 0, 0);
+  int AtkDamage = (params.Damage + rand() % (params.DamageRand + 1)) *
+                  (1 - params.Frost / 100);
+  if (rand() % 100 >= params.Psycho) {
+    if (rand() % 100 >= params.Dark) {
+      observer_->CallAct(RenderActions::Attack, id_);
+      target->ReceiveDamage(AtkDamage, 0, 0);
     } else {
     }
   } else {
-    ReceiveDmg(AtkDamage, 0, 0);
+    ReceiveDamage(AtkDamage, 0, 0);
   }
 }
 
@@ -30,20 +30,20 @@ void Enemy::Status() {
     return;
   }
   CheckHP();
-  if (Params.HP >= Params.HPMax / 2) {
+  if (params.HP >= params.HPMax / 2) {
   } else {
-    if (Params.HP >= Params.HPMax / 4) {
+    if (params.HP >= params.HPMax / 4) {
     } else {
     }
   }
 }
 
-void Enemy::ReceiveDmg(float damage, int element, float status) {
-  Creature::ReceiveDmg(damage, element, status);
+void Enemy::ReceiveDamage(float damage, int element, float status) {
+  Creature::ReceiveDamage(damage, element, status);
 }
 
 void Enemy::CheckHP() {
-  if (Params.HP <= 0) {
+  if (params.HP <= 0) {
   }
   Creature::CheckHP();
 }

@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include "mapgenerator.h"
+#include "map_generator.h"
 
 class Map{
  public:

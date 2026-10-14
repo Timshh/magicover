@@ -1,4 +1,4 @@
-﻿#include "coreObserver.h"
+﻿#include "core_observer.h"
 
 void CoreObserver::AddSubscriber(UIController* const subscriber) {
   Subscribers.push_back(subscriber);

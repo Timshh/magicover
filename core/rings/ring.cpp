@@ -16,23 +16,23 @@ void Ring::RingAct() {
   for (int i = 0; i < Stats.AEffects.size(); i++) {
     switch (Stats.AEffects[i]) {
       case 1:
-        Owner->Params.HP = Clamp(Owner->Params.HP + 5, 0, Owner->Params.HPMax);
+        Owner->params.HP = Clamp(Owner->params.HP + 5, 0, Owner->params.HPMax);
         break;
       case 2:
-        Owner->Params.Mana =
-            Clamp(Owner->Params.Mana + 5, 0, Owner->Params.ManaMax);
+        Owner->params.Mana =
+            Clamp(Owner->params.Mana + 5, 0, Owner->params.ManaMax);
         break;
       case 3:
-        Owner->Params.HP =
-            Clamp(Owner->Params.HP + (rand() % int(Stats.AStats[i]) * 2) -
+        Owner->params.HP =
+            Clamp(Owner->params.HP + (rand() % int(Stats.AStats[i]) * 2) -
                       Stats.AStats[i] + 1,
-                  0, Owner->Params.HPMax);
+                  0, Owner->params.HPMax);
         break;
       case 4:
-        Owner->Params.Mana =
-            Clamp(Owner->Params.Mana + rand() % (int(Stats.AStats[i]) * 2) -
+        Owner->params.Mana =
+            Clamp(Owner->params.Mana + rand() % (int(Stats.AStats[i]) * 2) -
                       Stats.AStats[i] + 1,
-                  0, Owner->Params.ManaMax);
+                  0, Owner->params.ManaMax);
         break;
     }
   }
@@ -46,28 +46,28 @@ void Ring::AddRingEffect(bool isRemoving) {
   for (int i = 0; i < Stats.PEffects.size(); i++) {
     switch (Stats.PEffects[i]) {
       case 1:
-        Owner->Params.DefaultDefence += Stats.PStats[i] * Mult;
+        Owner->params.DefaultDefence += Stats.PStats[i] * Mult;
         break;
       case 2:
-        Owner->Params.HPMax += Stats.PStats[i] * Mult;
-        Owner->Params.HP = Clamp(Owner->Params.HP, 0, Owner->Params.HPMax);
+        Owner->params.HPMax += Stats.PStats[i] * Mult;
+        Owner->params.HP = Clamp(Owner->params.HP, 0, Owner->params.HPMax);
         break;
       case 3:
-        Owner->Params.ManaMax += Stats.PStats[i] * Mult;
-        Owner->Params.Mana =
-            Clamp(Owner->Params.Mana, 0, Owner->Params.ManaMax);
+        Owner->params.ManaMax += Stats.PStats[i] * Mult;
+        Owner->params.Mana =
+            Clamp(Owner->params.Mana, 0, Owner->params.ManaMax);
         break;
       case 4:
-        Owner->Params.SecondChance += Stats.PStats[i] * Mult;
+        Owner->params.SecondChance += Stats.PStats[i] * Mult;
         break;
       case 5:
-        Owner->Params.SecondAtkChance += Stats.PStats[i] * Mult;
+        Owner->params.SecondAtkChance += Stats.PStats[i] * Mult;
         break;
       case 6:
-        Owner->Params.DefaultStatusMult += Stats.PStats[i] * Mult;
+        Owner->params.DefaultStatusMult += Stats.PStats[i] * Mult;
         break;
       case 7:
-        Owner->Params.DefaultDamageMult += Stats.PStats[i] * Mult;
+        Owner->params.DefaultDamageMult += Stats.PStats[i] * Mult;
         break;
     }
   }

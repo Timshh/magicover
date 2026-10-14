@@ -7,23 +7,23 @@ Mage::Mage(CreatureStats const params, std::vector<Creature*>* const team,
 void Mage::Act(Creature* const target) { Creature::Act(target); }
 
 void Mage::Status() {
-  Params.Mana = min(Params.Mana + 15, Params.ManaMax);
+  params.Mana = min(params.Mana + 15, params.ManaMax);
   for (Ring& currRing : Arm) {
     currRing.RingAct();
   }
-  Params.Defence = Params.DefaultDefence;
-  Params.DamageMult = Params.DefaultDamageMult;
-  Params.StatusMult = Params.DefaultStatusMult;
+  params.Defence = params.DefaultDefence;
+  params.DamageMult = params.DefaultDamageMult;
+  params.StatusMult = params.DefaultStatusMult;
   CheckHP();
-  if (Params.Mana >= 20) {
-    if (Params.Mana >= 40) {
+  if (params.Mana >= 20) {
+    if (params.Mana >= 40) {
     }
   }
 }
 
-void Mage::ReceiveDmg(float const damage, int const element,
+void Mage::ReceiveDamage(float const damage, int const element,
                       float const status) {
-  Creature::ReceiveDmg(damage, element, status);
+  Creature::ReceiveDamage(damage, element, status);
 }
 
 void Mage::CheckHP() { Creature::CheckHP(); }
@@ -31,14 +31,14 @@ void Mage::CheckHP() { Creature::CheckHP(); }
 void Mage::Offence(int const choice) {
   switch (choice) {
     case 1:
-      Params.Defence = 0.5;
+      params.Defence = 0.5;
       break;
     case 2:
-      Params.HP = min(Params.HP + 50, Params.HPMax);
+      params.HP = min(params.HP + 50, params.HPMax);
       break;
     case 3:
-      Params.HP = min(Params.HP + 80, Params.HPMax);
-      Params.Defence = 1.5;
+      params.HP = min(params.HP + 80, params.HPMax);
+      params.Defence = 1.5;
       break;
     default:
       break;
@@ -47,6 +47,6 @@ void Mage::Offence(int const choice) {
 }
 
 void Mage::Magic(Creature* const target) {
-  target->ReceiveDmg(Params.Damage * Params.DamageMult, Params.Element,
-                     Params.Status * Params.StatusMult);
+  target->ReceiveDamage(params.Damage * params.DamageMult, params.Element,
+                     params.Status * params.StatusMult);
 }

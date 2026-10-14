@@ -10,7 +10,7 @@ class Enemy : public Creature {
   void Attack(Creature* target);
   void Status();
 
-  void ReceiveDmg(float damage, int element, float status) override;
+  void ReceiveDamage(float damage, int element, float status) override;
   void CheckHP() override;
   void Act(Creature* target) override;
 };

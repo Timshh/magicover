@@ -51,10 +51,10 @@ void Battle::CreateElite(std::string const id) {
 
 std::vector<BattleActions> Battle::BattleGetActions() {
   std::vector<BattleActions> result = {{BattleActions::Regenerate}};
-  if (Player->Params.Mana >= 20) {
+  if (Player->params.Mana >= 20) {
     result.push_back(BattleActions::SupportSpell);
     result.push_back(BattleActions::Spell);
-    if (Player->Params.Mana >= 40) {
+    if (Player->params.Mana >= 40) {
       result.push_back(BattleActions::PowerfulSpell);
     }
   }
@@ -71,24 +71,24 @@ void Battle::BossCreator(std::string const id) {
 void Battle::PrepareCast(int const choice) {
   switch (choice) {
     case 1:
-      Player->Params.Damage = 20;
-      Player->Params.Status = 5;
-      Player->Params.Element = 1;
+      Player->params.Damage = 20;
+      Player->params.Status = 5;
+      Player->params.Element = 1;
       break;
     case 2:
-      Player->Params.Damage = 25;
-      Player->Params.Status = 3.5;
-      Player->Params.Element = 2;
+      Player->params.Damage = 25;
+      Player->params.Status = 3.5;
+      Player->params.Element = 2;
       break;
     case 3:
-      Player->Params.Damage = 15;
-      Player->Params.Status = 7.5;
-      Player->Params.Element = 3;
+      Player->params.Damage = 15;
+      Player->params.Status = 7.5;
+      Player->params.Element = 3;
       break;
     case 4:
-      Player->Params.Damage = 10;
-      Player->Params.Status = 9;
-      Player->Params.Element = 4;
+      Player->params.Damage = 10;
+      Player->params.Status = 9;
+      Player->params.Element = 4;
       break;
   }
 }
@@ -97,66 +97,66 @@ void Battle::BattleAct(BattleActions const action, int const choice1,
                        Creature* const target, int const choice2) {
   switch (action) {
     case BattleActions::Regenerate:
-      Player->Params.Mana =
-          min(Player->Params.Mana + 15, Player->Params.ManaMax);
+      Player->params.Mana =
+          min(Player->params.Mana + 15, Player->params.ManaMax);
       Observer->CallAct(RenderActions::Regen, -1);
       break;
     case BattleActions::SupportSpell:
-      Player->Params.Mana -= 20;
+      Player->params.Mana -= 20;
       Observer->CallAct(RenderActions::SupportSpell, -1, choice1);
       Player->Offence(choice1);
       break;
     case BattleActions::Spell:
-      Player->Params.Mana -= 20;
+      Player->params.Mana -= 20;
       PrepareCast(choice1);
       Observer->CallAct(RenderActions::Spell, -1, choice1);
       Player->Magic(target);
       break;
     case BattleActions::PowerfulSpell:
-      Player->Params.Mana -= 40;
+      Player->params.Mana -= 40;
       PrepareCast(choice2);
       switch (choice1) {
         case 1:
-          Player->Params.DamageMult *= 0;
-          Player->Params.StatusMult *= 3;
+          Player->params.DamageMult *= 0;
+          Player->params.StatusMult *= 3;
           break;
         case 2:
-          Player->Params.DamageMult *= 1.5;
-          Player->Params.StatusMult *= 1.5;
+          Player->params.DamageMult *= 1.5;
+          Player->params.StatusMult *= 1.5;
           break;
         case 3:
-          Player->Params.DamageMult *= 3;
-          Player->Params.StatusMult *= 0;
+          Player->params.DamageMult *= 3;
+          Player->params.StatusMult *= 0;
           break;
         case 4:
-          Player->Params.DamageMult *= -1;
-          Player->Params.StatusMult *= 4.5;
+          Player->params.DamageMult *= -1;
+          Player->params.StatusMult *= 4.5;
           break;
       }
       Observer->CallAct(RenderActions::PowerfulSpell, -1, choice2);
       Player->Magic(target);
   }
-  if (rand() % 101 >= Player->Params.SecondAtkChance) {
+  if (rand() % 101 >= Player->params.SecondAtkChance) {
     for (Creature* enemy : Enemies) {
-      if (enemy->Alive) {
+      if (enemy->alive) {
         enemy->Act(Player);
       }
     }
     for (Creature* boss : StageBosses) {
-      if (boss->Alive) {
+      if (boss->alive) {
         boss->Act(Player);
       }
     }
   }
   bool IsAnyEnemyAlive = false;
   for (Creature* enemy : Enemies) {
-    if (enemy->Alive) {
+    if (enemy->alive) {
       IsAnyEnemyAlive = true;
       break;
     }
   }
   for (Creature* enemy : StageBosses) {
-    if (enemy->Alive) {
+    if (enemy->alive) {
       IsAnyEnemyAlive = true;
       break;
     }

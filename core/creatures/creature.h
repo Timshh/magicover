@@ -2,27 +2,27 @@
 
 #include <windows.h>
 
-#include <cstdlib>
-#include <iostream>
+
 #include <vector>
 
-#include "coreObserver.h"
+#include "core_observer.h"
 #include "creature_stats.h"
 
 class Creature {
  public:
-  bool Alive = true;
+  bool alive = true;
 
-  Creature(CreatureStats const params, std::vector<Creature*>* const team, CoreObserver* const observer, int const id);
+  Creature(CreatureStats const params, std::vector<Creature*>* const team,
+           CoreObserver* const observer, const int id);
 
-  void virtual Act(Creature* const target);
-  void virtual ReceiveDmg(float const damage, int const element,
-                          float const status);
-  void virtual CheckHP();
-  CreatureStats Params;
-  std::vector<Creature*>* Team;
+  virtual void Act(Creature* const target);
+  virtual void ReceiveDamage(const float damage, const int element,
+                             const float status);
+  virtual void CheckHP();
+  CreatureStats params;
+  std::vector<Creature*>* team;
 
  protected:
-  int ID;
-  CoreObserver* Observer;
+  int id_;
+  CoreObserver* observer_;
 };

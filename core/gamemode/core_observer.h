@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include <vector>
 
-#include "uiData.h"
-#include "uiController.h"
+#include "ui_data.h"
+#include "ui_controller.h"
 
 class CoreObserver {
  public:

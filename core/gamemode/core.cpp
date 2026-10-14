@@ -47,8 +47,8 @@ void Core::MapChooseRoom(int const way) {
       State = GMStates::Battle;
       break;
     case 4:
-      Player.Params.HP = Player.Params.HPMax;
-      Player.Params.Mana = Player.Params.ManaMax;
+      Player.params.HP = Player.params.HPMax;
+      Player.params.Mana = Player.params.ManaMax;
       break;
     case 5:
       State = GMStates::Room;

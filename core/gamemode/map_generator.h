@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "mapData.h"
+#include "map_data.h"
 
 class MapGenerator {
  public:

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <iostream>
 
-#include "uiData.h"
+#include "ui_data.h"
 
 class UIController {
  public:

@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include <vector>
 
-#include "uiController.h"
-#include "uiData.h"
+#include "ui_controller.h"
+#include "ui_data.h"
 
 class CreatureObserver {
  public:

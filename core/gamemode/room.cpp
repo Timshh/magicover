@@ -28,7 +28,7 @@ bool Room::RoomAct(int const action) {
     case RoomTypes::Demon:
       switch (action) {
         case 1:
-          Player->Params.HPMax -= 10;
+          Player->params.HPMax -= 10;
           Observer->CallAct(RenderActions::RoomAct, -1, 4, 1);
           GMInventory->AddRing("Revengeance ring");
           ActionsCount = 0;
@@ -46,8 +46,8 @@ bool Room::RoomAct(int const action) {
           break;
         case 2:
           Observer->CallAct(RenderActions::RoomAct, -1, 6, 2);
-          Player->Params.Mana = 0;
-          Player->Params.ManaMax += 10;
+          Player->params.Mana = 0;
+          Player->params.ManaMax += 10;
           ActionsCount = 0;
           break;
       }

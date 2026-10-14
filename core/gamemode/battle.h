@@ -5,7 +5,7 @@
 #include "enemy.h"
 #include "mage.h"
 #include "res_manager.h"
-#include "coreObserver.h"
+#include "core_observer.h"
 
 enum class BattleActions { Regenerate, SupportSpell, Spell, PowerfulSpell };
 
