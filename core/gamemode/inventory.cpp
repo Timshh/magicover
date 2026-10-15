@@ -1,42 +1,42 @@
 ﻿#include "inventory.h"
 
 Inventory::Inventory(Mage* const player, ResourceManager* const manager)
-    : Player(player),
-      Manager(manager),
-      ChosenRing(nullptr),
-      GetableRings(
+    : player_(player),
+      manager_(manager),
+      chosen_ring_(nullptr),
+      getable_rings(
           {"Blue Blood ring", "Heart ring", "Shiny ring", "Scaly ring"}) {}
 
-void Inventory::Equipper(int const ringid, int const slot) {
-  ChosenRing = &Player->Inventory.at(ringid);
-  if (slot == Player->Arm.size()) {
-    Player->Arm.push_back(*ChosenRing);
-    ChosenRing->Stats.Equipped = true;
-    ChosenRing->AddRingEffect(true);
+void Inventory::Equipper(const int ringid, const int slot) {
+  chosen_ring_ = &player_->inventory.at(ringid);
+  if (slot == player_->arm.size()) {
+    player_->arm.push_back(*chosen_ring_);
+    chosen_ring_->stats.equipped = true;
+    chosen_ring_->AddRingEffect(true);
   } else {
-    Player->Arm[slot].Stats.Equipped = false;
-    Player->Arm[slot].AddRingEffect(false);
-    erase_if(Player->Arm, [](const Ring& r) { return !r.Stats.Equipped; });
-    Player->Arm.push_back(*ChosenRing);
-    ChosenRing->Stats.Equipped = true;
-    ChosenRing->AddRingEffect(true);
+    player_->arm[slot].stats.equipped = false;
+    player_->arm[slot].AddRingEffect(false);
+    erase_if(player_->arm, [](const Ring& r) { return !r.stats.equipped; });
+    player_->arm.push_back(*chosen_ring_);
+    chosen_ring_->stats.equipped = true;
+    chosen_ring_->AddRingEffect(true);
   }
 }
 
-void Inventory::Unequipper(int const slot) {
-  ChosenRing = &Player->Arm.at(slot);
-  ChosenRing->Stats.Equipped = false;
-  ChosenRing->AddRingEffect(true);
-  erase_if(Player->Arm, [](const Ring& r) { return !r.Stats.Equipped; });
+void Inventory::Unequipper(const int slot) {
+  chosen_ring_ = &player_->arm.at(slot);
+  chosen_ring_->stats.equipped = false;
+  chosen_ring_->AddRingEffect(true);
+  erase_if(player_->arm, [](const Ring& r) { return !r.stats.equipped; });
 }
 
-bool Inventory::AddRing(std::string const id) {
-  if (!GetableRings.empty()) {
+bool Inventory::AddRing(const std::string id) {
+  if (!getable_rings.empty()) {
     std::string index = id;
     if (id == "") {
-      index = GetableRings[rand() % GetableRings.size()];
+      index = getable_rings[rand() % getable_rings.size()];
     }
-    Player->Inventory.push_back(Ring(Manager->GetRing(index), Player));
+    player_->inventory.push_back(Ring(manager_->GetRing(index), player_));
     return true;
   } else {
     return false;

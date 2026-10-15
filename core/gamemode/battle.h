@@ -13,23 +13,22 @@ class Battle {
  public:
   Battle(Mage* const player, ResourceManager* const manager, CoreObserver* observer);
 
-  void CreateBoss(int const stage);
-  void CreateEnemy(std::string const id = "");
-  void CreateElite(std::string const id = "");
+  void CreateBoss(const int stage);
+  void CreateEnemy(const std::string id = "");
+  void CreateElite(const std::string id = "");
 
   std::vector<BattleActions> BattleGetActions();
-  void BattleAct(BattleActions const action, int const choice1,
-                 Creature* const target, int const choice2);
+  void BattleAct(const BattleActions action, const int choice1,
+                 Creature* const target, const int choice2);
 
-  int MaxEnemies;
-  std::vector<std::string> NormalEnemies, EliteEnemies;
-  std::vector<Creature*> Teammates, Enemies, StageBosses;
+  int max_enemies;
+  std::vector<std::string> normal_enemies, elite_enemies;
+  std::vector<Creature*> teammates, enemies, stage_bosses;
 
  private:
-  CoreObserver* Observer;
   void BossCreator(std::string const id);
-  void PrepareCast(int const choice);
-  Mage* Player;
-
-  ResourceManager* Manager;
+  void PrepareCast(const int choice);
+  CoreObserver* observer_;
+  Mage* player_;
+  ResourceManager* manager_;
 };

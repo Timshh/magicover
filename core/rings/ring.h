@@ -9,15 +9,15 @@
 
 class Ring {
  public:
-  Ring(RingStats stats, Creature* owner);
+  Ring(const RingStats stats, Creature* const owner);
 
-  RingStats Stats;
+  RingStats stats;
 
-  float Clamp(float num, float min, float max); 
+  float Clamp(const float num, const float min, const float max); 
   void RingAct();
-  void AddRingEffect(bool isRemoving);
+  void AddRingEffect(const bool is_removing);
 
  private:
-  std::string EquipText, UnequipText;
-  Creature* Owner;
+  std::string equipText_, unequipText_;
+  Creature* owner_;
 };

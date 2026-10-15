@@ -2,8 +2,9 @@
 
 MapGenerator::MapGenerator() {}
 
-MapGraph MapGenerator::GenerateMap(int layers, int minNodes, int maxNodes) {
-  return TestMap;
+MapGraph MapGenerator::GenerateMap(const int layers, const int min_nodes,
+                                   const int max_nodes) {
+  return test_map;
   /*
   MapGraph Graph;
 

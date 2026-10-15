@@ -8,5 +8,6 @@
 class MapGenerator {
  public:
   MapGenerator();
-  MapGraph GenerateMap(int layers = 10, int minnodes = 2, int maxnodes = 5);
+  MapGraph GenerateMap(const int layers = 10, const int min_nodes = 2,
+                       const int max_nodes = 5);
 };

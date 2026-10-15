@@ -4,13 +4,14 @@
 
 class Enemy : public Creature {
  public:
-  Enemy(CreatureStats params, std::vector<Creature*>* team,
-        CoreObserver* const observer, int const id);
+  Enemy(const CreatureStats params, std::vector<Creature*>* team,
+        CoreObserver* const observer, const int id);
 
   void Attack(Creature* target);
   void Status();
 
-  void ReceiveDamage(float damage, int element, float status) override;
-  void CheckHP() override;
+  void Receivedamage(const float damage, const int element,
+                     const float status) override;
+  void Checkhp() override;
   void Act(Creature* target) override;
 };

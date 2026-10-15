@@ -11,7 +11,7 @@ class ConsoleUI : public UIController {
  public:
   ConsoleUI();
   template <typename... Args>
-  void PrintMessage(int const color = 15, Args&&... args) {
+  void PrintMessage(const int color = 15, Args&&... args) {
     SetColor(color);
     (std::cout << ... << args);
   }
@@ -19,14 +19,14 @@ class ConsoleUI : public UIController {
   void Map();
   void Inventory();
   void Room();
-  void SetColor(int const color);
+  void SetColor(const int color);
   void CleanRender();
   void Run();
-  void CallAct(RenderActions const action, int ID, int params,
-               int subparams) override;
+  void CallAct(const RenderActions action, const int ID, const int params,
+               const int subparams) override;
 
  private:
-  int TakeInt(int const min, int const max);
-  Core Game;
+  int TakeInt(const int min, const int max);
+  Core game_;
   Creature* SelectTarget();
 };

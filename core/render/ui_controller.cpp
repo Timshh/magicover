@@ -2,5 +2,5 @@
 
 UIController::UIController() {}
 
-void UIController::CallAct(RenderActions const action, int ID, int params,
-                           int subparams) {}
+void UIController::CallAct(const RenderActions action, const int id,
+                           const int params, const int subparams) {}

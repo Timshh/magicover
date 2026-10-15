@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 struct RingStats {
-  bool Uneqippable = true, Equipped = false;
+  bool uneqippable = true, equipped = false;
 
-  std::string Name, Description;
+  std::string name, description;
 
-  std::vector<int> PEffects;
-  std::vector<float> PStats;
-  std::vector<int> AEffects;
-  std::vector<float> AStats;
+  std::vector<int> passive_effects;
+  std::vector<float> passive_stats;
+  std::vector<int> active_effects;
+  std::vector<float> active_stats;
 };

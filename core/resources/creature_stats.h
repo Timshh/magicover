@@ -1,75 +1,76 @@
 ﻿#pragma once
 
-#include <nlohmann/json.hpp>
 #include <cstdlib>
+#include <nlohmann/json.hpp>
 #include <vector>
 using json = nlohmann::json;
 
 struct CreatureStats {
-  std::string Name;
-  int Team;
+  std::string name;
+  int team;
 
-  int HP = 0;
-  float HPMax;
-  int Mana = 0;
-  float ManaMax;
+  int hp = 0;
+  float hp_max;
+  int mana = 0;
+  float mana_max;
 
-  float Damage;
-  int DamageRand;
-  float DamageMult = 1.0;
-  float DefaultDamageMult;
+  float damage;
+  int damage_rand;
+  float damage_mult = 1.0;
+  float default_damage_mult;
 
-  int Element;
-  float Status;
-  int StatusRand;
-  float StatusMult = 1.0;
-  float DefaultStatusMult;
+  int element;
+  float status;
+  int status_rand;
+  float status_mult = 1.0;
+  float default_status_mult;
 
-  float Defence = 1.0;
-  float DefaultDefence;
-  float DodgeChance;
+  float defence = 1.0;
+  float default_defence;
+  float dodge_chance;
 
-  float FlameResist;
-  float FrostResist;
-  float DarkResist;
-  float PsychoResist;
-  float PoisonResist;
-  float DiseaseResist;
-  float MechanizationResist;
-  float StealerResist;
-  float DesiccantResist;
+  float flame_resist;
+  float frost_resist;
+  float dark_resist;
+  float psycho_resist;
+  float poison_resist;
+  float disease_resist;
+  float mechanization_resist;
+  float stealer_resist;
+  float desiccant_resist;
 
-  float Flame;
-  float Frost;
-  float Dark;
-  float Psycho;
-  float Poison;
-  float Disease;
-  float Mechanization;
-  float Stealer;
-  float Desiccant;
+  float flame;
+  float frost;
+  float dark;
+  float psycho;
+  float poison;
+  float disease;
+  float mechanization;
+  float stealer;
+  float desiccant;
 
-  float SecondAtkChance;
-  int SecondChance;
+  float second_atk_chance;
+  int second_chance;
 
-  int RingsMax;
+  int rings_max;
 
-  int SpecAtkID;
-  int SpecAtkChance;
+  int spec_atk_id;
+  int spec_atk_chance;
 
-  std::string CalmText = "";
-  std::string HurtText = "";
-  std::string DamagedText = "";
-  std::string DeathText = "";
-  std::vector<std::string> AtkTexts = {""};
-  std::string Hint = "";
-  
+  std::string calm_text = "";
+  std::string hurt_text = "";
+  std::string damaged_text = "";
+  std::string death_text = "";
+  std::vector<std::string> atk_texts = {""};
+  std::string hint = "";
+
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(
-      CreatureStats, Name, Team, HPMax, ManaMax, Damage, DamageRand,
-      DefaultDamageMult, Element, Status, StatusRand, DefaultStatusMult,
-      DefaultDefence, DodgeChance, FlameResist, FrostResist, DarkResist,
-      PsychoResist, PoisonResist, DiseaseResist, MechanizationResist,
-      StealerResist, DesiccantResist, Flame, Frost, Dark, Psycho, Poison,
-      Disease, Mechanization, Stealer, Desiccant, SecondAtkChance, SecondChance,
-      RingsMax, SpecAtkID, SpecAtkChance, CalmText, HurtText, DamagedText, DeathText, AtkTexts, Hint)
+      CreatureStats, name, team, hp_max, mana_max, damage, damage_rand,
+      default_damage_mult, element, status, status_rand, default_status_mult,
+      default_defence, dodge_chance, flame_resist, frost_resist, dark_resist,
+      psycho_resist, poison_resist, disease_resist, mechanization_resist,
+      stealer_resist, desiccant_resist, flame, frost, dark, psycho, poison,
+      disease, mechanization, stealer, desiccant, second_atk_chance, second_chance,
+      rings_max, spec_atk_id, spec_atk_chance, calm_text, hurt_text, damaged_text,
+      death_text, atk_texts, hint)
 };

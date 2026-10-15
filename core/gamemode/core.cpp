@@ -1,121 +1,121 @@
 ﻿#include "core.h"
 
 Core::Core()
-    : GMMap(),
-      Manager("data/creatures.json", "data/rings.json"),
-      Observer(),
-      GMBattle(&Player, &Manager, &Observer),
-      Player(Manager.GetCreature("Last Mage"), &GMBattle.Teammates, &Observer,
+    : gm_map(),
+      manager_("data/creatures.json", "data/rings.json"),
+      observer_(),
+      gm_battle(&player, &manager_, &observer_),
+      player(manager_.GetCreature("Last Mage"), &gm_battle.teammates, &observer_,
              -1),
-      GMRoom(&Player, &GMInventory, &GMBattle, &Observer),
-      GMInventory(&Player, &Manager),
-      CurrStage(0) {}
+      gm_room(&player, &gm_inventory, &gm_battle, &observer_),
+      gm_inventory(&player, &manager_),
+      curr_stage(0) {}
 
 std::vector<BattleActions> Core::BattleGetActions() {
-  return GMBattle.BattleGetActions();
+  return gm_battle.BattleGetActions();
 }
 
-void Core::BattleAct(BattleActions const action, int const choice1,
-                     Creature* target, int const choice2) {
-  GMBattle.BattleAct(action, choice1, target, choice2);
+void Core::BattleAct(const BattleActions action, const int choice1,
+                     Creature* target, const int choice2) {
+  gm_battle.BattleAct(action, choice1, target, choice2);
 }
 
 void Core::BattleFinish() {
-  State = GMStates::Map;
-  if (IsFightingBoss) {
-    IsFightingBoss = false;
+  state = GMStates::kMap;
+  if (is_fighting_boss_) {
+    is_fighting_boss_ = false;
     ChangeStage();
   }
 }
 
-void Core::MapChooseRoom(int const way) {
-  switch (GMMap.MapAct(way)) {
+void Core::MapChooseRoom(const int way) {
+  switch (gm_map.MapAct(way)) {
     case 0:
-      State = GMStates::Inventory;
+      state = GMStates::kInventory;
       break;
     case 1:
-      IsFightingBoss = true;
-      GMBattle.CreateBoss(CurrStage);
-      State = GMStates::Battle;
+      is_fighting_boss_ = true;
+      gm_battle.CreateBoss(curr_stage);
+      state = GMStates::kBattle;
       break;
     case 2:
-      GMBattle.CreateEnemy();
-      State = GMStates::Battle;
+      gm_battle.CreateEnemy();
+      state = GMStates::kBattle;
       break;
     case 3:
-      GMBattle.CreateElite();
-      State = GMStates::Battle;
+      gm_battle.CreateElite();
+      state = GMStates::kBattle;
       break;
     case 4:
-      Player.params.HP = Player.params.HPMax;
-      Player.params.Mana = Player.params.ManaMax;
+      player.params.hp = player.params.hp_max;
+      player.params.mana = player.params.mana_max;
       break;
     case 5:
-      State = GMStates::Room;
-      if (GMRoom.InitRoom(static_cast<RoomTypes>(
+      state = GMStates::kRoom;
+      if (gm_room.InitRoom(static_cast<RoomTypes>(
               rand() % static_cast<int>(RoomTypes::COUNT)))) {
-        State = GMStates::Battle;
+        state = GMStates::kBattle;
       }
       break;
   }
 }
 
-void Core::AddUI(UIController* const ui) { Observer.AddSubscriber(ui); }
+void Core::AddUI(UIController* const ui) { observer_.AddSubscriber(ui); }
 
-int Core::RoomGetActions() { return GMRoom.RoomGetActions(); }
+int Core::RoomGetActions() { return gm_room.RoomGetActions(); }
 
 void Core::RoomAct(int const action) {
-  if (GMRoom.RoomAct(action)) {
-    State = GMStates::Battle;
+  if (gm_room.RoomAct(action)) {
+    state = GMStates::kBattle;
   }
 }
 
-void Core::RoomFinish() { State = GMStates::Map; }
+void Core::RoomFinish() { state = GMStates::kMap; }
 
-void Core::RingEquip(int const ringid, int const slot) {
-  GMInventory.Equipper(ringid, slot);
+void Core::RingEquip(const int ringid, const int slot) {
+  gm_inventory.Equipper(ringid, slot);
 }
 
-void Core::RingUnequip(int const slot) { GMInventory.Unequipper(slot); }
+void Core::RingUnequip(const int slot) { gm_inventory.Unequipper(slot); }
 
 void Core::StartGame() {
-  Observer.CallAct(RenderActions::GameStart);
-  GMBattle.CreateBoss(CurrStage);
-  State = GMStates::Battle;
-  IsFightingBoss = true;
+  observer_.CallAct(RenderActions::kGameStart);
+  gm_battle.CreateBoss(curr_stage);
+  state = GMStates::kBattle;
+  is_fighting_boss_ = true;
 }
 
 void Core::ChangeStage() {
-  Observer.CallAct(RenderActions::StageChange, -2, CurrStage);
-  switch (CurrStage) {
+  observer_.CallAct(RenderActions::kStageChange, -2, curr_stage);
+  switch (curr_stage) {
     case 0:
-      GMInventory.AddRing("Ring of memories");
+      gm_inventory.AddRing("Ring of memories");
 
-      GMBattle.NormalEnemies = {"Hunter", "Warrior student", "Knight",
+      gm_battle.normal_enemies = {"Hunter", "Warrior student", "Knight",
                                 "Demon",  "Pseudo-Witch",    "Pseudo-Mage"};
-      GMBattle.EliteEnemies = {"Archer", "Draconic hunter"};
+      gm_battle.elite_enemies = {"Archer", "Draconic hunter"};
       break;
     case 1:
-      GMInventory.AddRing("Ring of arms");
+      gm_inventory.AddRing("Ring of arms");
 
-      GMBattle.NormalEnemies = {"Demon", "Pseudo-Witch", "Pseudo-Mage",
+      gm_battle.normal_enemies = {"Demon", "Pseudo-Witch", "Pseudo-Mage",
                                 "Automaton-Cleaner", "Automaton-Dog"};
-      GMBattle.EliteEnemies = {"Automaton-Hunter", "Armored knight"};
-      GMInventory.GetableRings.assign(
+      gm_battle.elite_enemies = {"Automaton-Hunter", "Armored knight"};
+      gm_inventory.getable_rings.assign(
           {"Thorn ring", "Light ring", "Light ring", "Glass ring"});
       break;
     case 2:
-      GMInventory.AddRing("Clockwork ring");
+      gm_inventory.AddRing("Clockwork ring");
 
-      GMBattle.NormalEnemies = {"Pseudo-Witch",      "Pseudo-Mage",
+      gm_battle.normal_enemies = {"Pseudo-Witch",      "Pseudo-Mage",
                                 "Automaton-Cleaner", "Automaton-Dog",
                                 "Witch candidate",   "Automaton-Dragon"};
-      GMBattle.EliteEnemies = {"Slayer candidate", "Slayer"};
-      GMInventory.GetableRings.assign({"Unstable ring", "Dice ring"});
+      gm_battle.elite_enemies = {"Slayer candidate", "Slayer"};
+      gm_inventory.getable_rings.assign({"Unstable ring", "Dice ring"});
       break;
     case 3:
       exit(0);
   }
-  GMMap.CreateMap();
-  CurrStage += 1;
+  gm_map.CreateMap();
+  curr_stage += 1;
 }

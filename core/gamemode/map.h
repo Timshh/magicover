@@ -9,13 +9,13 @@ class Map{
   Map();
 
   void CreateMap();
-  int MapAct(int const way);
-  int GetNodeType(int const id);
+  int MapAct(const int way);
+  int GetNodeType(const int id);
   std::vector<int> GetWays();
 
  private:
-  MapGenerator Generator = MapGenerator();
+  MapGenerator generator_ = MapGenerator();
 
-  MapGraph CurrentMap;
-  int CurrentLocation;
+  MapGraph current_map_;
+  int current_location_;
 };

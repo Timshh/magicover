@@ -5,7 +5,7 @@
 
 int main() {
   srand(time(NULL));
-  ConsoleUI UI;
-  UI.Run();
+  ConsoleUI ui;
+  ui.Run();
   return 0;
 }

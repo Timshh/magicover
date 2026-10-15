@@ -1,11 +1,11 @@
 ﻿#include "console_ui.h"
 
-ConsoleUI::ConsoleUI() : UIController(), Game(Core()) {
-  Game.AddUI(this);
-  Game.StartGame();
+ConsoleUI::ConsoleUI() : UIController(), game_(Core()) {
+  game_.AddUI(this);
+  game_.StartGame();
 }
 
-void ConsoleUI::SetColor(int const color) {
+void ConsoleUI::SetColor(const int color) {
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleTextAttribute(hConsole, color);
 }
@@ -14,62 +14,62 @@ void ConsoleUI::CleanRender() { system("cls"); }
 
 void ConsoleUI::Battle() {
   std::vector<BattleActions> battleActions;
-  PrintMessage(7, "Enemies\n");
-  for (int i = 1; i <= Game.GMBattle.Enemies.size(); i++) {
-    Creature* enemy = Game.GMBattle.Enemies[i - 1];
+  PrintMessage(7, "enemies\n");
+  for (int i = 1; i <= game_.gm_battle.enemies.size(); i++) {
+    Creature* enemy = game_.gm_battle.enemies[i - 1];
     PrintMessage(7, i, ". ");
     if (enemy->alive) {
-      if (enemy->params.HP >= enemy->params.HPMax / 2) {
-        PrintMessage(15, enemy->params.CalmText);
+      if (enemy->params.hp >= enemy->params.hp_max / 2) {
+        PrintMessage(15, enemy->params.calm_text);
       } else {
-        if (enemy->params.HP >= enemy->params.HPMax / 4) {
-          PrintMessage(15, enemy->params.HurtText);
+        if (enemy->params.hp >= enemy->params.hp_max / 4) {
+          PrintMessage(15, enemy->params.hurt_text);
         } else {
-          PrintMessage(15, enemy->params.DamagedText);
+          PrintMessage(15, enemy->params.damaged_text);
         }
       }
-      PrintMessage(12, " ", enemy->params.Flame);
-      PrintMessage(11, " ", enemy->params.Frost);
-      PrintMessage(8, " ", enemy->params.Dark);
-      PrintMessage(13, " ", enemy->params.Psycho);
+      PrintMessage(12, " ", enemy->params.flame);
+      PrintMessage(11, " ", enemy->params.frost);
+      PrintMessage(8, " ", enemy->params.dark);
+      PrintMessage(13, " ", enemy->params.psycho);
       PrintMessage(7, "\n");
     } else {
-      PrintMessage(15, enemy->params.Name, ", dead\n");
+      PrintMessage(15, enemy->params.name, ", dead\n");
     }
   }
-  int additionalSize = Game.GMBattle.Enemies.size();
-  for (int i = 1; i <= Game.GMBattle.StageBosses.size(); i++) {
-    Creature* enemy = Game.GMBattle.StageBosses[i - 1];
+  int additionalSize = game_.gm_battle.enemies.size();
+  for (int i = 1; i <= game_.gm_battle.stage_bosses.size(); i++) {
+    Creature* enemy = game_.gm_battle.stage_bosses[i - 1];
     PrintMessage(7, i + additionalSize, ". ");
     if (enemy->alive) {
-      if (enemy->params.HP >= enemy->params.HPMax / 2) {
-        PrintMessage(15, enemy->params.CalmText);
+      if (enemy->params.hp >= enemy->params.hp_max / 2) {
+        PrintMessage(15, enemy->params.calm_text);
       } else {
-        if (enemy->params.HP >= enemy->params.HPMax / 4) {
-          PrintMessage(15, enemy->params.HurtText);
+        if (enemy->params.hp >= enemy->params.hp_max / 4) {
+          PrintMessage(15, enemy->params.hurt_text);
         } else {
-          PrintMessage(15, enemy->params.DamagedText);
+          PrintMessage(15, enemy->params.damaged_text);
         }
       }
-      PrintMessage(12, " ", enemy->params.Flame);
-      PrintMessage(11, " ", enemy->params.Frost);
-      PrintMessage(8, " ", enemy->params.Dark);
-      PrintMessage(13, " ", enemy->params.Psycho);
+      PrintMessage(12, " ", enemy->params.flame);
+      PrintMessage(11, " ", enemy->params.frost);
+      PrintMessage(8, " ", enemy->params.dark);
+      PrintMessage(13, " ", enemy->params.psycho);
       PrintMessage(7, "\n");
     } else {
-      PrintMessage(15, enemy->params.Name, ", dead\n");
+      PrintMessage(15, enemy->params.name, ", dead\n");
     }
   }
   PrintMessage(11, "\nLast Mage\n");
   PrintMessage(15, "Health: ");
-  PrintMessage(4, Game.Player.params.HP);
-  PrintMessage(15, " Mana: ");
-  PrintMessage(3, Game.Player.params.Mana, "\n");
-  PrintMessage(10, Game.Player.params.Poison, " ");
-  PrintMessage(9, Game.Player.params.Disease, " ");
-  PrintMessage(8, Game.Player.params.Mechanization, " ");
-  PrintMessage(12, Game.Player.params.Stealer, "\n");
-  battleActions = Game.BattleGetActions();
+  PrintMessage(4, game_.player.params.hp);
+  PrintMessage(15, " mana: ");
+  PrintMessage(3, game_.player.params.mana, "\n");
+  PrintMessage(10, game_.player.params.poison, " ");
+  PrintMessage(9, game_.player.params.disease, " ");
+  PrintMessage(8, game_.player.params.mechanization, " ");
+  PrintMessage(12, game_.player.params.stealer, "\n");
+  battleActions = game_.BattleGetActions();
   for (int i = 1; i <= battleActions.size(); i++) {
     switch (battleActions[i - 1]) {
       case BattleActions::Regenerate:
@@ -96,7 +96,7 @@ void ConsoleUI::Battle() {
   choice = TakeInt(1, battleActions.size());
   switch (battleActions[choice - 1]) {
     case BattleActions::Regenerate:
-      Game.BattleAct(BattleActions::Regenerate);
+      game_.BattleAct(BattleActions::Regenerate);
       break;
 
     case BattleActions::SupportSpell:
@@ -107,19 +107,19 @@ void ConsoleUI::Battle() {
       PrintMessage(15, "3. Radiance. Heal ");
       PrintMessage(4, "80");
       PrintMessage(15, " but incoming damage rise by half\n");
-      Game.BattleAct(BattleActions::SupportSpell, TakeInt(1, 4));
+      game_.BattleAct(BattleActions::SupportSpell, TakeInt(1, 4));
       break;
 
     case BattleActions::Spell:
       PrintMessage(15, "Select enemy\n");
       target = SelectTarget();
       PrintMessage(15,
-                   "Choose element:\n1. Flame. Burn enemy "
-                   "slowly\n2. Frost. Make enemy "
-                   "attacks weaker\n3. Dark. With darken mind "
-                   "enemy may miss\n4. Psycho. "
+                   "Choose element:\n1. flame. Burn enemy "
+                   "slowly\n2. frost. Make enemy "
+                   "attacks weaker\n3. dark. With darken mind "
+                   "enemy may miss\n4. psycho. "
                    "Enemy may lose control and attack self\n");
-      Game.BattleAct(BattleActions::Spell, TakeInt(1, 4), target);
+      game_.BattleAct(BattleActions::Spell, TakeInt(1, 4), target);
       break;
 
     case BattleActions::PowerfulSpell:
@@ -127,20 +127,20 @@ void ConsoleUI::Battle() {
       target = SelectTarget();
       PrintMessage(
           15,
-          "Choose catalyst\n1. Flame. Ignite element. Doesn't damage but "
-          "increase status much\n2. Frost. Break element. Increase "
+          "Choose catalyst\n1. flame. Ignite element. Doesn't damage but "
+          "increase status much\n2. frost. Break element. Increase "
           "damage and "
-          "status\n3. Dark. Nullify element. Doesn't create status but "
-          "make damage bigger\n4. Psycho. Overload element. Deal low "
+          "status\n3. dark. Nullify element. Doesn't create status but "
+          "make damage bigger\n4. psycho. Overload element. Deal low "
           "heal to enemy but add large status\n");
       spell = TakeInt(1, 4);
       PrintMessage(15,
-                   "Choose element:\n1. Flame. Burn enemy "
-                   "slowly\n2. Frost. Make enemy "
-                   "attacks weaker\n3. Dark. With darken mind "
-                   "enemy may miss\n4. Psycho. "
+                   "Choose element:\n1. flame. Burn enemy "
+                   "slowly\n2. frost. Make enemy "
+                   "attacks weaker\n3. dark. With darken mind "
+                   "enemy may miss\n4. psycho. "
                    "Enemy may lose control and attack self\n");
-      Game.BattleAct(BattleActions::PowerfulSpell, spell, target,
+      game_.BattleAct(BattleActions::PowerfulSpell, spell, target,
                      TakeInt(1, 4));
       break;
   }
@@ -149,22 +149,22 @@ void ConsoleUI::Battle() {
 void ConsoleUI::Map() {
   std::vector<int> newWays;
   PrintMessage(15, "0. Inventory\n");
-  newWays = Game.GMMap.GetWays();
+  newWays = game_.gm_map.GetWays();
   for (int i = 1; i <= newWays.size(); i++) {
-    int currNode = Game.GMMap.GetNodeType(newWays[i - 1]);
+    int currNode = game_.gm_map.GetNodeType(newWays[i - 1]);
     PrintMessage(15, std::to_string(i) + ". ");
     switch (currNode) {
       case 1:
         PrintMessage(15, "Boss");
         break;
       case 2:
-        PrintMessage(15, "Room with Enemies");
+        PrintMessage(15, "Room with enemies");
         break;
       case 3:
         PrintMessage(15, "Room with powerful enemies");
         break;
       case 4:
-        PrintMessage(15, "Mana Room");
+        PrintMessage(15, "mana Room");
         break;
       case 5:
         PrintMessage(15, "Unknown Room");
@@ -176,31 +176,31 @@ void ConsoleUI::Map() {
   int choice = TakeInt(0, newWays.size());
   CleanRender();
   if (choice != 0) {
-    Game.MapChooseRoom(newWays.at(choice - 1));
+    game_.MapChooseRoom(newWays.at(choice - 1));
   } else {
-    Game.State = GMStates::Inventory;
+    game_.state = GMStates::kInventory;
   }
 }
 
 void ConsoleUI::Inventory() {
   PrintMessage(15, "0. Return\n");
   Ring* currRing;
-  for (int i = 1; i <= Game.Player.Inventory.size(); i++) {
-    currRing = &Game.Player.Inventory[i - 1];
-    PrintMessage(15, std::to_string(i), ". ", currRing->Stats.Name);
-    if (currRing->Stats.Equipped) {
+  for (int i = 1; i <= game_.player.inventory.size(); i++) {
+    currRing = &game_.player.inventory[i - 1];
+    PrintMessage(15, std::to_string(i), ". ", currRing->stats.name);
+    if (currRing->stats.equipped) {
       PrintMessage(15, " - equipped");
     }
     PrintMessage(15, "\n");
   }
   PrintMessage(7, "\nChoose\n");
-  int choice = TakeInt(0, Game.Player.Inventory.size());
+  int choice = TakeInt(0, game_.player.inventory.size());
   CleanRender();
   if (choice != 0) {
-    currRing = &Game.Player.Inventory[choice - 1];
+    currRing = &game_.player.inventory[choice - 1];
     PrintMessage(15, "0. Back\n");
     PrintMessage(15, "1. Description\n");
-    if (currRing->Stats.Equipped) {
+    if (currRing->stats.equipped) {
       PrintMessage(15, "2. Unequip");
     } else {
       PrintMessage(15, "2. Equip");
@@ -213,22 +213,22 @@ void ConsoleUI::Inventory() {
         return;
       case 1:
         CleanRender();
-        PrintMessage(15, currRing->Stats.Name, "\n");
-        PrintMessage(15, currRing->Stats.Description, "\n");
+        PrintMessage(15, currRing->stats.name, "\n");
+        PrintMessage(15, currRing->stats.description, "\n");
         break;
       case 2:
-        if (currRing->Stats.Equipped) {
-          currRing->Stats.Equipped = false;
+        if (currRing->stats.equipped) {
+          currRing->stats.equipped = false;
           currRing->AddRingEffect(true);
-          erase_if(Game.Player.Arm,
-                   [](const Ring& r) { return !r.Stats.Equipped; });
+          erase_if(game_.player.arm,
+                   [](const Ring& r) { return !r.stats.equipped; });
           CleanRender();
           PrintMessage(15, "Uneqipped\n");
         } else {
           PrintMessage(15, "0. Back\n");
-          for (int i = 0; i < Game.Player.params.RingsMax; i++) {
-            if (i < Game.Player.Arm.size()) {
-              PrintMessage(15, i + 1, ". ", Game.Player.Arm[i].Stats.Name,
+          for (int i = 0; i < game_.player.params.rings_max; i++) {
+            if (i < game_.player.arm.size()) {
+              PrintMessage(15, i + 1, ". ", game_.player.arm[i].stats.name,
                            "\n");
             } else {
               PrintMessage(15, i + 1, ". Empty finger\n");
@@ -236,26 +236,26 @@ void ConsoleUI::Inventory() {
             }
           }
           PrintMessage(7, "\nChoose\n");
-          choice = TakeInt(0, Game.Player.Arm.size() + 1);
+          choice = TakeInt(0, game_.player.arm.size() + 1);
           if (choice != 0) {
-            if (choice == Game.Player.Arm.size() + 1) {
-              Game.Player.Arm.push_back(*currRing);
-              currRing->Stats.Equipped = true;
+            if (choice == game_.player.arm.size() + 1) {
+              game_.player.arm.push_back(*currRing);
+              currRing->stats.equipped = true;
               currRing->AddRingEffect(true);
               CleanRender();
-              PrintMessage(15, "Equipped\n");
+              PrintMessage(15, "equipped\n");
               return;
             } else {
-              if (Game.Player.Arm[choice - 1].Stats.Uneqippable) {
-                Game.Player.Arm[choice - 1].Stats.Equipped = false;
-                Game.Player.Arm[choice - 1].AddRingEffect(false);
-                erase_if(Game.Player.Arm,
-                         [](const Ring& r) { return !r.Stats.Equipped; });
-                Game.Player.Arm.push_back(*currRing);
-                currRing->Stats.Equipped = true;
+              if (game_.player.arm[choice - 1].stats.uneqippable) {
+                game_.player.arm[choice - 1].stats.equipped = false;
+                game_.player.arm[choice - 1].AddRingEffect(false);
+                erase_if(game_.player.arm,
+                         [](const Ring& r) { return !r.stats.equipped; });
+                game_.player.arm.push_back(*currRing);
+                currRing->stats.equipped = true;
                 currRing->AddRingEffect(true);
                 CleanRender();
-                PrintMessage(15, "Equipped\n");
+                PrintMessage(15, "equipped\n");
                 return;
               } else {
                 PrintMessage(15, "This ring is not removable");
@@ -265,72 +265,73 @@ void ConsoleUI::Inventory() {
         }
     }
   } else {
-    Game.State = GMStates::Map;
+    game_.state = GMStates::kMap;
   }
 }
 
 void ConsoleUI::Room() {
-  if (Game.RoomGetActions() != 0) {
+  if (game_.RoomGetActions() != 0) {
     PrintMessage(7, "\nChoose\n");
-    int choice = TakeInt(0, Game.RoomGetActions());
+    int choice = TakeInt(0, game_.RoomGetActions());
     CleanRender();
-    Game.RoomAct(choice);
+    game_.RoomAct(choice);
   } else {
     PrintMessage(7, "\n1. Continue\n");
     int choice = TakeInt(1, 1);
     CleanRender();
-    Game.State = GMStates::Map;
+    game_.state = GMStates::kMap;
   }
 }
 
 void ConsoleUI::Run() {
-  while (Game.Player.alive) {
-    switch (Game.State) {
-      case GMStates::Battle:
+  while (game_.player.alive) {
+    switch (game_.state) {
+      case GMStates::kBattle:
         Battle();
         break;
-      case GMStates::Inventory:
+      case GMStates::kInventory:
         Inventory();
         break;
-      case GMStates::Map:
+      case GMStates::kMap:
         Map();
         break;
-      case GMStates::Room:
+      case GMStates::kRoom:
         Room();
         break;
     }
   }
 }
 
-void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
-                        int subparams) {
+void ConsoleUI::CallAct(const RenderActions action, const int ID,
+                        const int params,
+                        const int subparams) {
   Creature* target;
   if (ID != -2) {
     if (ID == -1) {
-      target = &Game.Player;
+      target = &game_.player;
     } else {
       if (ID >= 10000) {
-        target = Game.GMBattle.StageBosses[ID - 10000];
+        target = game_.gm_battle.stage_bosses[ID - 10000];
       } else {
-        target = Game.GMBattle.Enemies[ID];
+        target = game_.gm_battle.enemies[ID];
       }
     }
   }
   switch (action) {
-    case RenderActions::Attack:
+    case RenderActions::kAttack:
       PrintMessage(
-          15, target->params.AtkTexts[rand() % target->params.AtkTexts.size()],
+          15, target->params.atk_texts[rand() % target->params.atk_texts.size()],
           "\n");
       break;
 
-    case RenderActions::NewRing:
+    case RenderActions::kNewRing:
       PrintMessage(
           2,
-          Game.Player.Inventory.at(Game.Player.Inventory.size() - 1).Stats.Name,
+          game_.player.inventory.at(game_.player.inventory.size() - 1).stats.name,
           " obtained\n");
       break;
 
-    case RenderActions::RoomAct:
+    case RenderActions::kRoomAct:
       switch (params) {
         case 1:
           PrintMessage(15, "Slayer students attack Last Mage\n");
@@ -401,13 +402,13 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
               PrintMessage(
                   15,
                   "There's cell with Mage skeleton. Last Mage can to give rest "
-                  "to this Mage in cost of all Mana\n1. Do\n2. Go away\n");
+                  "to this Mage in cost of all mana\n1. Do\n2. Go away\n");
               break;
             case 1:
               PrintMessage(
                   15,
-                  "Last Mage use all of his Mana to release Mage soul. He "
-                  "feel that his Mana limit changed");
+                  "Last Mage use all of his mana to release Mage soul. He "
+                  "feel that his mana limit changed");
               break;
             case 2:
               PrintMessage(15, "Last Mage go away");
@@ -421,7 +422,7 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       }
       break;
 
-    case RenderActions::GameStart:
+    case RenderActions::kGameStart:
       PrintMessage(
           8,
           "You are the Last Mage. \nYour goal is simple - revenge."
@@ -430,7 +431,7 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       PrintMessage(4, "Once and for all.\n\n");
       break;
 
-    case RenderActions::StageChange:
+    case RenderActions::kStageChange:
       switch (params) {
         case 0:
           PrintMessage(15, "Axe guardian ring shines bright\n");
@@ -459,17 +460,17 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       }
       break;
 
-    case RenderActions::BattleEnd:
+    case RenderActions::kBattleEnd:
       PrintMessage(6, "\nBattle is over\n");
-      Game.BattleFinish();
+      game_.BattleFinish();
       break;
 
-    case RenderActions::Regen:
+    case RenderActions::kRegen:
       CleanRender();
       PrintMessage(15, "Last Mage started regeneration\n");
       break;
 
-    case RenderActions::SupportSpell:
+    case RenderActions::kSupportSpell:
       switch (params) {
         case 1:
           CleanRender();
@@ -491,7 +492,7 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       }
       break;
 
-    case RenderActions::Spell:
+    case RenderActions::kSpell:
       switch (params) {
         case 1:
           CleanRender();
@@ -512,7 +513,7 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       }
       break;
 
-    case RenderActions::PowerfulSpell:
+    case RenderActions::kPowerfulSpell:
       switch (params) {
         case 1:
           CleanRender();
@@ -533,12 +534,12 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       }
       break;
 
-    case RenderActions::TakeDamage:
-      PrintMessage(15, target->params.Name, " recieved ", params, " damage\n");
+    case RenderActions::kTakedamage:
+      PrintMessage(15, target->params.name, " recieved ", params, " damage\n");
       break;
 
-    case RenderActions::SpecialAttack:
-      switch (target->params.SpecAtkID) {
+    case RenderActions::kSpecialAttack:
+      switch (target->params.spec_atk_id) {
         case 1:
           PrintMessage(
               15, "Shield guardian used heal potion - restored 20 health\n");
@@ -582,46 +583,46 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
       }
       break;
 
-    case RenderActions::Death:
+    case RenderActions::kDeath:
       if (ID == -1) {
         PrintMessage(15, "Last Mage fell\n\n");
       } else {
-        PrintMessage(15, target->params.DeathText, "\n");
+        PrintMessage(15, target->params.death_text, "\n");
       }
       break;
 
-    case RenderActions::AtkPreparing:
-      switch (target->params.SpecAtkID) {
+    case RenderActions::kAtkPreparing:
+      switch (target->params.spec_atk_id) {
         case 6:
           PrintMessage(15, "Tyrant prepares something, her core glow bright\n");
           break;
       }
       break;
 
-    case RenderActions::Overload:
+    case RenderActions::kOverload:
       switch (params) {
         case 1:
-          PrintMessage(15, "Flame overload! ", target->params.Name,
+          PrintMessage(15, "flame overload! ", target->params.name,
                        " exploded");
           break;
         case 2:
-          PrintMessage(15, "Frost overload! ", target->params.Name,
+          PrintMessage(15, "frost overload! ", target->params.name,
                        " were frozen");
           break;
         case 3:
-          PrintMessage(15, "Dark overload! ", target->params.Name,
+          PrintMessage(15, "dark overload! ", target->params.name,
                        " got corrupted");
           break;
         case 4:
-          PrintMessage(15, "Psycho overload! ", target->params.Name,
+          PrintMessage(15, "psycho overload! ", target->params.name,
                        " attacked self in hysteria");
           break;
       }
       PrintMessage(15, "\n");
       break;
 
-    case RenderActions::Appear:
-      switch (target->params.SpecAtkID) {
+    case RenderActions::kAppear:
+      switch (target->params.spec_atk_id) {
         case 1:
           PrintMessage(8,
                        "Two guardians of castle stand before Last Mage. "
@@ -640,7 +641,7 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
               "to "
               "Last Mage, her dead eyes glow red. This is mad witch who "
               "cheated death now known as ");
-          PrintMessage(4, "InfArmY");
+          PrintMessage(4, "InfarmY");
           PrintMessage(8, " - supreme ripper\n");
           break;
         case 4:
@@ -674,7 +675,7 @@ void ConsoleUI::CallAct(RenderActions const action, int ID, int params,
   }
 }
 
-int ConsoleUI::TakeInt(int const min, int const max) {
+int ConsoleUI::TakeInt(const int min, const int max) {
   int choice;
   do {
     while (!(std::cin >> choice)) {
@@ -693,11 +694,11 @@ int ConsoleUI::TakeInt(int const min, int const max) {
 }
 
 Creature* ConsoleUI::SelectTarget() {
-  int size = Game.GMBattle.Enemies.size() + Game.GMBattle.StageBosses.size();
+  int size = game_.gm_battle.enemies.size() + game_.gm_battle.stage_bosses.size();
   int choice = TakeInt(1, size) - 1;
-  if (choice < Game.GMBattle.Enemies.size()) {
-    return Game.GMBattle.Enemies[choice];
+  if (choice < game_.gm_battle.enemies.size()) {
+    return game_.gm_battle.enemies[choice];
   } else {
-    return Game.GMBattle.StageBosses[choice - Game.GMBattle.Enemies.size()];
+    return game_.gm_battle.stage_bosses[choice - game_.gm_battle.enemies.size()];
   }
 }

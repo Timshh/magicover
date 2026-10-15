@@ -3,17 +3,17 @@
 Map::Map() { CreateMap(); }
 
 void Map::CreateMap() {
-  CurrentMap = Generator.GenerateMap();
-  CurrentLocation = 0;
+  current_map_ = generator_.GenerateMap();
+  current_location_ = 0;
 }
 
-int Map::MapAct(int const way) {
-  CurrentLocation = way;
-  return CurrentMap.Nodes[CurrentLocation].Type;
+int Map::MapAct(const int way) {
+  current_location_ = way;
+  return current_map_.nodes[current_location_].type;
 }
 
-int Map::GetNodeType(int const id) { return CurrentMap.Nodes.at(id).Type; }
+int Map::GetNodeType(const int id) { return current_map_.nodes.at(id).type; }
 
 std::vector<int> Map::GetWays() {
-  return CurrentMap.Nodes[CurrentLocation].Next;
+  return current_map_.nodes[current_location_].next;
 }

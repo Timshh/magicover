@@ -11,42 +11,42 @@
 #include "room.h"
 #include "ui_controller.h"
 
-enum class GMStates { Battle, Map, Inventory, Room };
+enum class GMStates { kBattle, kMap, kInventory, kRoom };
 
 class Core {
  private:
-  ResourceManager Manager;
-  CoreObserver Observer;
+  ResourceManager manager_;
+  CoreObserver observer_;
 
  public:
   Core();
 
   std::vector<BattleActions> BattleGetActions();
-  void BattleAct(BattleActions const action, int const choice1 = 0,
-                 Creature* target = nullptr, int const choice2 = 0);
+  void BattleAct(const BattleActions action, const int choice1 = 0,
+                 Creature* target = nullptr, const int choice2 = 0);
   void BattleFinish();
-  void MapChooseRoom(int const way);
+  void MapChooseRoom(const int way);
 
   void AddUI(UIController* const render);
 
   int RoomGetActions();
-  void RoomAct(int const action);
+  void RoomAct(const int action);
   void RoomFinish();
 
-  void RingEquip(int const ringid, int const slot);
-  void RingUnequip(int const slot);
+  void RingEquip(const int ringid, const int slot);
+  void RingUnequip(const int slot);
 
   void StartGame();
-  int CurrStage;
-  GMStates State;
-  Battle GMBattle;
-  Map GMMap;
-  Inventory GMInventory;
-  Room GMRoom;
-  Mage Player;
+  int curr_stage;
+  GMStates state;
+  Battle gm_battle;
+  Map gm_map;
+  Inventory gm_inventory;
+  Room gm_room;
+  Mage player;
 
  private:
-  bool IsFightingBoss = false;
+  bool is_fighting_boss_ = false;
 
   void ChangeStage();
 };

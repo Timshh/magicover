@@ -2,16 +2,16 @@
 #include <vector>
 
 struct Node {
-  int ID, Layer, Type;
-  std::vector<int> Next;
+  int id, layer, type;
+  std::vector<int> next;
 };
 
 struct MapGraph {
-  std::vector<Node> Nodes;
-  int Boss;
+  std::vector<Node> nodes;
+  int boss;
 };
 
-inline MapGraph TestMap = {{
+inline MapGraph test_map = {{
                         {0, 0, 0, {1, 2}},
                         {1, 0, 5, {3, 4, 5}},
                         {2, 0, 2, {5, 6, 7}},

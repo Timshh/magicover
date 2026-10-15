@@ -3,25 +3,25 @@
 
 ResourceManager::ResourceManager(const std::string& creaturepath,
                                  const std::string& ringpath) {
-  std::ifstream creaturefile(creaturepath);
-  if (!creaturefile) {
+  std::ifstream creature_file(creaturepath);
+  if (!creature_file) {
     std::cout << "Data not opened\n";
     return;
   }
   json j;
-  creaturefile >> j;
+  creature_file >> j;
 
   std::vector<CreatureStats> v = j.get<std::vector<CreatureStats>>();
   for (CreatureStats item : j) {
-    item.HP = item.HPMax;
-    item.Mana = item.ManaMax;
-    item.DamageMult = item.DefaultDamageMult;
-    item.StatusMult = item.DefaultStatusMult;
-    item.Defence = item.DefaultDefence;
+    item.hp = item.hp_max;
+    item.mana = item.mana_max;
+    item.damage_mult = item.default_damage_mult;
+    item.status_mult = item.default_status_mult;
+    item.defence = item.default_defence;
 
-    CreatureData.insert({item.Name, item});
+    creature_data_.insert({item.name, item});
   }
-  creaturefile.close();
+  creature_file.close();
 
 
   std::ifstream ringfile(ringpath);
@@ -36,43 +36,43 @@ ResourceManager::ResourceManager(const std::string& creaturepath,
       std::cout << "Missing key in item:\n" << item.dump(4) << std::endl;
       continue;
     }
-    u.Name = item.at("Name").get<std::string>();
-    u.Description = item.at("Description").get<std::string>();
+    u.name = item.at("Name").get<std::string>();
+    u.description = item.at("Description").get<std::string>();
     if (!item.at("AEffects").is_null()) {
       if (item.at("AEffects").is_array()) {
-        u.AEffects = item.at("AEffects").get<std::vector<int>>();
-        u.AStats = item.at("AStats").get<std::vector<float>>();
+        u.active_effects = item.at("AEffects").get<std::vector<int>>();
+        u.active_stats = item.at("AStats").get<std::vector<float>>();
       } else {
-        u.AEffects.push_back(item.at("AEffects").get<int>());
-        u.AStats.push_back(item.at("AStats").get<float>());
+        u.active_effects.push_back(item.at("AEffects").get<int>());
+        u.active_stats.push_back(item.at("AStats").get<float>());
       }
     }
     if (!item.at("PEffects").is_null()) {
       if (item.at("PEffects").is_array()) {
-        u.PEffects = item.at("PEffects").get<std::vector<int>>();
-        u.PStats = item.at("PStats").get<std::vector<float>>();
+        u.passive_effects = item.at("PEffects").get<std::vector<int>>();
+        u.passive_stats = item.at("PStats").get<std::vector<float>>();
       } else {
-        u.PEffects.push_back(item.at("PEffects").get<int>());
-        u.PStats.push_back(item.at("PStats").get<float>());
+        u.passive_effects.push_back(item.at("PEffects").get<int>());
+        u.passive_stats.push_back(item.at("PStats").get<float>());
       }
     }
-    RingData.insert({u.Name, u});
+    ring_data_.insert({u.name, u});
   }
   ringfile.close();
 }
 
-CreatureStats ResourceManager::GetCreature(std::string id) {
-  if (CreatureData.contains(id)) {
-    return CreatureData.at(id);
+CreatureStats ResourceManager::GetCreature(const std::string id) {
+  if (creature_data_.contains(id)) {
+    return creature_data_.at(id);
   }
   std::cout << "Creature not found error: " << id << std::endl;
-  return CreatureData.at("Patient zero");
+  return creature_data_.at("Patient zero");
 }
 
-RingStats ResourceManager::GetRing(std::string id) {
-  if (RingData.contains(id)) {
-    return RingData.at(id);
+RingStats ResourceManager::GetRing(const std::string id) {
+  if (ring_data_.contains(id)) {
+    return ring_data_.at(id);
   }
   std::cout << "Ring not found error" << std::endl;
-  return RingData.at("Blue Blood ring");
+  return ring_data_.at("Blue Blood ring");
 }

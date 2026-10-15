@@ -6,5 +6,6 @@
 class UIController {
  public:
   UIController();
-  void virtual CallAct(RenderActions const action, int ID, int params, int subparams);
+  void virtual CallAct(const RenderActions action, const int id,
+                       const int params, const int subparams);
 };

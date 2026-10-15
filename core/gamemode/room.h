@@ -11,13 +11,13 @@
 #include "ring.h"
 
 enum class RoomTypes {
-  Students,
-  Trap,
-  Ambush,
-  Ring,
-  Demon,
-  Skeleton,
-  Empty,
+  kStudents,
+  kTrap,
+  kAmbush,
+  kRing,
+  kDemon,
+  kSkeleton,
+  kEmpty,
   COUNT
 };
 
@@ -27,17 +27,17 @@ class Room {
        CoreObserver* observer);
 
   int RoomGetActions();
-  bool RoomAct(int const action);
-  bool InitRoom(RoomTypes const type);
+  bool RoomAct(const int action);
+  bool InitRoom(const RoomTypes type);
 
  private:
-  Mage* Player;
-  CoreObserver* Observer;
+  Mage* player_;
+  CoreObserver* observer_;
 
-  RoomTypes RoomType;
+  RoomTypes room_type_;
 
-  Inventory* GMInventory;
-  Battle* GMBattle;
+  Inventory* gm_inventory_;
+  Battle* gm_battle_;
 
-  int ActionsCount;
+  int actions_count_;
 };

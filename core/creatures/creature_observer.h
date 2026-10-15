@@ -11,5 +11,5 @@ class CreatureObserver {
   CreatureObserver();
 
  private:
-  std::vector<UIController*> Subscribers;
+  std::vector<UIController*> subscribers_;
 };

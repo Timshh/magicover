@@ -15,10 +15,10 @@ class ResourceManager {
  public:
   ResourceManager(const std::string& creaturepath, const std::string& ringpath);
 
-  CreatureStats GetCreature(std::string id);
-  RingStats GetRing(std::string id);
+  CreatureStats GetCreature(const std::string id);
+  RingStats GetRing(const std::string id);
 
  private:
-  std::map<std::string, CreatureStats> CreatureData;
-  std::map<std::string, RingStats> RingData;
+  std::map<std::string, CreatureStats> creature_data_;
+  std::map<std::string, RingStats> ring_data_;
 };

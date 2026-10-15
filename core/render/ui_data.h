@@ -1,20 +1,20 @@
 ﻿#pragma once
 
 enum class RenderActions {
-  Attack,
-  TakeDamage,
-  SpecialAttack,
-  Spell,
-  NewRing,
-  PowerfulSpell,
-  SupportSpell,
-  Regen,
-  Death,
-  Appear,
-  AtkPreparing,
-  BattleEnd,
-  StageChange,
-  GameStart,
-  Overload,
-  RoomAct
+  kAttack,
+  kTakedamage,
+  kSpecialAttack,
+  kSpell,
+  kNewRing,
+  kPowerfulSpell,
+  kSupportSpell,
+  kRegen,
+  kDeath,
+  kAppear,
+  kAtkPreparing,
+  kBattleEnd,
+  kStageChange,
+  kGameStart,
+  kOverload,
+  kRoomAct
 };
