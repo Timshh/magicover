@@ -26,7 +26,7 @@ void Boss::SpecialAttack(Creature* const target) {
       if (enemies_->size() < *max_enemies_) {
         observer_->CallAct(RenderActions::kSpecialAttack, id_);
         enemies_->push_back(new Enemy(manager_->GetCreature("Arms cluster"),
-                                     enemies_, observer_, enemies_->size()));
+                                      enemies_, observer_, enemies_->size()));
       } else {
         observer_->CallAct(RenderActions::kSpecialAttack, id_, 1);
         Receivedamage(20, 0, 0);

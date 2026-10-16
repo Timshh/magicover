@@ -72,19 +72,19 @@ void ConsoleUI::Battle() {
   battleActions = game_.BattleGetActions();
   for (int i = 1; i <= battleActions.size(); i++) {
     switch (battleActions[i - 1]) {
-      case BattleActions::Regenerate:
+      case BattleActions::kRegenerate:
         PrintMessage(15, std::to_string(i) + ". Regenerate. Gain ");
         PrintMessage(3, "15\n");
         break;
-      case BattleActions::SupportSpell:
+      case BattleActions::kSupportSpell:
         PrintMessage(15, "2. Support with spell. ");
         PrintMessage(3, "20\n");
         break;
-      case BattleActions::Spell:
+      case BattleActions::kSpell:
         PrintMessage(15, "3. Attack with one element. ");
         PrintMessage(3, "20\n");
         break;
-      case BattleActions::PowerfulSpell:
+      case BattleActions::kPowerfulSpell:
         PrintMessage(15, "4. Attack with two elements. ");
         PrintMessage(3, "40\n");
     }
@@ -95,11 +95,11 @@ void ConsoleUI::Battle() {
   Creature* target;
   choice = TakeInt(1, battleActions.size());
   switch (battleActions[choice - 1]) {
-    case BattleActions::Regenerate:
-      game_.BattleAct(BattleActions::Regenerate);
+    case BattleActions::kRegenerate:
+      game_.BattleAct(BattleActions::kRegenerate);
       break;
 
-    case BattleActions::SupportSpell:
+    case BattleActions::kSupportSpell:
       PrintMessage(15, "Choose spell:\n");
       PrintMessage(15, "1. Steel blood. Decrease incoming damage by half\n");
       PrintMessage(15, "2. Blue heart. Heal ");
@@ -107,10 +107,10 @@ void ConsoleUI::Battle() {
       PrintMessage(15, "3. Radiance. Heal ");
       PrintMessage(4, "80");
       PrintMessage(15, " but incoming damage rise by half\n");
-      game_.BattleAct(BattleActions::SupportSpell, TakeInt(1, 4));
+      game_.BattleAct(BattleActions::kSupportSpell, TakeInt(1, 4));
       break;
 
-    case BattleActions::Spell:
+    case BattleActions::kSpell:
       PrintMessage(15, "Select enemy\n");
       target = SelectTarget();
       PrintMessage(15,
@@ -119,10 +119,10 @@ void ConsoleUI::Battle() {
                    "attacks weaker\n3. dark. With darken mind "
                    "enemy may miss\n4. psycho. "
                    "Enemy may lose control and attack self\n");
-      game_.BattleAct(BattleActions::Spell, TakeInt(1, 4), target);
+      game_.BattleAct(BattleActions::kSpell, TakeInt(1, 4), target);
       break;
 
-    case BattleActions::PowerfulSpell:
+    case BattleActions::kPowerfulSpell:
       PrintMessage(15, "Select enemy\n");
       target = SelectTarget();
       PrintMessage(
@@ -140,7 +140,7 @@ void ConsoleUI::Battle() {
                    "attacks weaker\n3. dark. With darken mind "
                    "enemy may miss\n4. psycho. "
                    "Enemy may lose control and attack self\n");
-      game_.BattleAct(BattleActions::PowerfulSpell, spell, target,
+      game_.BattleAct(BattleActions::kPowerfulSpell, spell, target,
                      TakeInt(1, 4));
       break;
   }

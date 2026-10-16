@@ -70,7 +70,7 @@ struct CreatureStats {
       default_defence, dodge_chance, flame_resist, frost_resist, dark_resist,
       psycho_resist, poison_resist, disease_resist, mechanization_resist,
       stealer_resist, desiccant_resist, flame, frost, dark, psycho, poison,
-      disease, mechanization, stealer, desiccant, second_atk_chance, second_chance,
-      rings_max, spec_atk_id, spec_atk_chance, calm_text, hurt_text, damaged_text,
-      death_text, atk_texts, hint)
+      disease, mechanization, stealer, desiccant, second_atk_chance,
+      second_chance, rings_max, spec_atk_id, spec_atk_chance, calm_text,
+      hurt_text, damaged_text, death_text, atk_texts, hint)
 };

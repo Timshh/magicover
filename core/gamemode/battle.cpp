@@ -50,12 +50,12 @@ void Battle::CreateElite(const std::string id) {
 }
 
 std::vector<BattleActions> Battle::BattleGetActions() {
-  std::vector<BattleActions> result = {{BattleActions::Regenerate}};
+  std::vector<BattleActions> result = {{BattleActions::kRegenerate}};
   if (player_->params.mana >= 20) {
-    result.push_back(BattleActions::SupportSpell);
-    result.push_back(BattleActions::Spell);
+    result.push_back(BattleActions::kSupportSpell);
+    result.push_back(BattleActions::kSpell);
     if (player_->params.mana >= 40) {
-      result.push_back(BattleActions::PowerfulSpell);
+      result.push_back(BattleActions::kPowerfulSpell);
     }
   }
   return result;
@@ -96,23 +96,23 @@ void Battle::PrepareCast(const int choice) {
 void Battle::BattleAct(const BattleActions action, const int choice1,
                        Creature* const target, const int choice2) {
   switch (action) {
-    case BattleActions::Regenerate:
+    case BattleActions::kRegenerate:
       player_->params.mana =
           min(player_->params.mana + 15, player_->params.mana_max);
       observer_->CallAct(RenderActions::kRegen, -1);
       break;
-    case BattleActions::SupportSpell:
+    case BattleActions::kSupportSpell:
       player_->params.mana -= 20;
       observer_->CallAct(RenderActions::kSupportSpell, -1, choice1);
       player_->Offence(choice1);
       break;
-    case BattleActions::Spell:
+    case BattleActions::kSpell:
       player_->params.mana -= 20;
       PrepareCast(choice1);
       observer_->CallAct(RenderActions::kSpell, -1, choice1);
       player_->Magic(target);
       break;
-    case BattleActions::PowerfulSpell:
+    case BattleActions::kPowerfulSpell:
       player_->params.mana -= 40;
       PrepareCast(choice2);
       switch (choice1) {
@@ -148,25 +148,23 @@ void Battle::BattleAct(const BattleActions action, const int choice1,
       }
     }
   }
-  bool IsAnyEnemyAlive = false;
+  bool is_any_enemy_alive = false;
   for (Creature* enemy : enemies) {
     if (enemy->alive) {
-      IsAnyEnemyAlive = true;
+      is_any_enemy_alive = true;
       break;
     }
   }
   for (Creature* enemy : stage_bosses) {
     if (enemy->alive) {
-      IsAnyEnemyAlive = true;
+      is_any_enemy_alive = true;
       break;
     }
   }
-  if (!IsAnyEnemyAlive) {
-    if (stage_bosses.empty()) {
-      observer_->CallAct(RenderActions::kBattleEnd);
-    }
+  if (!is_any_enemy_alive) {
     enemies.clear();
     stage_bosses.clear();
+    observer_->CallAct(RenderActions::kBattleEnd);
   }
   player_->Status();
 }

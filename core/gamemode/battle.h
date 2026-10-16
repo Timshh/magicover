@@ -7,7 +7,7 @@
 #include "res_manager.h"
 #include "core_observer.h"
 
-enum class BattleActions { Regenerate, SupportSpell, Spell, PowerfulSpell };
+enum class BattleActions { kRegenerate, kSupportSpell, kSpell, kPowerfulSpell };
 
 class Battle {
  public:
