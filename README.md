@@ -9,14 +9,13 @@ Game also has magic system with elements, status effects and element combination
 ![Activities UML](Activity.png)
 
 ### Core states UML
-
 ![Core states UML](CoreStates.png)
 
 ### Math models
 AttackDamage = (baseDamage + random(maxAdditionalDamage)) * (1 - frost)
 
 - baseDamage, maxAdditionalDamage - character parameters
-- frost - element on enemy, more frost - lower damage
+- frost - parameter of character that decrease damage
 
-TakenDamage = AttackDamage * defence
+TakenDamage = incomingDamage * defence
 - defence - character parameter
