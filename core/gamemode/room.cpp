@@ -42,12 +42,12 @@ bool Room::RoomAct(const int action) {
       switch (action) {
         case 1:
           observer_->CallAct(RenderActions::kRoomAct, -1, 6, 1);
+          player_->params.mana = 0;
+          player_->params.mana_max += 10;
           actions_count_ = 0;
           break;
         case 2:
           observer_->CallAct(RenderActions::kRoomAct, -1, 6, 2);
-          player_->params.mana = 0;
-          player_->params.mana_max += 10;
           actions_count_ = 0;
           break;
       }

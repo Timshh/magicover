@@ -241,19 +241,19 @@ void ConsoleUI::Inventory() {
             if (choice == game_.player.arm.size() + 1) {
               game_.player.arm.push_back(*currRing);
               currRing->stats.equipped = true;
-              currRing->AddRingEffect(true);
+              currRing->AddRingEffect(false);
               CleanRender();
               PrintMessage(15, "equipped\n");
               return;
             } else {
               if (game_.player.arm[choice - 1].stats.uneqippable) {
                 game_.player.arm[choice - 1].stats.equipped = false;
-                game_.player.arm[choice - 1].AddRingEffect(false);
+                game_.player.arm[choice - 1].AddRingEffect(true);
                 erase_if(game_.player.arm,
                          [](const Ring& r) { return !r.stats.equipped; });
                 game_.player.arm.push_back(*currRing);
                 currRing->stats.equipped = true;
-                currRing->AddRingEffect(true);
+                currRing->AddRingEffect(false);
                 CleanRender();
                 PrintMessage(15, "equipped\n");
                 return;
