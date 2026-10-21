@@ -1,5 +1,7 @@
 This is self-learning project on c++ - game about the Last Mage and his attempt to destroy the Mage Slayers once and for all
+
 It has gameplay core and UI separated, currently only console UI but plans include adding another UI on SFML
+
 Game also has magic system with elements, status effects and element combination in powerful spells
 
 ### Classes UML
