@@ -35,6 +35,7 @@ bool Room::RoomAct(const int action) {
           break;
         case 2:
           observer_->CallAct(RenderActions::kRoomAct, -1, 4, 2);
+          actions_count_ = 0;
           break;
       }
       break;
