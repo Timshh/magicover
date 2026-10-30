@@ -10,8 +10,8 @@ class Enemy : public Creature {
   void Attack(Creature* target);
   void Status();
 
-  void Receivedamage(const float damage, const int element,
+  void ReceiveDamage(const float damage, const int element,
                      const float status) override;
-  void Checkhp() override;
+  void CheckHP() override;
   void Act(Creature* target) override;
 };

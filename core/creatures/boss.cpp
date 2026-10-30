@@ -29,8 +29,8 @@ void Boss::SpecialAttack(Creature* const target) {
                                       enemies_, observer_, enemies_->size()));
       } else {
         observer_->CallAct(RenderActions::kSpecialAttack, id_, 1);
-        Receivedamage(20, 0, 0);
-        Checkhp();
+        ReceiveDamage(20, 0, 0);
+        CheckHP();
       }
       break;
     case 4:
@@ -50,7 +50,7 @@ void Boss::SpecialAttack(Creature* const target) {
         observer_->CallAct(RenderActions::kSpecialAttack, id_);
         float Atkdamage = (40 + rand() % (11)) * (1 - params.frost / 100) *
                           target->params.defence;
-        target->Receivedamage(Atkdamage, 0, 0);
+        target->ReceiveDamage(Atkdamage, 0, 0);
         spec_preparing_ = false;
       } else {
         observer_->CallAct(RenderActions::kAtkPreparing, id_);
@@ -68,7 +68,7 @@ void Boss::SpecialAttack(Creature* const target) {
 
 void Boss::Act(Creature* const target) {
   params.hp -= params.flame;
-  Checkhp();
+  CheckHP();
   if (alive) {
     if (spec_preparing_) {
       SpecialAttack(target);
@@ -82,4 +82,4 @@ void Boss::Act(Creature* const target) {
   }
 }
 
-void Boss::Checkhp() { Enemy::Checkhp(); }
+void Boss::CheckHP() { Enemy::CheckHP(); }

@@ -10,9 +10,9 @@ class Mage : public Creature {
   std::vector<Ring> inventory;
   std::vector<Ring> arm;
 
-  void Receivedamage(const float damage, const int element,
+  void ReceiveDamage(const float damage, const int element,
                      const float status) override;
-  void Checkhp() override;
+  void CheckHP() override;
   void Act(Creature* const target) override;
 
 

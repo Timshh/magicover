@@ -11,7 +11,7 @@ class Boss : public Enemy {
        const int id);
   void SpecialAttack(Creature* const target);
   void Act(Creature* const target) override;
-  void Checkhp() override;
+  void CheckHP() override;
 
  protected:
   int* max_enemies_;

@@ -6,15 +6,15 @@ ConsoleUI::ConsoleUI() : UIController(), game_(Core()) {
 }
 
 void ConsoleUI::SetColor(const int color) {
-  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-  SetConsoleTextAttribute(hConsole, color);
+  HANDLE h_console = GetStdHandle(STD_OUTPUT_HANDLE);
+  SetConsoleTextAttribute(h_console, color);
 }
 
 void ConsoleUI::CleanRender() { system("cls"); }
 
 void ConsoleUI::Battle() {
   std::vector<BattleActions> battleActions;
-  PrintMessage(7, "enemies\n");
+  PrintMessage(7, "Enemies\n");
   for (int i = 1; i <= game_.gm_battle.enemies.size(); i++) {
     Creature* enemy = game_.gm_battle.enemies[i - 1];
     PrintMessage(7, i, ". ");
@@ -184,11 +184,11 @@ void ConsoleUI::Map() {
 
 void ConsoleUI::Inventory() {
   PrintMessage(15, "0. Return\n");
-  Ring* currRing;
+  Ring* curr_ring;
   for (int i = 1; i <= game_.player.inventory.size(); i++) {
-    currRing = &game_.player.inventory[i - 1];
-    PrintMessage(15, std::to_string(i), ". ", currRing->stats.name);
-    if (currRing->stats.equipped) {
+    curr_ring = &game_.player.inventory[i - 1];
+    PrintMessage(15, std::to_string(i), ". ", curr_ring->stats.name);
+    if (curr_ring->stats.equipped) {
       PrintMessage(15, " - equipped");
     }
     PrintMessage(15, "\n");
@@ -197,29 +197,29 @@ void ConsoleUI::Inventory() {
   int choice = TakeInt(0, game_.player.inventory.size());
   CleanRender();
   if (choice != 0) {
-    currRing = &game_.player.inventory[choice - 1];
+    curr_ring = &game_.player.inventory[choice - 1];
     PrintMessage(15, "0. Back\n");
     PrintMessage(15, "1. Description\n");
-    if (currRing->stats.equipped) {
+    if (curr_ring->stats.equipped) {
       PrintMessage(15, "2. Unequip");
     } else {
       PrintMessage(15, "2. Equip");
     }
     PrintMessage(7, "\nChoose\n");
-    int Choose;
-    std::cin >> Choose;
-    switch (Choose) {
+    int choose;
+    std::cin >> choose;
+    switch (choose) {
       case 0:
         return;
       case 1:
         CleanRender();
-        PrintMessage(15, currRing->stats.name, "\n");
-        PrintMessage(15, currRing->stats.description, "\n");
+        PrintMessage(15, curr_ring->stats.name, "\n");
+        PrintMessage(15, curr_ring->stats.description, "\n");
         break;
       case 2:
-        if (currRing->stats.equipped) {
-          currRing->stats.equipped = false;
-          currRing->AddRingEffect(true);
+        if (curr_ring->stats.equipped) {
+          curr_ring->stats.equipped = false;
+          curr_ring->AddRingEffect(true);
           erase_if(game_.player.arm,
                    [](const Ring& r) { return !r.stats.equipped; });
           CleanRender();
@@ -239,9 +239,9 @@ void ConsoleUI::Inventory() {
           choice = TakeInt(0, game_.player.arm.size() + 1);
           if (choice != 0) {
             if (choice == game_.player.arm.size() + 1) {
-              game_.player.arm.push_back(*currRing);
-              currRing->stats.equipped = true;
-              currRing->AddRingEffect(false);
+              game_.player.arm.push_back(*curr_ring);
+              curr_ring->stats.equipped = true;
+              curr_ring->AddRingEffect(false);
               CleanRender();
               PrintMessage(15, "equipped\n");
               return;
@@ -251,9 +251,9 @@ void ConsoleUI::Inventory() {
                 game_.player.arm[choice - 1].AddRingEffect(true);
                 erase_if(game_.player.arm,
                          [](const Ring& r) { return !r.stats.equipped; });
-                game_.player.arm.push_back(*currRing);
-                currRing->stats.equipped = true;
-                currRing->AddRingEffect(false);
+                game_.player.arm.push_back(*curr_ring);
+                curr_ring->stats.equipped = true;
+                curr_ring->AddRingEffect(false);
                 CleanRender();
                 PrintMessage(15, "equipped\n");
                 return;
