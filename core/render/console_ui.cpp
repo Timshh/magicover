@@ -376,7 +376,7 @@ void ConsoleUI::CallAct(const RenderActions action, const int ID,
                   "There is a demon sitting in a room. A red ring shine on his "
                   "finger. Ring Last Mage knew long ago\n");
               PrintMessage(
-                  15,
+                  4,
                   "- Hello there. Looks like i have a Mage here. Maybe i can "
                   "call guard... But i won't. Interested in deal? I can take "
                   "part of your health and create ring of your lifepower\n");
