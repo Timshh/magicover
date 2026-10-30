@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <iostream>
 
 #include "battle.h"
 #include "core_observer.h"

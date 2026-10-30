@@ -5,8 +5,6 @@
 #include "creature.h"
 #include "ring_stats.h"
 
-
-
 class Ring {
  public:
   Ring(const RingStats stats, Creature* const owner);

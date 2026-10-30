@@ -5,14 +5,14 @@ Creature::Creature(CreatureStats const params,
                    CoreObserver* const observer, const int id)
     : params(params), team(team), observer_(observer), id_(id) {}
 
-void Creature::Receivedamage(const float damage, const int element,
+void Creature::ReceiveDamage(const float damage, const int element,
                              const float status) {
   if (!alive) {
     return;
   }
-  float Hit = damage * params.defence;
-  params.hp -= Hit;
-  observer_->CallAct(RenderActions::kTakedamage, id_, Hit);
+  float hit = damage * params.defence;
+  params.hp -= hit;
+  observer_->CallAct(RenderActions::kTakedamage, id_, hit);
   switch (element) {
     case 1:
       params.flame += status * params.flame_resist;
@@ -51,10 +51,10 @@ void Creature::Receivedamage(const float damage, const int element,
       }
       break;
   }
-  Checkhp();
+  CheckHP();
 }
 
-void Creature::Checkhp() {
+void Creature::CheckHP() {
   if (!alive) {
     return;
   }
@@ -69,5 +69,5 @@ void Creature::Act(Creature* const target) {
     return;
   }
   params.hp -= params.flame;
-  Checkhp();
+  CheckHP();
 }

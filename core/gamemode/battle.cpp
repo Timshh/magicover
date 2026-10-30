@@ -165,6 +165,7 @@ void Battle::BattleAct(const BattleActions action, const int choice1,
     enemies.clear();
     stage_bosses.clear();
     observer_->CallAct(RenderActions::kBattleEnd);
+    return;
   }
   player_->Status();
 }

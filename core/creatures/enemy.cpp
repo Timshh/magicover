@@ -17,11 +17,11 @@ void Enemy::Attack(Creature* target) {
   if (rand() % 100 >= params.psycho) {
     if (rand() % 100 >= params.dark) {
       observer_->CallAct(RenderActions::kAttack, id_);
-      target->Receivedamage(Atkdamage, 0, 0);
+      target->ReceiveDamage(Atkdamage, 0, 0);
     } else {
     }
   } else {
-    Receivedamage(Atkdamage, 0, 0);
+    ReceiveDamage(Atkdamage, 0, 0);
   }
 }
 
@@ -29,7 +29,7 @@ void Enemy::Status() {
   if (!this) {
     return;
   }
-  Checkhp();
+  CheckHP();
   if (params.hp >= params.hp_max / 2) {
   } else {
     if (params.hp >= params.hp_max / 4) {
@@ -38,13 +38,13 @@ void Enemy::Status() {
   }
 }
 
-void Enemy::Receivedamage(const float damage, const int element,
+void Enemy::ReceiveDamage(const float damage, const int element,
                           const float status) {
-  Creature::Receivedamage(damage, element, status);
+  Creature::ReceiveDamage(damage, element, status);
 }
 
-void Enemy::Checkhp() {
+void Enemy::CheckHP() {
   if (params.hp <= 0) {
   }
-  Creature::Checkhp();
+  Creature::CheckHP();
 }

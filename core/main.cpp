@@ -1,5 +1,4 @@
 ﻿#include <ctime>
-
 #include "console_ui.h"
 #include "core.h"
 

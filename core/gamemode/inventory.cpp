@@ -9,25 +9,18 @@ Inventory::Inventory(Mage* const player, ResourceManager* const manager)
 
 void Inventory::Equipper(const int ringid, const int slot) {
   chosen_ring_ = &player_->inventory.at(ringid);
-  if (slot == player_->arm.size()) {
-    player_->arm.push_back(*chosen_ring_);
-    chosen_ring_->stats.equipped = true;
-    chosen_ring_->AddRingEffect(true);
-  } else {
-    player_->arm[slot].stats.equipped = false;
-    player_->arm[slot].AddRingEffect(false);
-    erase_if(player_->arm, [](const Ring& r) { return !r.stats.equipped; });
-    player_->arm.push_back(*chosen_ring_);
-    chosen_ring_->stats.equipped = true;
-    chosen_ring_->AddRingEffect(true);
+  if (slot != player_->arm.size()) {
+    player_->arm[slot]->AddRingEffect(true);
+    erase_if(player_->arm, [](const Ring* r) { return !r->stats.equipped; });
   }
+  player_->arm.push_back(chosen_ring_);
+  chosen_ring_->AddRingEffect(false);
 }
 
 void Inventory::Unequipper(const int slot) {
-  chosen_ring_ = &player_->arm.at(slot);
-  chosen_ring_->stats.equipped = false;
+  chosen_ring_ = player_->arm.at(slot);
   chosen_ring_->AddRingEffect(true);
-  erase_if(player_->arm, [](const Ring& r) { return !r.stats.equipped; });
+  erase_if(player_->arm, [](const Ring* r) { return !r->stats.equipped; });
 }
 
 bool Inventory::AddRing(const std::string id) {

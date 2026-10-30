@@ -53,7 +53,7 @@ void Core::MapChooseRoom(const int way) {
     case 5:
       state = GMStates::kRoom;
       if (gm_room.InitRoom(static_cast<RoomTypes>(
-              rand() % static_cast<int>(RoomTypes::COUNT)))) {
+              rand() % (static_cast<int>(RoomTypes::COUNT) - 1)))) {
         state = GMStates::kBattle;
       }
       break;

@@ -14,32 +14,41 @@ Ring::Ring(const RingStats stats, Creature* const owner)
     : stats(stats), owner_(owner) {}
 
 void Ring::RingAct() {
+  if (!owner_) {
+    return;
+  }
   for (int i = 0; i < stats.active_effects.size(); i++) {
     switch (stats.active_effects[i]) {
       case 1:
-        owner_->params.hp = Clamp(owner_->params.hp + 5, 0, owner_->params.hp_max);
+        owner_->params.hp =
+            Clamp(owner_->params.hp + 5, 0, owner_->params.hp_max);
         break;
       case 2:
         owner_->params.mana =
             Clamp(owner_->params.mana + 5, 0, owner_->params.mana_max);
         break;
       case 3:
-        owner_->params.hp =
-            Clamp(owner_->params.hp + (rand() % int(stats.active_stats[i]) * 2) -
-                      stats.active_stats[i] + 1,
-                  0, owner_->params.hp_max);
-        break;
+        if (stats.active_stats[i] != 0) {
+          owner_->params.hp = Clamp(
+              owner_->params.hp + (rand() % int(stats.active_stats[i]) * 2) -
+                  stats.active_stats[i] + 1,
+              0, owner_->params.hp_max);
+          break;
+        }
       case 4:
-        owner_->params.mana =
-            Clamp(owner_->params.mana + rand() % (int(stats.active_stats[i]) * 2) -
-                      stats.active_stats[i] + 1,
-                  0, owner_->params.mana_max);
-        break;
+        if (stats.active_stats[i] != 0) {
+          owner_->params.mana = Clamp(
+              owner_->params.mana + rand() % (int(stats.active_stats[i]) * 2) -
+                  stats.active_stats[i] + 1,
+              0, owner_->params.mana_max);
+          break;
+        }
     }
   }
 }
 
 void Ring::AddRingEffect(const bool is_removing) {
+  stats.equipped = !is_removing;
   int Mult = 1;
   if (is_removing) {
     Mult = -1;
