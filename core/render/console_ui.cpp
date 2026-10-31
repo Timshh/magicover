@@ -65,10 +65,10 @@ void ConsoleUI::Battle() {
   PrintMessage(4, game_.player.params.hp);
   PrintMessage(15, " mana: ");
   PrintMessage(3, game_.player.params.mana, "\n");
-  PrintMessage(10, game_.player.params.poison, " ");
+  /*PrintMessage(10, game_.player.params.poison, " ");
   PrintMessage(9, game_.player.params.disease, " ");
   PrintMessage(8, game_.player.params.mechanization, " ");
-  PrintMessage(12, game_.player.params.stealer, "\n");
+  PrintMessage(12, game_.player.params.stealer, "\n");*/
   battleActions = game_.BattleGetActions();
   for (int i = 1; i <= battleActions.size(); i++) {
     switch (battleActions[i - 1]) {
