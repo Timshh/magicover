@@ -51,10 +51,10 @@ void ConsoleUI::Battle() {
           PrintMessage(15, enemy->params.damaged_text);
         }
       }
-      PrintMessage(12, " ", enemy->params.flame);
-      PrintMessage(11, " ", enemy->params.frost);
-      PrintMessage(8, " ", enemy->params.dark);
-      PrintMessage(13, " ", enemy->params.psycho);
+      PrintMessage(12, " ", static_cast<int>(enemy->params.flame));
+      PrintMessage(11, " ", static_cast<int>(enemy->params.frost));
+      PrintMessage(8, " ", static_cast<int>(enemy->params.dark));
+      PrintMessage(13, " ", static_cast<int>(enemy->params.psycho));
       PrintMessage(7, "\n");
     } else {
       PrintMessage(15, enemy->params.name, ", dead\n");
@@ -141,7 +141,7 @@ void ConsoleUI::Battle() {
                    "enemy may miss\n4. psycho. "
                    "Enemy may lose control and attack self\n");
       game_.BattleAct(BattleActions::kPowerfulSpell, spell, target,
-                     TakeInt(1, 4));
+                      TakeInt(1, 4));
       break;
   }
 }
@@ -184,9 +184,10 @@ void ConsoleUI::Map() {
 
 void ConsoleUI::Inventory() {
   PrintMessage(15, "0. Return\n");
+  PrintMessage(15, "1. Remove all rings\n");
   Ring* curr_ring;
-  for (int i = 1; i <= game_.player.inventory.size(); i++) {
-    curr_ring = &game_.player.inventory[i - 1];
+  for (int i = 2; i <= game_.player.inventory.size() + 1; i++) {
+    curr_ring = &game_.player.inventory[i - 2];
     PrintMessage(15, std::to_string(i), ". ", curr_ring->stats.name);
     if (curr_ring->stats.equipped) {
       PrintMessage(15, " - equipped");
@@ -194,75 +195,54 @@ void ConsoleUI::Inventory() {
     PrintMessage(15, "\n");
   }
   PrintMessage(7, "\nChoose\n");
-  int choice = TakeInt(0, game_.player.inventory.size());
+  int choice = TakeInt(0, game_.player.inventory.size() + 1);
   CleanRender();
   if (choice != 0) {
-    curr_ring = &game_.player.inventory[choice - 1];
-    PrintMessage(15, "0. Back\n");
-    PrintMessage(15, "1. Description\n");
-    if (curr_ring->stats.equipped) {
-      PrintMessage(15, "2. Unequip");
-    } else {
-      PrintMessage(15, "2. Equip");
-    }
-    PrintMessage(7, "\nChoose\n");
-    int choose;
-    std::cin >> choose;
-    switch (choose) {
-      case 0:
-        return;
-      case 1:
-        CleanRender();
-        PrintMessage(15, curr_ring->stats.name, "\n");
-        PrintMessage(15, curr_ring->stats.description, "\n");
-        break;
-      case 2:
+    if (choice == 1) {
+      game_.player.arm.clear();
+      for (int i = 0; i < game_.player.inventory.size(); i++) {
+        curr_ring = &game_.player.inventory[i];
         if (curr_ring->stats.equipped) {
           curr_ring->stats.equipped = false;
           curr_ring->AddRingEffect(true);
-          erase_if(game_.player.arm,
-                   [](const Ring& r) { return !r.stats.equipped; });
-          CleanRender();
-          PrintMessage(15, "Uneqipped\n");
-        } else {
-          PrintMessage(15, "0. Back\n");
-          for (int i = 0; i < game_.player.params.rings_max; i++) {
-            if (i < game_.player.arm.size()) {
-              PrintMessage(15, i + 1, ". ", game_.player.arm[i].stats.name,
-                           "\n");
-            } else {
-              PrintMessage(15, i + 1, ". Empty finger\n");
-              break;
-            }
-          }
-          PrintMessage(7, "\nChoose\n");
-          choice = TakeInt(0, game_.player.arm.size() + 1);
-          if (choice != 0) {
-            if (choice == game_.player.arm.size() + 1) {
-              game_.player.arm.push_back(*curr_ring);
-              curr_ring->stats.equipped = true;
-              curr_ring->AddRingEffect(false);
-              CleanRender();
-              PrintMessage(15, "equipped\n");
-              return;
-            } else {
-              if (game_.player.arm[choice - 1].stats.uneqippable) {
-                game_.player.arm[choice - 1].stats.equipped = false;
-                game_.player.arm[choice - 1].AddRingEffect(true);
-                erase_if(game_.player.arm,
-                         [](const Ring& r) { return !r.stats.equipped; });
-                game_.player.arm.push_back(*curr_ring);
-                curr_ring->stats.equipped = true;
-                curr_ring->AddRingEffect(false);
-                CleanRender();
-                PrintMessage(15, "equipped\n");
-                return;
-              } else {
-                PrintMessage(15, "This ring is not removable");
-              }
-            }
-          }
         }
+      }
+      CleanRender();
+      PrintMessage(15, "Removed all rings\n");
+    } else {
+      curr_ring = &game_.player.inventory[choice - 2];
+      PrintMessage(15, "0. Back\n");
+      PrintMessage(15, "1. Description\n");
+      if (!curr_ring->stats.equipped) {
+        if (game_.player.arm.size() < game_.player.params.rings_max) {
+          PrintMessage(15, "2. Equip");
+        } else {
+          PrintMessage(15, "Cannot equip - hand is full\n");
+        }
+      }
+      PrintMessage(7, "\nChoose\n");
+      int choose;
+      if (!curr_ring->stats.equipped &&
+          game_.player.arm.size() < game_.player.params.rings_max) {
+        choose = TakeInt(0, 2);
+      } else {
+        choose = TakeInt(0, 1);
+      }
+      CleanRender();
+      switch (choose) {
+        case 0:
+          return;
+        case 1:
+          PrintMessage(15, curr_ring->stats.name, "\n");
+          PrintMessage(15, curr_ring->stats.description, "\n\n");
+          break;
+        case 2:
+          game_.player.arm.push_back(*curr_ring);
+          curr_ring->stats.equipped = true;
+          curr_ring->AddRingEffect(false);
+          PrintMessage(15, "Equipped\n");
+          return;
+      }
     }
   } else {
     game_.state = GMStates::kMap;
@@ -303,8 +283,7 @@ void ConsoleUI::Run() {
 }
 
 void ConsoleUI::CallAct(const RenderActions action, const int ID,
-                        const int params,
-                        const int subparams) {
+                        const int params, const int subparams) {
   Creature* target;
   if (ID != -2) {
     if (ID == -1) {
@@ -320,15 +299,16 @@ void ConsoleUI::CallAct(const RenderActions action, const int ID,
   switch (action) {
     case RenderActions::kAttack:
       PrintMessage(
-          15, target->params.atk_texts[rand() % target->params.atk_texts.size()],
+          15,
+          target->params.atk_texts[rand() % target->params.atk_texts.size()],
           "\n");
       break;
 
     case RenderActions::kNewRing:
-      PrintMessage(
-          2,
-          game_.player.inventory.at(game_.player.inventory.size() - 1).stats.name,
-          " obtained\n");
+      PrintMessage(2,
+                   game_.player.inventory.at(game_.player.inventory.size() - 1)
+                       .stats.name,
+                   " obtained\n");
       break;
 
     case RenderActions::kRoomAct:
@@ -371,10 +351,10 @@ void ConsoleUI::CallAct(const RenderActions action, const int ID,
         case 4:
           switch (subparams) {
             case 0:
-              PrintMessage(
-                  15,
-                  "There is a demon sitting in a room. A red ring shine on his "
-                  "finger. Ring Last Mage knew long ago\n");
+              PrintMessage(15,
+                           "There is a demon sitting in a room. A red ring "
+                           "shine on his "
+                           "finger. Ring Last Mage knew long ago\n");
               PrintMessage(
                   4,
                   "- Hello there. Looks like i have a Mage here. Maybe i can "
@@ -401,7 +381,8 @@ void ConsoleUI::CallAct(const RenderActions action, const int ID,
             case 0:
               PrintMessage(
                   15,
-                  "There's cell with Mage skeleton. Last Mage can to give rest "
+                  "There's cell with Mage skeleton. Last Mage can to give "
+                  "rest "
                   "to this Mage in cost of all mana\n1. Do\n2. Go away\n");
               break;
             case 1:
@@ -694,11 +675,13 @@ int ConsoleUI::TakeInt(const int min, const int max) {
 }
 
 Creature* ConsoleUI::SelectTarget() {
-  int size = game_.gm_battle.enemies.size() + game_.gm_battle.stage_bosses.size();
+  int size =
+      game_.gm_battle.enemies.size() + game_.gm_battle.stage_bosses.size();
   int choice = TakeInt(1, size) - 1;
   if (choice < game_.gm_battle.enemies.size()) {
     return game_.gm_battle.enemies[choice];
   } else {
-    return game_.gm_battle.stage_bosses[choice - game_.gm_battle.enemies.size()];
+    return game_.gm_battle
+        .stage_bosses[choice - game_.gm_battle.enemies.size()];
   }
 }

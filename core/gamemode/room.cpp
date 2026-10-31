@@ -21,6 +21,7 @@ bool Room::RoomAct(const int action) {
           } else {
             observer_->CallAct(RenderActions::kRoomAct, -1, 2, 3);
           }
+          player_->ReceiveDamage(rand()%25, 0, 0);
           actions_count_ = 0;
           break;
       }
